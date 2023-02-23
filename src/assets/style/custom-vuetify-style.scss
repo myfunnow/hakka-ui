@@ -1,0 +1,142 @@
+.v-toolbar__content {
+  padding: 0px !important;
+}
+
+.v-toolbar__extension {
+  padding: 0;
+}
+
+.v-text-field {
+  &.v-text-field {
+    &--enclosed {
+      .v-text-field__details {
+        padding: 0 12px 0 0;
+      }
+    }
+  }
+}
+
+.v-input {
+  font-size: 16px;
+}
+
+.v-text-field.v-text-field--enclosed {
+  .v-text-field__details {
+    margin-bottom: 0;
+  }
+}
+.v-text-field--outlined,
+.v-input__slot {
+  &.v-input--is-focused,
+  &.v-input--has-state {
+    fieldset {
+      border: 1px solid currentColor;
+    }
+  }
+}
+
+.v-date-picker-table__events {
+  > div {
+    width: 4px;
+    height: 4px;
+  }
+}
+.v-chip.v-chip--outlined.v-chip.v-chip {
+  background-color: white !important;
+  &--active {
+    &:before {
+      opacity: 0;
+    }
+  }
+}
+
+.v-date-picker-table {
+  padding: 0;
+
+  th,
+  .v-btn {
+    font-size: 15px;
+  }
+
+  .theme--light.v-btn--active:hover::before,
+  .theme--light.v-btn--active::before {
+    opacity: 0 !important;
+  }
+}
+
+.v-date-picker-table__current {
+  border: 0 !important;
+}
+
+.v-list-item--active {
+  &:before {
+    background-color: unset;
+  }
+}
+
+.v-list-item--dense,
+.v-list--dense .v-list-item {
+  min-height: 38px;
+
+  &__title {
+    font-size: 15px !important;
+    font-weight: normal !important;
+  }
+}
+
+.v-tab {
+  font-weight: unset;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.v-btn {
+  font-weight: unset;
+  letter-spacing: normal;
+  text-transform: none;
+
+  &.v-size {
+    &--default {
+      font-size: 15px;
+    }
+  }
+}
+
+.v-pagination {
+  .v-pagination__navigation {
+    background: unset;
+    box-shadow: unset;
+
+    &:focus {
+      outline: 0;
+    }
+  }
+
+  .v-pagination__item {
+    background: unset;
+    box-shadow: unset;
+    position: relative;
+
+    &:before {
+      border-radius: inherit;
+      bottom: 0;
+      color: inherit;
+      content: '';
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+      background-color: currentColor;
+    }
+    &:hover::before {
+      opacity: 0.04;
+    }
+
+    &:focus {
+      outline: 0;
+    }
+  }
+}
