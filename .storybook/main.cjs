@@ -1,4 +1,5 @@
-const vuetify = require('@vuetify/vite-plugin')
+const path = require('path')
+const vuetify = require('vite-plugin-vuetify')
 
 module.exports = {
   "stories": [
@@ -22,7 +23,7 @@ module.exports = {
 
     config.css = {
       preprocessorOptions: {
-        scss: { additionalData: `@import "src/style/main.scss";` },
+        scss: { additionalData: `@import "@/assets/style/main.scss";` },
       },
     };
 
