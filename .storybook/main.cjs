@@ -1,3 +1,5 @@
+const vuetify = require('@vuetify/vite-plugin')
+
 module.exports = {
   "stories": [
     "../src/**/*.stories.mdx",
@@ -13,4 +15,22 @@ module.exports = {
   "core": {
     "builder": "@storybook/builder-vite"
   },
+  async viteFinal(config, { configType }) {
+
+    config.resolve.alias['~storybook'] = path.resolve(__dirname)
+    config.resolve.alias['@'] = path.resolve(__dirname, '..', 'src')
+
+    config.css = {
+      preprocessorOptions: {
+        scss: { additionalData: `@import "src/style/main.scss";` },
+      },
+    };
+
+    config.plugins = [
+      ...config.plugins,
+      vuetify()
+    ];
+
+    return config;
+  }
 }
