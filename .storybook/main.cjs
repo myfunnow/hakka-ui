@@ -23,7 +23,7 @@ module.exports = {
 
     config.css = {
       preprocessorOptions: {
-        scss: { additionalData: `@import "@/assets/style/main.scss";` },
+        scss: { additionalData: `@import "@/assets/styles/main.scss";` },
       },
     };
 

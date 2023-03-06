@@ -3,20 +3,41 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/zoek-design.cjs.js",
+  "module": "dist/zoek-design.esm.js",
+  "unpkg": "dist/zoek-design.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/zoek-design.esm.js",
+      "require": "./dist/zoek-design.cjs.js",
+      "default": "./dist/zoek-design.umd.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build -c ./bundle-config/ui-library.config.js",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
+  "peerDependencies": {
+    "@mdi/font": "^7.1.96",
+    "vue": "^3.2.0",
+    "vuetify": "^3.1.5",
+    "windicss": "^3.5.6"
+  },
   "dependencies": {
     "@mdi/font": "^7.1.96",
-    "vite-plugin-vuetify": "^1.0.2",
-    "vue": "^3.2.45",
-    "vuetify": "^3.1.5"
+    "vue": "^3.2.0",
+    "vuetify": "^3.1.5",
+    "windicss": "^3.5.6"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
@@ -30,12 +51,13 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitest/ui": "^0.28.5",
     "babel-loader": "^8.3.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "sass": "^1.58.3",
     "storybook-dark-mode": "^2.1.0",
     "vite": "^4.1.0",
     "vite-plugin-windicss": "^1.8.10",
+    "vite-plugin-vuetify": "^1.0.2",
     "vitest": "^0.28.5",
-    "vue-loader": "^16.8.3",
-    "windicss": "^3.5.6"
+    "vue-loader": "^16.8.3"
   }
 }

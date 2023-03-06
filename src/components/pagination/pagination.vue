@@ -1,13 +1,13 @@
 <template>
   <div class="pagination-box">
     <slot name="text">
-      <p class="pagination-box__text mb-0">
+      <p class="text mb-0">
         {{ `第 ${startIndex} - ${endIndex}，共 ${endIndex} 筆結果` }}
       </p>
     </slot>
     <v-pagination
       v-model="pageIndex"
-      class="pagination-box__bar"
+      class="actions"
       :length="pageCount"
       :total-visible="visible"
       :size="size"
@@ -68,11 +68,11 @@ export default {
   display: flex;
   flex-flow: column;
 
-  &__text {
+  > .text {
     text-align: center;
     font-size: 13px;
   }
-  &__bar {
+  > .actions {
     margin-top: 20px;
   }
 }

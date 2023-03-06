@@ -5,7 +5,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
-export const vuetify = createVuetify({
+const DEFAULT_CONFIG = {
   components,
   directives,
   icons: {
@@ -20,15 +20,11 @@ export const vuetify = createVuetify({
       lg: 1200,
     },
   },
-  theme: {
-    // themes: {
-    //   light: {
-    //     ...CUSTOM_COLORS,
-    //     error: CUSTOM_COLORS.red50,
-    //   },
-    // },
-  },
-})
+}
+
+export const vuetify = createVuetify(
+  DEFAULT_CONFIG
+)
 
 export default {
   vuetify
