@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  name: 'Pagination',
+  name: 'zd-pagination',
   props: {
     count: { type: Number, default: 0 },
     visible: { type: Number, default: 5 },
@@ -74,6 +74,44 @@ export default {
   }
   > .actions {
     margin-top: 20px;
+  }
+
+  :deep(.v-pagination) {
+    .v-pagination__navigation {
+      background: unset;
+      box-shadow: unset;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+    .v-pagination__item {
+      background: unset;
+      box-shadow: unset;
+      position: relative;
+
+      &:before {
+        border-radius: inherit;
+        bottom: 0;
+        color: inherit;
+        content: '';
+        left: 0;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+        background-color: currentColor;
+      }
+      &:hover::before {
+        opacity: 0.04;
+      }
+
+      &:focus {
+        outline: 0;
+      }
+    }
   }
 }
 </style>

@@ -1,11 +1,9 @@
 <script setup>
-import Pagination from './components/pagination/pagination.vue';
-
 </script>
 
 <template>
   <div>
-    <Pagination/>
+    <zd-pagination/>
   </div>
 </template>
 
