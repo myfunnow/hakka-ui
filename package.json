@@ -1,7 +1,7 @@
 {
   "name": "zoek-design",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "dist/zoek-design.cjs.js",
   "module": "dist/zoek-design.esm.js",
@@ -16,31 +16,41 @@
   },
   "files": [
     "dist",
-    "src"
+    "scripts"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build -c ./bundle-config/ui-library.config.js",
+    "switch:2": "npx vue-demi-switch 2 vue2",
+    "switch:3": "npx vue-demi-switch 3 vue3",
+    "build:3": "npm run switch:3 && vite build -c ./bundle-config/ui-library.config.js",
+    "build:2": "npm run switch:2 && vite build -c ./bundle-config/ui-library.config.js",
+    "build": "npm run build:3 && npm run build:2",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "pub": "npm publish --access=public"
   },
   "peerDependencies": {
     "@mdi/font": "^7.1.96",
-    "vue": "^3.2.0",
+    "@vue/composition-api": "^1.7.0",
+    "vue": "<2.7.0 || >=3.0.0",
     "vuetify": "^3.1.5",
     "windicss": "^3.5.6"
   },
+  "peerDependenciesMeta": {
+    "@vue/composition-api": {
+      "optional": true
+    }
+  },
   "dependencies": {
-    "@mdi/font": "^7.1.96",
-    "vue": "^3.2.0",
-    "vuetify": "^3.1.5",
-    "windicss": "^3.5.6"
+    "@vue/composition-api": "^1.7.0",
+    "vue-demi": "^0.13.11"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
+    "@mdi/font": "^7.1.96",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
@@ -49,15 +59,22 @@
     "@storybook/testing-library": "0.0.13",
     "@storybook/vue3": "^6.5.16",
     "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue2": "^2.2.0",
     "@vitest/ui": "^0.28.5",
     "babel-loader": "^8.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "sass": "^1.58.3",
     "storybook-dark-mode": "^2.1.0",
     "vite": "^4.1.0",
-    "vite-plugin-windicss": "^1.8.10",
     "vite-plugin-vuetify": "^1.0.2",
+    "vite-plugin-windicss": "^1.8.10",
     "vitest": "^0.28.5",
-    "vue-loader": "^16.8.3"
+    "vue": "^3.2.47",
+    "vue-loader": "^16.8.3",
+    "vue-template-compiler": "^2.6.14",
+    "vue2": "npm:vue@2.6.14",
+    "vue3": "npm:vue@^3.2.47",
+    "vuetify": "^3.1.5",
+    "windicss": "^3.5.6"
   }
 }
