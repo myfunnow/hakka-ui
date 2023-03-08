@@ -53,6 +53,9 @@ npm publish
 3. Enter the name of the component, then press `Enter`
 4. Fill in the component details
 
+https://user-images.githubusercontent.com/30855194/223634347-f1e7c680-9e85-422c-97a8-bd449351d774.mov
+
+
 ### Developer Server
 
 ```bash
