@@ -1,7 +1,5 @@
 import * as components from './components'
 
-import './assets/styles/main.scss'
-
 function install(Vue) {
   if (install.installed) return
   install.installed = true
