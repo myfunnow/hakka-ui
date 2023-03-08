@@ -105,7 +105,7 @@ Vue.use(zd)
 
 then add the plugin to your `nuxt.config.js`:
 
-```
+```js
 // nuxt.config.js
 export default {
   plugins: [
