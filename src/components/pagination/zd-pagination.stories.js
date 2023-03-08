@@ -1,12 +1,16 @@
-import {{pascalCase name}} from './{{kebabCase name}}.vue';
+import Pagination from './zd-pagination.vue';
 
 export default {
-  title: '{{pascalCase name}}',
-  component: {{pascalCase name}},
+  /* 👇 The title prop is optional.
+  * See https://storybook.js.org/docs/vue/configure/overview#configure-story-loading
+  * to learn how to generate automatic titles
+  */
+  title: 'Pagination',
+  component: Pagination,
 };
 
 export const Template = (args, { argTypes }) => ({
-  components: { {{pascalCase name}} },
+  components: { Pagination },
   computed: {
     props() {
       const finalProps = { ...this.$props }
@@ -24,5 +28,5 @@ export const Template = (args, { argTypes }) => ({
     },
   },
   props: Object.keys(argTypes),
-  template: '<{{pascalCase name}} v-bind="$props"/>',
+  template: '<Pagination v-bind="$props"/>',
 });

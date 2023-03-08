@@ -1,6 +1,8 @@
 import { app } from "@storybook/vue3";
 import { vuetify } from '../src/plugins/vuetify'
 
+import '../src/assets/styles/main.scss'
+
 app.use(vuetify)
 
 export const parameters = {

@@ -1,5 +1,5 @@
 <template>
-  <div class="pagination-box">
+  <div class="zd-pagination">
     <slot name="text">
       <p class="text mb-0">
         {{ `第 ${startIndex} - ${endIndex}，共 ${endIndex} 筆結果` }}
@@ -63,7 +63,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.pagination-box {
+.zd-pagination {
   margin: auto;
   display: flex;
   flex-flow: column;

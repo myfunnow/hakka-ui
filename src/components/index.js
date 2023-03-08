@@ -1,5 +1,5 @@
-import Pagination from './pagination/pagination.vue'
+import ZdPagination from './pagination/zd-pagination.vue'
 
 export {
-  Pagination
+  ZdPagination
 }
