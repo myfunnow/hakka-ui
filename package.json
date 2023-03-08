@@ -3,24 +3,20 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/zoek-design.cjs.js",
-  "module": "dist/zoek-design.esm.js",
-  "unpkg": "dist/zoek-design.umd.js",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
   "exports": {
     ".": {
-      "import": "./dist/zoek-design.esm.js",
-      "require": "./dist/zoek-design.cjs.js",
-      "default": "./dist/zoek-design.umd.js"
+      "import": "./dist/index.mjs"
     },
     "./package.json": "./package.json"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build -c ./bundle-config/ui-library.config.js",
+    "build": "unbuild",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
@@ -54,9 +50,10 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "sass": "^1.58.3",
     "storybook-dark-mode": "^2.1.0",
+    "unbuild": "^1.1.2",
     "vite": "^4.1.0",
-    "vite-plugin-windicss": "^1.8.10",
     "vite-plugin-vuetify": "^1.0.2",
+    "vite-plugin-windicss": "^1.8.10",
     "vitest": "^0.28.5",
     "vue-loader": "^16.8.3"
   }
