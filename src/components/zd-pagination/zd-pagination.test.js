@@ -12,7 +12,7 @@ beforeAll(() => {
   }
 })
 
-test('pagination', async () => {
+test('Pagination', async () => {
   expect(ZdPagination).toBeTruthy()
 
   const wrapper = mount(ZdPagination, {
