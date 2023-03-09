@@ -4,11 +4,14 @@
 [Live Doc 👀]( https://zoeknow.github.io/zoek-design/)
 
 ## Getting started
-### Environment
+### Tech Stack
 
 - Node.js 18.14
 - npm 9
 - Vue 3
+- Vitest
+- storybook
+- unbuild
 
 ### Install dependencies
 
@@ -32,6 +35,12 @@ npm run build-storybook
 
 ```bash
 npm run build
+```
+
+### Run tests
+
+```bash
+npm run test
 ```
 
 ### Publish the design system
