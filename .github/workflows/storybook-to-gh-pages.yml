@@ -16,6 +16,7 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@main
       - name: Install and Build 🔧
         run: |
+          export BASE_PATH=/zoek-design/
           export NODE_OPTIONS=--openssl-legacy-provider
           npm install
           npm run build-storybook

@@ -17,7 +17,7 @@ module.exports = {
     "builder": "@storybook/builder-vite"
   },
   async viteFinal(config, { configType }) {
-
+    config.base = process.env.BASE_PATH || config.base;
     config.resolve.alias['~storybook'] = path.resolve(__dirname)
     config.resolve.alias['@'] = path.resolve(__dirname, '..', 'src')
 
