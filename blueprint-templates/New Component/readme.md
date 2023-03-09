@@ -1,1 +1,0 @@
-# zd-{{kebabCase name}}
