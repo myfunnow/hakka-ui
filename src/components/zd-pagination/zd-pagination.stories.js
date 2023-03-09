@@ -10,5 +10,5 @@ export const Template = (args, { argTypes }) => ({
     return { args };
   },
   props: Object.keys(argTypes),
-  template: '<zd-pagination v-bind="args" :count="12"/>',
+  template: '<zd-pagination v-bind="args"/>',
 })

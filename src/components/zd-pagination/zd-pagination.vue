@@ -2,7 +2,7 @@
   <div class="zd-pagination">
     <slot name="text">
       <p class="text mb-0">
-        {{ `第 ${startIndex} - ${endIndex}，共 ${endIndex} 筆結果` }}
+        {{ `第 ${startIndex} - ${endIndex}，共 ${totalCount} 筆結果` }}
       </p>
     </slot>
     <v-pagination
@@ -11,7 +11,6 @@
       :length="pageCount"
       :total-visible="visible"
       :size="size"
-      @input="updatePage"
       v-bind="$attrs"
     />
   </div>
@@ -22,9 +21,9 @@ export default {
   props: {
     count: { type: Number, default: 0 },
     visible: { type: Number, default: 5 },
-    size: { type: Number, default: 20 },
     totalCount: { type: Number, default: 200 },
     page: { type: Number, default: 1 },
+    pageSize: { type: Number, default: 20 },
     size: { type: Number, default: 24 },
   },
   data() {
@@ -34,30 +33,24 @@ export default {
   },
   computed: {
     pageCount() {
-      return this.count ? this.count : Math.ceil(this.totalCount / this.size)
+      return this.count ? this.count : Math.ceil(this.totalCount / this.pageSize)
     },
     startIndex() {
-      return this.getStartIndex(this.pageIndex)
+      return (this.pageIndex - 1) * this.pageSize + 1
     },
     endIndex() {
-      return this.getEndIndex(this.pageIndex)
+      const endIndex = this.pageIndex * this.pageSize
+      return endIndex > this.totalCount ? this.totalCount : endIndex
+    },
+  },
+  methods: {
+    updatePage(page) {
+      this.$emit('update', page)
     },
   },
   watch: {
     page(newPage) {
       this.pageIndex = newPage
-    },
-  },
-  methods: {
-    getStartIndex(page) {
-      return (page - 1) * this.size + 1
-    },
-    getEndIndex(page) {
-      const endIndex = page * this.size
-      return endIndex > this.totalCount ? this.totalCount : endIndex
-    },
-    updatePage(page) {
-      this.$emit('update', page)
     },
   },
 }
