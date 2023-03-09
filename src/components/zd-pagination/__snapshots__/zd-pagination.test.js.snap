@@ -1,0 +1,53 @@
+// Vitest Snapshot v1
+
+exports[`mount component 1`] = `
+"<div data-v-49ad08a6=\\"\\" class=\\"zd-pagination\\">
+  <p data-v-49ad08a6=\\"\\" class=\\"text mb-0\\">第 28 - 36，共 50 筆結果</p>
+  <nav data-v-49ad08a6=\\"\\" class=\\"v-pagination v-theme--light actions\\" role=\\"navigation\\" aria-label=\\"Pagination Navigation\\" data-test=\\"v-pagination-root\\">
+    <ul class=\\"v-pagination__list\\">
+      <!---->
+      <li class=\\"v-pagination__prev\\" data-test=\\"v-pagination-prev\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" arialabel=\\"Previous page\\" ariadisabled=\\"false\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\"><i class=\\"mdi-chevron-left mdi v-icon notranslate v-theme--light v-icon--size-default\\" aria-hidden=\\"true\\"></i></span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__item\\" data-test=\\"v-pagination-item\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" ellipsis=\\"false\\" ariacurrent=\\"false\\" arialabel=\\"Go to page 1\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\">1</span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__item\\" data-test=\\"v-pagination-item\\"><button type=\\"button\\" class=\\"v-btn v-btn--disabled v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" disabled=\\"\\" ellipsis=\\"true\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\">...</span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__item\\" data-test=\\"v-pagination-item\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" ellipsis=\\"false\\" ariacurrent=\\"false\\" arialabel=\\"Go to page 3\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\">3</span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__item v-pagination__item--is-active\\" data-test=\\"v-pagination-item\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" ellipsis=\\"false\\" ariacurrent=\\"true\\" arialabel=\\"Page 4, Current page\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\">4</span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__item\\" data-test=\\"v-pagination-item\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" ellipsis=\\"false\\" ariacurrent=\\"false\\" arialabel=\\"Go to page 5\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\">5</span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__item\\" data-test=\\"v-pagination-item\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" ellipsis=\\"false\\" ariacurrent=\\"false\\" arialabel=\\"Go to page 6\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\">6</span>
+          <!---->
+          <!---->
+        </button></li>
+      <li class=\\"v-pagination__next\\" data-test=\\"v-pagination-next\\"><button type=\\"button\\" class=\\"v-btn v-btn--icon v-theme--light v-btn--density-default v-btn--variant-text\\" style=\\"height: 24px; width: 24px;\\" arialabel=\\"Next page\\" ariadisabled=\\"false\\"><span class=\\"v-btn__overlay\\"></span><span class=\\"v-btn__underlay\\"></span>
+          <!----><span class=\\"v-btn__content\\" data-no-activator=\\"\\"><i class=\\"mdi-chevron-right mdi v-icon notranslate v-theme--light v-icon--size-default\\" aria-hidden=\\"true\\"></i></span>
+          <!---->
+          <!---->
+        </button></li>
+      <!---->
+    </ul>
+  </nav>
+</div>"
+`;
