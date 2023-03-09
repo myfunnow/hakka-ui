@@ -1,6 +1,8 @@
 # Zoek Design
 > A design system for Zoek
 
+[Live Doc 👀]( https://zoeknow.github.io/zoek-design/)
+
 ## Getting started
 ### Environment
 
