@@ -14,11 +14,16 @@ jobs:
       # - name: Get Package Version 🏷
       #   id: package-version
       #   uses: martinbeentjes/npm-get-version-action@main
-      - name: Install and Build 🔧
+      - name: Package Install 📦
+        run: |
+          npm install
+      - name: Run Tests 🧘
+        run: |
+          npm run test
+      - name: Build 🔧
         run: |
           export BASE_PATH=/zoek-design/
           export NODE_OPTIONS=--openssl-legacy-provider
-          npm install
           npm run build-storybook
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
