@@ -22,7 +22,7 @@ jobs:
           npm run test
       - name: Build 🔧
         run: |
-          export BASE_PATH=/zoek-design/
+          export BASE_PATH=/HakkaUI/
           export NODE_OPTIONS=--openssl-legacy-provider
           npm run build-storybook
       - name: Deploy 🚀
