@@ -1,9 +1,5 @@
-import { app } from "@storybook/vue3";
-import { vuetify } from '../src/plugins/vuetify'
-
 import '../src/assets/styles/main.scss'
-
-app.use(vuetify)
+import 'virtual:uno.css'
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -18,6 +14,6 @@ export const parameters = {
 export const decorators = [
   (story) => ({
     components: { story },
-    template: '<v-app><story /></v-app>',
+    template: '<story />',
   }),
 ];

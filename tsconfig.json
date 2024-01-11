@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["vite/client", "naive-ui/volar"],
     "outDir": "./dist",
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -7,6 +8,7 @@
     "moduleResolution": "node",
     "strict": true,
     "jsx": "preserve",
+    "importHelpers": true,
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
@@ -22,6 +24,6 @@
     }
   },
   // https://github.com/johnsoncodehk/volar/issues/1337#issuecomment-1186233376
-  "include": ["src/**/*.js", "src/**/*.vue"],
+  "include": ["src/**/*.js", "src/**/*.ts", "src/**/*.vue"],
   "exclude": ["./dist/**/*"]
 }
