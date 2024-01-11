@@ -1,5 +1,5 @@
 <template>
-  <div class="svg-icon flex items-center justify-center transition-opacity" :class="svgClass">
+  <div class="zd-icon flex items-center justify-center transition-opacity" :class="svgClass">
     <component :is="dynamicComponent" />
   </div>
 </template>

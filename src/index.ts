@@ -8,7 +8,7 @@ function install(Vue) {
 
   for (const prop in components) {
     const component = components[prop]
-    Vue.component(prop, component)
+    Vue.component(prop, component.default || component)
   }
 }
 

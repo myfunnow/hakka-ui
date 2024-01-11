@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import ZdPagination from './zd-pagination.vue'
 
 export default {
+  title: 'Pagination',
   component: ZdPagination,
 }
 
@@ -13,6 +14,6 @@ export const Template = (args, { argTypes }) => ({
 
     return { args, page, updateModel }
   },
-  props: [...Object.keys(argTypes)],
+  props: Object.keys(argTypes),
   template: '<zd-pagination v-bind="args" v-model="page"/>',
 })

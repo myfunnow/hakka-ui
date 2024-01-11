@@ -1,5 +1,5 @@
 <template>
-  <div class="nd-pagination flex flex-col justify-center">
+  <div class="zd-pagination flex flex-col justify-center">
     <slot name="text">
       <p class="text mb-0 text-center text-sm text-gray-80">
         {{ `第 ${startIndex} - ${endIndex}，共 ${totalCount} 筆結果` }}

@@ -3,7 +3,7 @@ import ZdIcon from './zd-icon.vue';
 export default {
   title: 'Icon',
   component: ZdIcon,
-};
+}
 
 export const Template = (args, { argTypes }) => ({
   components: { ZdIcon },
