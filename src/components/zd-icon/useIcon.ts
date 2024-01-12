@@ -6,6 +6,5 @@ const assets = import.meta.glob('./icons/*.svg', {
   import: 'default',
 })
 export function useIcon(path: MaybeRef<string>): any {
-  const rawPath = unref(path)
-  return computed(() => assets[`./icons/${rawPath}`])
+  return computed(() => assets[`./icons/${unref(path)}`])
 }
