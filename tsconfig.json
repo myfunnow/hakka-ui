@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["vite/client", "naive-ui/volar"],
+    "types": ["vite/client", "naive-ui/volar", "vitest/globals"],
     "outDir": "./dist",
     "target": "esnext",
     "useDefineForClassFields": true,
