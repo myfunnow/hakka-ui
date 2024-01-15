@@ -1,0 +1,1 @@
+const t={actions:{argTypesRegex:"^on[A-Z].*"},controls:{matchers:{color:/(background|color)$/i,date:/Date$/}}},e=[o=>({components:{story:o},template:"<story />"})];export{e as decorators,t as parameters};
