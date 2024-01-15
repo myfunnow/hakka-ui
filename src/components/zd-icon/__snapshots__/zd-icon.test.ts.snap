@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Icon > should to match the snapshot 1`] = `
+"<div class="zd-icon flex items-center justify-center transition-opacity">
+  <!---->
+</div>"
+`;

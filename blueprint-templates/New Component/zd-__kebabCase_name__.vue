@@ -3,12 +3,13 @@
     
   </div>
 </template>
-<script>
-export default {
-  name: 'zd-{{kebabCase name}}',
-  props: {},
-}
+
+<script setup lang="ts">
+const props = defineProps({
+
+})
 </script>
+
 <style lang="scss" scoped>
 .zd-{{kebabCase name}} {}
 </style>

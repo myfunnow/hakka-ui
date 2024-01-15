@@ -1,0 +1,63 @@
+// DatePicker
+.n-date-panel,
+.n-date-panel--daterange {
+  @apply gap-x-4 my-0 mx-auto;
+
+  grid-template-areas: 'left-calendar' 'right-calendar';
+  @screen md {
+    grid-template-areas: 'left-calendar divider right-calendar';
+  }
+
+  .n-date-panel__vertical-divider {
+    @apply hidden;
+  }
+  .n-date-panel-month {
+    @apply grid-cols-[16px_auto_16px] mb-2;
+
+    .n-date-panel-month__fast-prev,
+    .n-date-panel-month__fast-next {
+      @apply hidden;
+    }
+  }
+  .n-date-panel-calendar--start .n-date-panel-month__next,
+  .n-date-panel-calendar--end .n-date-panel-month__prev {
+    @apply md:invisible;
+  }
+  .n-date-panel-weekdays {
+    @apply border-0;
+  }
+  .n-date-panel-dates {
+    @apply gap-y-1;
+
+    .n-date-panel-date__sup {
+      @apply hidden;
+    }
+    .n-date-panel-date--current {
+      @apply text-yellow-50;
+      &.n-date-panel-date--selected {
+        @apply text-white;
+      }
+    }
+    .n-date-panel-date--excluded {
+      @apply invisible pointer-events-none;
+    }
+  }
+}
+
+.n-select {
+  .n-base-selection-label {
+    @apply text-base;
+  }
+}
+
+.n-rate .n-rate__item:not(:first-child) {
+  @apply ml-2;
+}
+
+.n-tabs .n-tabs-tab-pad {
+  @apply w-0;
+}
+
+.n-badge.n-badge--dot .n-badge-sup {
+  @apply w-3 h-3;
+}
