@@ -1,4 +1,4 @@
-import Zd{{pascalCase name}} from './zd-{{kebabCase name}}.vue';
+import Zd{{pascalCase name}} from './zd-{{kebabCase name}}.vue'
 
 export default {
   title: '{{pascalCase name}}',
@@ -8,7 +8,7 @@ export default {
 export const Template = (args, { argTypes }) => ({
   components: { Zd{{pascalCase name}} },
   setup() {
-    return { args };
+    return { args }
   },
   props: Object.keys(argTypes),
   template: '<zd-{{kebabCase name}} v-bind="args"/>',

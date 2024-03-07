@@ -16,4 +16,4 @@ export const decorators = [
     components: { story },
     template: '<story />',
   }),
-];
+]
