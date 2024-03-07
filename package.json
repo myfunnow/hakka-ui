@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "main": "dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
   "typesVersions": {
     "*": {
       "*": [
@@ -15,18 +16,13 @@
       ]
     }
   },
-  "module": "./dist/index.mjs",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    },
-    "./components": {
-      "import": "./dist/components/index.mjs",
-      "types": "./dist/components/index.d.ts"
+      "require": "./dist/index.umd.cjs"
     },
     "./package.json": "./package.json",
-    "./main.css": "./dist/assets/styles/main.css"
+    "./style.css": "./dist/style.css"
   },
   "files": [
     "dist",
@@ -35,7 +31,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:src && npm run build:types",
-    "build:src": "npx unbuild",
+    "build:src": "vite build",
     "build:types": "vue-tsc --project tsconfig.build-types.json",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
@@ -75,7 +71,6 @@
     "storybook": "^7.6.16",
     "storybook-dark-mode": "^3.0.3",
     "typescript": "^5.3.3",
-    "unbuild": "^2.0.0",
     "unocss": "^0.58.5",
     "vite": "^4.5.2",
     "vite-svg-loader": "^4.0.0",
