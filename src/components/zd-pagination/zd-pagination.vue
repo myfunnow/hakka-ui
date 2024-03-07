@@ -27,7 +27,7 @@
 import { computed } from 'vue'
 
 import { NPagination } from 'naive-ui'
-import ZdIcon from '@/components/zd-icon/zd-icon.vue'
+import ZdIcon from '../zd-icon/zd-icon.vue'
 
 const pageIndex = defineModel<number>('page', { default: 1 })
 

@@ -11,5 +11,5 @@ export const Template = (args, { argTypes }) => ({
     return { args };
   },
   props: Object.keys(argTypes),
-  template: '<zd-icon v-bind="args"/>',
+  template: '<zd-icon v-bind="args" style="height:40px;width:40px"/>',
 });
