@@ -19,7 +19,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "outDir": "./dist",
+    "outDir": "./dist/types",
     "paths": { "@/*": ["./src/*"] },
     "resolveJsonModule": true,
     "rootDir": "./src",
