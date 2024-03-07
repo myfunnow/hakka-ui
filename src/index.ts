@@ -1,2 +1,3 @@
 export * as components from './components'
-export * as plugin from './plugin'
+import { plugin } from './plugin'
+export { plugin }

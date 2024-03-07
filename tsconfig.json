@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["src/**/*.js", "src/**/*.ts", "src/**/*.vue", "dev/**/*.ts", "dev/**/*.vue"],
+  "include": ["./src/**/*.js", "./src/**/*.ts", "./src/**/*.vue", "./dev/**/*.ts", "./dev/**/*.vue"],
   "exclude": ["./dist/**/*", "/blueprint-templates/**/*"],
   "compilerOptions": {
     "allowJs": true,
