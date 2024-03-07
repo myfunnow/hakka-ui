@@ -2,9 +2,9 @@ import { createApp } from 'vue'
 
 import App from './app.vue'
 
-import zd from '.'
+import zd from '../src'
 
-import './assets/styles/main.scss'
+import '../src/assets/styles/main.scss'
 import 'virtual:uno.css'
 
 createApp(App).use(zd).mount('#app')
