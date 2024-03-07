@@ -4,24 +4,45 @@
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.mjs",
-  "module": "dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*",
+        "dist/*",
+        "dist/*.d.ts",
+        "dist/*/index.d.ts"
+      ]
+    }
+  },
+  "module": "./dist/index.mjs",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
     },
-    "./package.json": "./package.json"
+    "./components": {
+      "import": "./dist/components/index.mjs",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./package.json": "./package.json",
+    "./main.css": "./dist/assets/styles/main.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "readme.md"
   ],
   "scripts": {
     "dev": "vite",
-    "build": "unbuild",
+    "build": "npm run build:src && npm run build:types",
+    "build:src": "npx unbuild",
+    "build:types": "vue-tsc --project tsconfig.build-types.json",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "postinstall": "npm run build"
   },
   "peerDependencies": {
     "naive-ui": "^2.37.3",
