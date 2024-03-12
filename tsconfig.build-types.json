@@ -1,12 +1,17 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["./src/**/*.js", "./src/**/*.ts", "./src/**/*.vue", "./dev/**/*.ts", "./dev/**/*.vue"],
-  "exclude": ["./dist/**/*", "/blueprint-templates/**/*"],
+  "include": ["src/**/*.js", "src/**/*.ts", "src/**/*.vue"],
+  "exclude": [
+    "node_modules",
+    "__snapshots__",
+    "**/*.stories.ts",
+    "**/*.test.ts"
+  ],
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "composite": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "importHelpers": true,
     "jsx": "preserve",
@@ -14,17 +19,14 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noImplicitAny": false,
-    "outDir": "./dist",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    "outDir": "./dist/types",
+    "paths": { "@/*": ["./src/*"] },
     "resolveJsonModule": true,
+    "rootDir": "./src",
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "sourceMap": true,
     "strict": true,
     "target": "esnext",
-    "types": ["vite/client", "naive-ui/volar", "vitest/globals", "node"],
-    "useDefineForClassFields": true,
+    "types": ["vite/client", "naive-ui/volar", "vitest/globals", "node"]
   }
 }

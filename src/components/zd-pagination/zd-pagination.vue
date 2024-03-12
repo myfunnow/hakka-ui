@@ -53,7 +53,7 @@ const endIndex = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.nd-pagination {
+.zd-pagination {
   :deep(.n-pagination) {
     .n-pagination-item {
       .svg-icon {
