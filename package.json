@@ -8,7 +8,7 @@
   "types": "./dist/types/index.d.ts",
   "engines": {
     "node": ">=22.0.0",
-    "npm": ">=10.0.0"
+    "pnpm": ">=10.0.0"
   },
   "typesVersions": {
     "*": {
