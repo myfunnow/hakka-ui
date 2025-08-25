@@ -1,7 +1,7 @@
 import {
   presetIcons,
   presetAttributify,
-  presetWind,
+  presetWind3,
   presetWebFonts,
   defineConfig,
   transformerVariantGroup,
@@ -15,7 +15,7 @@ import { mapObjectEntries } from './src/utils/common'
 export default defineConfig({
   presets: [
     presetIcons(),
-    presetWind(),
+    presetWind3(),
     presetAttributify(),
     presetWebFonts({
       provider: 'google',
