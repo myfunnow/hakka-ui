@@ -42,7 +42,9 @@
     "build-storybook": "storybook build",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "postinstall": "run-p build"
+    "postinstall": "run-p build",
+    "lint": "eslint src/ --fix",
+    "format": "prettier --write src/"
   },
   "peerDependencies": {
     "naive-ui": "^2.37.3",
@@ -55,6 +57,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@babel/types": "^7.23.9",
+    "@myfunnow/web-core": "^1.2.0",
     "@storybook/addon-actions": "8.6.14",
     "@storybook/addon-essentials": "8.6.14",
     "@storybook/addon-interactions": "8.6.14",
@@ -69,6 +72,7 @@
     "@vue/test-utils": "^2.4.4",
     "@vue/tsconfig": "^0.5.1",
     "babel-loader": "^9.1.3",
+    "eslint": "^9.34.0",
     "jsdom": "^24.0.0",
     "npm-run-all2": "^8.0.4",
     "react": "^18.2.0",
