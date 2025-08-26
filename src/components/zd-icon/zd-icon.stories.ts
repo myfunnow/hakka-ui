@@ -1,16 +1,16 @@
-import ZdIcon from "./zd-icon.vue";
+import ZdIcon from './zd-icon.vue'
 
 export default {
-  title: "Icon",
+  title: 'Icon',
   component: ZdIcon,
-};
+}
 
 export const Template = {
-  render: (args) => ({
+  render: args => ({
     components: { ZdIcon },
     setup() {
-      return { args };
+      return { args }
     },
     template: '<zd-icon v-bind="args" style="height:40px;width:40px"/>',
   }),
-};
+}
