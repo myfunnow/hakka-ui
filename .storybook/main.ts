@@ -3,7 +3,7 @@ import type { StorybookConfig } from '@storybook/vue3-vite'
 
 export default <StorybookConfig>{
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
-
+  builder: "@storybook/builder-vite",
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',

@@ -6,14 +6,19 @@ export default {
   component: ZdPagination,
 }
 
-export const Template = (args, { argTypes }) => ({
-  components: { ZdPagination },
-  setup() {
-    let page = ref(1)
-    const updateModel = (event) => page.value = event
+export const Template = {
+  render: args => ({
+    components: { ZdPagination },
+    setup() {
+      const page = ref(1)
+      const updateModel = (val: number) => (page.value = val)
 
-    return { args, page, updateModel }
-  },
-  props: Object.keys(argTypes),
-  template: '<zd-pagination v-bind="args" v-model="page"/>',
-})
+      return {
+        args,
+        page,
+        updateModel,
+      }
+    },
+    template: '<zd-pagination v-bind="args" v-model="page"/>',
+  }),
+}

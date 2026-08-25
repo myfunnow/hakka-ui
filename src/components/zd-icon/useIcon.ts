@@ -1,4 +1,4 @@
-import { type MaybeRef, computed, unref } from "vue"
+import { type MaybeRef, computed, unref } from 'vue'
 
 // https://github.com/nuxt/nuxt/issues/14766
 const assets = import.meta.glob('@/assets/images/icons/*.svg', {
