@@ -6,10 +6,11 @@ Shared UI packages for FunNow Group (FunNow, Eatigo, Niceday).
 
 ## Packages
 
-| Package                                     | Description                                     |
-| ------------------------------------------- | ----------------------------------------------- |
-| [`@myfunnow/hakka-tokens`](packages/tokens) | Design tokens from Figma, one subpath per brand |
-| [`@myfunnow/hakka-icons`](packages/icons)   | Icons as Vue components (`HkIcon`)              |
+| Package                                     | Description                                          |
+| ------------------------------------------- | ---------------------------------------------------- |
+| [`@myfunnow/hakka-tokens`](packages/tokens) | Design tokens from Figma, one subpath per brand      |
+| [`@myfunnow/hakka-icons`](packages/icons)   | Icons as Vue components (`HkIcon`)                   |
+| [`@myfunnow/hakka-core`](packages/core)     | Vue components without a UI library (`HkPagination`) |
 
 No package depends on naive-ui, Vuetify or UnoCSS, so every product can use them.
 
@@ -36,6 +37,16 @@ Requirements: Node.js >= 22.12, pnpm >= 10.
 | `pnpm typecheck` | Type check every package             |
 | `pnpm lint`      | ESLint and oxfmt check               |
 | `pnpm lint:fix`  | ESLint fix and oxfmt write           |
+
+### Create a component
+
+Use the [Blueprint](https://marketplace.visualstudio.com/items?itemName=teamchilla.blueprint) extension:
+
+1. Right click `packages/core/src/components` and select `New File from Template`
+2. Select `New Component` and enter the name (for example `Button` creates `HkButton`)
+3. Add the test in `packages/core/tests/` and export the component from `packages/core/src/index.ts`
+
+Tests import source through `@/` (for example `@/components/HkButton/HkButton.vue`). `@/` is only allowed in `tests/`.
 
 ## Release
 

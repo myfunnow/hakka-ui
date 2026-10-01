@@ -17,13 +17,14 @@
       "types": "./dist/funnow.d.ts",
       "default": "./dist/funnow.js"
     },
+    "./funnow.css": "./dist/funnow.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "build": "rimraf dist && tsdown",
+    "build": "rimraf dist && tsdown && node scripts/buildCss.mjs",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {

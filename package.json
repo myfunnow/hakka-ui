@@ -15,8 +15,8 @@
     "format:check": "pnpm format:base --check",
     "format:fix": "pnpm format:base --write",
     "format:base": "oxfmt .",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "storybook": "pnpm --filter @myfunnow/hakka-tokens build && storybook dev -p 6006",
+    "build-storybook": "pnpm --filter @myfunnow/hakka-tokens build && storybook build"
   },
   "devDependencies": {
     "@myfunnow/web-core-config-format": "^3.0.1",
