@@ -1,4 +1,5 @@
 [code review guide](https://github.com/zoeknow/funnow.web.nuxt/wiki/Code-Review-Guide)
+
 ## Objective
 
 - [ZOEKIT-{TicketNo}](https://zoeknow.atlassian.net/browse/ZOEKIT-{TicketNo})
@@ -12,11 +13,13 @@ For assisting reviewers to better understand the purpose of PR, please describe 
 You can provide example, reproduce step, flow chart, test data for reference, or scope of influence.
 
 ## Root Cause
+
 > Delete this heading if this is not a bug.
 
 Please specify the cause of the problem.
 
 ## Solution
+
 > Delete this heading if this is not a bug.
 
 Please describe the solution of the problem.
@@ -52,7 +55,8 @@ Provide the steps/flows or scenarios, such as:
 ## Checklist
 
 Please make sure to complete the following checklist before merge or remove [WIP]
+
 - [ ] Unit tests (explain in Description if any reasons why it is difficult to write tests, such as adjusting payment API)
-- [ ] Manual test on local or dev 
+- [ ] Manual test on local or dev
 - [ ] Self review
 - [ ] Other things need to check (e.g. i18n / confirm with BE / etc.)

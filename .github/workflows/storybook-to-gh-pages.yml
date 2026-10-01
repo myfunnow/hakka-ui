@@ -1,5 +1,5 @@
 name: Storybook
-on: 
+on:
   push:
     branches:
       - main
@@ -8,23 +8,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
       # - name: Get Package Version 🏷
       #   id: package-version
       #   uses: martinbeentjes/npm-get-version-action@main
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: 10
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'pnpm'
       - name: Package Install 📦
         run: |
-          npm install
+          pnpm install --frozen-lockfile
       - name: Run Tests 🧘
         run: |
-          npm run test
+          pnpm vitest run
       - name: Build 🔧
         run: |
           export BASE_PATH=/hakka-ui/
-          export NODE_OPTIONS=--openssl-legacy-provider
-          npm run build-storybook
+          pnpm build-storybook
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
