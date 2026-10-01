@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { h } from 'vue'
 
-import HkIcon from './HkIcon.vue'
+import HkIcon from '@/HkIcon.vue'
 
 describe('HkIcon', () => {
   it('should render the svg for the given name', async () => {

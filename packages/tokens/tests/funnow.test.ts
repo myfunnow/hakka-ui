@@ -1,4 +1,4 @@
-import { colors } from './funnow'
+import { colors } from '@/funnow'
 
 const HEX_COLOR = /^#[0-9a-f]{6}$/
 

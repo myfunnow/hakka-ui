@@ -1,14 +1,8 @@
-import { defineConfig, mergeConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config'
 
-import viteConfig from './vite.config.ts'
-
-export default mergeConfig(
-  viteConfig,
-  defineConfig({
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      include: ['packages/*/src/**/*.test.ts'],
-    },
-  })
-)
+export default defineConfig({
+  test: {
+    // Each package has its own project so `@` can point to that package's src/
+    projects: ['packages/*/vitest.config.ts'],
+  },
+})
