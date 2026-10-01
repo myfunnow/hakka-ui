@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
 permissions:
   contents: write # push the built Storybook to the gh-pages branch
   packages: read # install @myfunnow/* from GitHub Packages
@@ -18,31 +17,18 @@ jobs:
       # - name: Get Package Version 🏷
       #   id: package-version
       #   uses: martinbeentjes/npm-get-version-action@main
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
+      - name: Install and cache dependencies
+        uses: myfunnow/actions/install-node-dependencies@v3
         with:
-          version: 10
-      - name: Set up Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-      - name: Configure GitHub Packages credentials
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
-      - name: Package Install 📦
-        run: |
-          pnpm install --frozen-lockfile
+          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Tests 🧘
         run: |
-          pnpm vitest run
+          pnpm test
       - name: Build 🔧
         run: |
           export BASE_PATH=/hakka-ui/
           pnpm build-storybook
       - name: Deploy 🚀
-        if: github.event_name == 'push'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: storybook-static

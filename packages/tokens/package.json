@@ -1,0 +1,35 @@
+{
+  "name": "@myfunnow/hakka-tokens",
+  "version": "0.1.0",
+  "description": "FunNow Group design tokens generated from Figma",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myfunnow/hakka-ui.git",
+    "directory": "packages/tokens"
+  },
+  "files": [
+    "/dist",
+    "README.md"
+  ],
+  "type": "module",
+  "exports": {
+    "./funnow": {
+      "types": "./dist/funnow.d.ts",
+      "default": "./dist/funnow.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsdown",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "rimraf": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

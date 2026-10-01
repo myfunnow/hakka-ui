@@ -1,4 +1,5 @@
 import { defineConfig, mergeConfig } from 'vitest/config'
+
 import viteConfig from './vite.config.ts'
 
 export default mergeConfig(
@@ -7,7 +8,7 @@ export default mergeConfig(
     test: {
       globals: true,
       environment: 'jsdom',
-      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+      include: ['packages/*/src/**/*.test.ts'],
     },
   })
 )
