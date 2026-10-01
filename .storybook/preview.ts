@@ -1,5 +1,4 @@
 import '../src/assets/styles/main.scss'
-import 'virtual:uno.css'
 
 export const tags = ['autodocs']
 

@@ -1,41 +1,17 @@
-import {
-  presetIcons,
-  presetAttributify,
-  presetWind3,
-  presetWebFonts,
-  defineConfig,
-  transformerVariantGroup,
-  transformerDirectives,
-} from 'unocss'
+import { presetIcons, presetAttributify, presetWind3, defineConfig, transformerVariantGroup, transformerDirectives } from 'unocss'
 
 import { colors, screens, typography, zIndex } from './theme.config'
 
 import { mapObjectEntries } from './src/utils/common'
 
 export default defineConfig({
-  presets: [
-    presetIcons(),
-    presetWind3(),
-    presetAttributify(),
-    presetWebFonts({
-      provider: 'google',
-      fonts: {
-        sans: ['Roboto:400,500,700', 'Noto Sans TC'],
-      },
-    }),
-  ],
+  presets: [presetIcons(), presetWind3(), presetAttributify()],
   theme: {
     fontSize: typography,
-    breakpoints: mapObjectEntries(screens, (value) => `${value}px`),
+    breakpoints: mapObjectEntries(screens, value => `${value}px`),
     colors,
   },
-  transformers: [
-    transformerVariantGroup(),
-    transformerDirectives({ enforce: 'pre' }),
-  ],
+  transformers: [transformerVariantGroup(), transformerDirectives({ enforce: 'pre' })],
   safelist: ['i-svg-spinners:3-dots-fade'],
-  rules: Object.entries(zIndex).map(([key, value]) => [
-    `z-${key}`,
-    { 'z-index': value },
-  ]),
+  rules: Object.entries(zIndex).map(([key, value]) => [`z-${key}`, { 'z-index': value }]),
 })

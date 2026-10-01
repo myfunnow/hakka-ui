@@ -1,40 +1,25 @@
 {
   "name": "hakka-ui",
-  "private": true,
   "version": "0.0.1",
+  "private": true,
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "type": "module",
-  "main": "./dist/index.umd.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
   "types": "./dist/types/index.d.ts",
-  "engines": {
-    "node": ">=22.0.0",
-    "pnpm": ">=10.0.0"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "*",
-        "dist/*",
-        "dist/*.d.ts",
-        "dist/*/index.d.ts"
-      ]
-    }
-  },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.umd.cjs"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json",
     "./style.css": "./dist/style.css"
   },
-  "files": [
-    "dist",
-    "readme.md"
-  ],
   "scripts": {
     "dev": "vite",
-    "build": "run-p build:src && run-p build:types",
+    "build": "run-s build:src build:types",
     "build:src": "vite build",
     "build:types": "vue-tsc --project tsconfig.build-types.json",
     "preview": "vite preview",
@@ -42,20 +27,12 @@
     "build-storybook": "storybook build",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "postinstall": "run-p build",
+    "prepare": "pnpm build",
     "lint": "eslint src/ --fix",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "format:check": "pnpm format:base --check",
     "format:fix": "pnpm format:base --write",
-    "format:base": "oxfmt src"
-  },
-  "peerDependencies": {
-    "naive-ui": "^2.37.3",
-    "vue": "^3.3.0"
-  },
-  "dependencies": {
-    "naive-ui": "^2.45.3",
-    "vue": "^3.5.43"
+    "format:base": "oxfmt ."
   },
   "devDependencies": {
     "@myfunnow/web-core-config-format": "^3.0.1",
@@ -70,6 +47,7 @@
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.11.0",
     "jsdom": "^30.1.1",
+    "naive-ui": "^2.45.3",
     "npm-run-all2": "^9.0.3",
     "oxfmt": "^0.71.0",
     "sass": "^1.105.1",
@@ -82,5 +60,13 @@
     "vitest": "^5.0.3",
     "vue": "^3.5.43",
     "vue-tsc": "^3.3.11"
+  },
+  "peerDependencies": {
+    "naive-ui": "^2.37.3",
+    "vue": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.0.0"
   }
 }

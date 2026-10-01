@@ -13,21 +13,15 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(import.meta.dirname, 'src/index.ts'),
-      name: 'hakka-ui',
+      formats: ['es'],
       // the proper extensions will be added
       fileName: 'index',
+      cssFileName: 'style',
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
       external: ['vue', 'unocss', 'naive-ui'],
-      output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
-        globals: {
-          vue: 'Vue',
-        },
-      },
     },
   },
   resolve: {
@@ -42,7 +36,8 @@ export default defineConfig({
         propsDestructure: true,
       },
     }),
-    UnoCSS(),
+    // Consumers don't run UnoCSS, so inline each SFC's utilities into its own scoped style
+    UnoCSS({ mode: 'vue-scoped' }),
     svgLoader({
       svgoConfig: {
         plugins: ['prefixIds'],

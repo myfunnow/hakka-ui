@@ -7,13 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      naive-ui:
-        specifier: ^2.45.3
-        version: 2.45.3(vue@3.5.43(typescript@6.0.3))
-      vue:
-        specifier: ^3.5.43
-        version: 3.5.43(typescript@6.0.3)
     devDependencies:
       '@myfunnow/web-core-config-format':
         specifier: ^3.0.1
@@ -51,6 +44,9 @@ importers:
       jsdom:
         specifier: ^30.1.1
         version: 30.1.1
+      naive-ui:
+        specifier: ^2.45.3
+        version: 2.45.3(vue@3.5.43(typescript@6.0.3))
       npm-run-all2:
         specifier: ^9.0.3
         version: 9.0.3
@@ -81,6 +77,9 @@ importers:
       vitest:
         specifier: ^5.0.3
         version: 5.0.3(@opentelemetry/api@1.9.1)(@types/node@26.6.3)(@vitest/ui@5.0.3)(jsdom@30.1.1)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.1)(terser@5.51.2)(yaml@2.9.1))
+      vue:
+        specifier: ^3.5.43
+        version: 3.5.43(typescript@6.0.3)
       vue-tsc:
         specifier: ^3.3.11
         version: 3.3.11(typescript@6.0.3)

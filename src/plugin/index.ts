@@ -1,13 +1,13 @@
+import type { Plugin } from 'vue'
+
 import * as components from '../components'
 
-function install(app, _options) {
-  for (const prop in components) {
-    app.component(prop, components[prop])
-  }
-}
-
-const plugin = {
-  install,
+const plugin: Plugin = {
+  install(app) {
+    for (const [name, component] of Object.entries(components)) {
+      app.component(name, component)
+    }
+  },
 }
 
 export { plugin }
