@@ -1,0 +1,31 @@
+name: Install dependencies
+description: Set up pnpm and Node.js, then install with access to @myfunnow packages on GitHub Packages
+
+# This repo is public, so it cannot use the private myfunnow/actions repo; this mirrors
+# its install-node-dependencies action.
+
+inputs:
+  node-auth-token:
+    description: Token with read:packages for GitHub Packages
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@v5
+      with:
+        version: 10
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: '22'
+        cache: pnpm
+        registry-url: 'https://npm.pkg.github.com'
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}

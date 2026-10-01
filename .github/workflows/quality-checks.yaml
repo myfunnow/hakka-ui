@@ -17,23 +17,25 @@ permissions:
 
 jobs:
   quality-checks:
-    uses: myfunnow/actions/.github/workflows/web-quality-checks.yml@v3
-    secrets: inherit
-    with:
-      eslint-config-file: 'eslint.config.ts'
-      run-sonarqube: false
-
-  # The shared quality checks never build. A wrong tsdown entry can pass lint,
-  # typecheck and test, so build separately or the problem shows up at release.
-  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
-      - name: Install and cache dependencies
-        uses: myfunnow/actions/install-node-dependencies@v3
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
         with:
           node-auth-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      # A wrong tsdown entry can pass lint, typecheck and test, so build here
+      # or the problem shows up at release.
       - name: Build every workspace package
         run: pnpm build:all
