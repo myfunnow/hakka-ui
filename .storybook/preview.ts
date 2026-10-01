@@ -1,5 +1,3 @@
-import '../src/assets/styles/main.scss'
-
 export const tags = ['autodocs']
 
 export const parameters = {

@@ -1,0 +1,43 @@
+name: Release Package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish-gpr:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+        with:
+          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # pnpm publish -r skips versions that already exist on the registry and still
+      # reports success. If nobody bumped the version, nothing is published and the
+      # job is green. Comparing the tag with the version turns that into a failure.
+      - name: Check the release tag matches the package version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          VERSION=$(node -p "require('./package.json').version")
+
+          if [[ "$TAG" != "v$VERSION" && "$TAG" != "$VERSION" ]]; then
+            echo "::error::Release tag '$TAG' does not match the root package version '$VERSION'."
+            exit 1
+          fi
+
+      - name: Publish to GitHub Packages
+        run: pnpm release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
