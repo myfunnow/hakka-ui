@@ -1,0 +1,11 @@
+{
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": false,
+  // Format with oxfmt first, then apply ESLint fixes
+  "editor.codeActionsOnSave": {
+    "source.format.oxc": "always",
+    "source.fixAll.eslint": "always"
+  },
+  // This project lints with ESLint, not oxlint
+  "oxc.enable.oxlint": false
+}

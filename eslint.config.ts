@@ -1,9 +1,3 @@
-import { createEslintConfig } from '@myfunnow/web-core/configs'
+import { createEslintConfig } from '@myfunnow/web-core-config-lint'
 
-export default createEslintConfig(undefined, [
-  {
-    rules: {
-      'prettier/prettier': 'off',
-    },
-  },
-])
+export default createEslintConfig()

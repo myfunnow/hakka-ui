@@ -1,15 +1,9 @@
-import path from 'path'
+import path from 'node:path'
 import type { StorybookConfig } from '@storybook/vue3-vite'
 
-export default <StorybookConfig>{
-  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
-  builder: "@storybook/builder-vite",
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
-    'storybook-dark-mode',
-  ],
+const config: StorybookConfig = {
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: ['@storybook/addon-links', '@storybook/addon-docs', 'storybook-dark-mode'],
 
   framework: {
     name: '@storybook/vue3-vite',
@@ -20,15 +14,13 @@ export default <StorybookConfig>{
     config.base = process.env.BASE_PATH || config.base
     if (!config.resolve) config.resolve = {}
     if (!config.resolve.alias) config.resolve.alias = {}
-    config.resolve.alias['~storybook'] = path.resolve(__dirname)
-    config.resolve.alias['@'] = path.resolve(__dirname, '..', 'src')
+    config.resolve.alias['~storybook'] = import.meta.dirname
+    config.resolve.alias['@'] = path.resolve(import.meta.dirname, '..', 'src')
 
     config.plugins = [...(config.plugins || [])]
 
     return config
   },
-
-  docs: {
-    autodocs: true,
-  },
 }
+
+export default config

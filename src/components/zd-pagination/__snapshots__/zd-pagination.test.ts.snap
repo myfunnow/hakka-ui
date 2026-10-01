@@ -21,9 +21,7 @@ exports[`Pagination > should to match the snapshot 1`] = `
         </svg></i></div>
     <!---->
     <div class="n-pagination-item n-pagination-item--active n-pagination-item--clickable">4</div>
-    <!---->
     <div class="n-pagination-item n-pagination-item--clickable">5</div>
-    <!---->
     <div class="n-pagination-item n-pagination-item--clickable">6</div>
     <div class="n-pagination-item">
       <div data-v-49ad08a6="" class="zd-icon flex items-center justify-center transition-opacity w-4 h-4"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

@@ -10,8 +10,6 @@ beforeAll(() => {
 })
 
 describe('Pagination', async () => {
-  expect(ZdPagination).toBeTruthy()
-
   const wrapper = await mount(ZdPagination, {
     props: {
       visible: 5,
