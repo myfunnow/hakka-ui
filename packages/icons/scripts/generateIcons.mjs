@@ -17,7 +17,11 @@ if (names.length === 0) {
 
 const iconNamesSource = `${header}export type IconName =\n${names.map(name => `  | '${name}'`).join('\n')}\n`
 
-const iconMapSource = `${header}import { defineAsyncComponent, type Component } from 'vue'
+// The reference lets packages that type-check icons from src/ (via hakka-source) see the *.svg declaration.
+// svg.d.ts only holds an ambient module declaration, so it cannot be pulled in with an import.
+const iconMapSource = `${header}// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="./svg.d.ts" />
+import { defineAsyncComponent, type Component } from 'vue'
 
 import type { IconName } from './iconNames'
 

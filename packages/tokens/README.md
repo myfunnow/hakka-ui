@@ -21,6 +21,16 @@ import { colors } from '@myfunnow/hakka-tokens/funnow'
 colors.orange[50] // '#ff5537'
 ```
 
+### Semantic colors (interim)
+
+```ts
+import { semanticColors } from '@myfunnow/hakka-tokens/funnow'
+import '@myfunnow/hakka-tokens/funnow.css' // defines --hk-color-* on :root
+```
+
+`semanticColors` is hand-written in `src/semantic/` until the token-transformer emits
+semantic tokens. Names follow Figma `gl-color` / `fn-color` paths.
+
 Available brands: `funnow`. `eatigo` and `niceday` are added when their Figma tokens exist.
 
 ## Source
