@@ -18,7 +18,7 @@ export function createPackageVitestConfig(packageConfigUrl: string) {
       },
       test: {
         globals: true,
-        environment: 'jsdom',
+        environment: 'happy-dom',
         include: ['tests/**/*.test.ts'],
       },
     })

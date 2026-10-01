@@ -1,5 +1,5 @@
 // @vitest-environment node
-// Reads the SFC from disk; jsdom gives import.meta.url an http scheme
+// Reads the SFC from disk; DOM test environments give import.meta.url an http scheme
 import { readFileSync } from 'node:fs'
 
 const source = readFileSync(new URL('../src/components/HkPagination/HkPagination.vue', import.meta.url), 'utf8')
