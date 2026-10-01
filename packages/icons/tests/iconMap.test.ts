@@ -1,5 +1,5 @@
 // @vitest-environment node
-// Reads the svg directory from disk; jsdom gives import.meta.url an http scheme
+// Reads the svg directory from disk; DOM test environments give import.meta.url an http scheme
 import { readdirSync } from 'node:fs'
 
 import { iconMap } from '@/iconMap'
