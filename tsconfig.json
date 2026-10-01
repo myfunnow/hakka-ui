@@ -5,14 +5,13 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "composite": true,
     "esModuleInterop": true,
     "importHelpers": true,
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitAny": false,
     "outDir": "./dist",
     "paths": {

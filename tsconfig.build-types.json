@@ -17,7 +17,7 @@
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitAny": false,
     "outDir": "./dist/types",
     "paths": { "@/*": ["./src/*"] },

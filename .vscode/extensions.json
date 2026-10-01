@@ -2,6 +2,8 @@
   "recommendations": [
     "Vue.volar",
     "teamchilla.blueprint",
-    "antfu.unocss"
+    "antfu.unocss",
+    "oxc.oxc-vscode",
+    "dbaeumer.vscode-eslint"
   ]
 }
