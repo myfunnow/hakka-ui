@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // ${configDir} is the directory of the package tsconfig that extends this file
+    "paths": { "@/*": ["${configDir}/src/*"] }
+  },
+  "include": ["${configDir}/src", "${configDir}/tests"]
+}
