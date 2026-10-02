@@ -1,0 +1,47 @@
+{
+  "name": "@myfunnow/hakka-kit",
+  "version": "0.1.0",
+  "description": "FunNow Group Vue components built on the UI library shared by its products",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myfunnow/hakka-ui.git",
+    "directory": "packages/kit"
+  },
+  "files": [
+    "/dist",
+    "README.md"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "hakka-source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsdown",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@myfunnow/hakka-icons": "workspace:*"
+  },
+  "devDependencies": {
+    "@tsdown/css": "^0.23.0",
+    "naive-ui": "2.43.2",
+    "rimraf": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-vue": "^8.0.0",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:"
+  },
+  "peerDependencies": {
+    "naive-ui": "^2.43.0",
+    "vue": "^3.5.0"
+  }
+}

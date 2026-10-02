@@ -6,13 +6,16 @@ Shared UI packages for FunNow Group (FunNow, Eatigo, Niceday).
 
 ## Packages
 
-| Package                                     | Description                                          |
-| ------------------------------------------- | ---------------------------------------------------- |
-| [`@myfunnow/hakka-tokens`](packages/tokens) | Design tokens from Figma, one subpath per brand      |
-| [`@myfunnow/hakka-icons`](packages/icons)   | Icons as Vue components (`HkIcon`)                   |
-| [`@myfunnow/hakka-core`](packages/core)     | Vue components without a UI library (`HkPagination`) |
+| Package                                     | Description                                                                |
+| ------------------------------------------- | -------------------------------------------------------------------------- |
+| [`@myfunnow/hakka-tokens`](packages/tokens) | Design tokens from Figma, one subpath per brand                            |
+| [`@myfunnow/hakka-icons`](packages/icons)   | Icons as Vue components (`HkIcon`)                                         |
+| [`@myfunnow/hakka-core`](packages/core)     | Vue components without a UI library (`HkPagination`)                       |
+| [`@myfunnow/hakka-kit`](packages/kit)       | Vue components built on the UI library shared by ETG and ND (`HkCheckbox`) |
 
-No package depends on naive-ui, Vuetify or UnoCSS, so every product can use them.
+`tokens`, `icons` and `core` do not depend on any UI library, so every product can use them.
+`kit` wraps the UI library listed in its `peerDependencies`. Package names never contain a UI library name,
+so switching libraries ships as a major version of `kit` instead of a new package.
 
 ## Install
 
@@ -42,9 +45,9 @@ Requirements: Node.js >= 22.12, pnpm >= 10.
 
 Use the [Blueprint](https://marketplace.visualstudio.com/items?itemName=teamchilla.blueprint) extension:
 
-1. Right click `packages/core/src/components` and select `New File from Template`
+1. Right click `packages/core/src/components` (or `packages/kit/src/components` when the component wraps the UI library) and select `New File from Template`
 2. Select `New Component` and enter the name (for example `Button` creates `HkButton`)
-3. Add the test in `packages/core/tests/` and export the component from `packages/core/src/index.ts`
+3. Add the test in that package's `tests/` and export the component from its `src/index.ts`
 
 Tests import source through `@/` (for example `@/components/HkButton/HkButton.vue`). `@/` is only allowed in `tests/`.
 
