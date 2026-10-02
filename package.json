@@ -11,7 +11,7 @@
     "test": "vitest run",
     "lint": "pnpm lint:check && pnpm format:check",
     "lint:fix": "pnpm lint:check --fix && pnpm format:fix",
-    "lint:check": "eslint --cache --cache-strategy content --cache-location ./.cache/eslint/.eslintcache packages .storybook",
+    "lint:check": "eslint --cache --cache-strategy content --cache-location ./.cache/eslint/.eslintcache packages internal .storybook",
     "format:check": "pnpm format:base --check",
     "format:fix": "pnpm format:base --write",
     "format:base": "oxfmt .",
@@ -27,7 +27,6 @@
     "@types/node": "^26.6.3",
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/test-utils": "^2.5.1",
-    "@vue/tsconfig": "^0.9.1",
     "bumpp": "^12.3.0",
     "eslint": "^10.11.0",
     "happy-dom": "^20.14.5",
@@ -42,7 +41,7 @@
     "vue-tsc": "catalog:"
   },
   "engines": {
-    "node": ">=22.12.0",
+    "node": ">=22.18.0",
     "pnpm": ">=10.0.0"
   }
 }

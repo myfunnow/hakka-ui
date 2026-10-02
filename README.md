@@ -29,7 +29,11 @@ to a GitHub PAT with `read:packages`:
 
 ## Development
 
-Requirements: Node.js >= 22.12, pnpm >= 10.
+Requirements: Node.js >= 22.18 (tsdown loads the TypeScript config files natively), pnpm >= 10.
+
+`packages/` holds only published packages. Repo-internal workspace packages live in `internal/` and are never published:
+`@myfunnow/hakka-config` shares the tsdown and Vitest config, so each package's `tsdown.config.ts` and
+`vitest.config.ts` only states what differs.
 
 | Script           | Description                          |
 | ---------------- | ------------------------------------ |

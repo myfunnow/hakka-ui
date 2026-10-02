@@ -1,0 +1,24 @@
+{
+  "name": "@myfunnow/hakka-config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Build and test config shared by hakka-ui workspace packages. Never published.",
+  "type": "module",
+  "exports": {
+    "./tsdown": "./tsdown.ts",
+    "./vitest": "./vitest.ts",
+    "./tsconfig.package.json": "./tsconfig.package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@vue/tsconfig": "^0.9.1",
+    "tsdown": "catalog:",
+    "unplugin-vue": "^8.0.0",
+    "vitest": "^5.0.3"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

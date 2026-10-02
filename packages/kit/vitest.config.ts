@@ -1,3 +1,3 @@
-import { createPackageVitestConfig } from '../../vitest.shared.ts'
+import { createPackageVitestConfig } from '@myfunnow/hakka-config/vitest'
 
 export default createPackageVitestConfig(import.meta.url)

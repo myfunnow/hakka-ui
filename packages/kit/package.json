@@ -31,12 +31,12 @@
     "@myfunnow/hakka-icons": "workspace:*"
   },
   "devDependencies": {
+    "@myfunnow/hakka-config": "workspace:*",
     "@tsdown/css": "^0.23.0",
     "naive-ui": "2.43.2",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
-    "unplugin-vue": "^8.0.0",
     "vue": "catalog:",
     "vue-tsc": "catalog:"
   },

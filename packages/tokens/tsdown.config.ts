@@ -1,11 +1,5 @@
-import { defineConfig } from 'tsdown'
+import { createPackageTsdownConfig } from '@myfunnow/hakka-config/tsdown'
 
-export default defineConfig({
-  // Paths must start with ./ or tsdown resolves them from the workspace root and still exits 0
+export default createPackageTsdownConfig({
   entry: { funnow: './src/funnow.ts', 'internal/toCssVariables': './src/toCssVariables.ts' },
-  format: ['esm'],
-  platform: 'neutral',
-  // Without this, output becomes .mjs/.d.mts and no longer matches package.json exports
-  fixedExtension: false,
-  dts: true,
 })
