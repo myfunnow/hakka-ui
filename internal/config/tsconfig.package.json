@@ -1,5 +1,7 @@
 {
-  "extends": "../../tsconfig.json",
+  // Packages reach this file through a node_modules symlink, and Vite's oxc resolves relative
+  // extends from the symlink path, so every file it extends must sit in this directory
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     // ${configDir} is the directory of the package tsconfig that extends this file
     "paths": { "@/*": ["${configDir}/src/*"] }

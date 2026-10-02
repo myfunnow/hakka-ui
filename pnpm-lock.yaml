@@ -50,9 +50,6 @@ importers:
       '@vue/test-utils':
         specifier: ^2.5.1
         version: 2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@6.0.3))
-      '@vue/tsconfig':
-        specifier: ^0.9.1
-        version: 0.9.1(typescript@6.0.3)(vue@3.5.43(typescript@6.0.3))
       bumpp:
         specifier: ^12.3.0
         version: 12.3.0
@@ -92,6 +89,9 @@ importers:
 
   internal/config:
     dependencies:
+      '@vue/tsconfig':
+        specifier: ^0.9.1
+        version: 0.9.1(typescript@6.0.3)(vue@3.5.43(typescript@6.0.3))
       tsdown:
         specifier: 'catalog:'
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28)(@vue/language-core@3.3.11)(oxc-resolver@11.21.2)(typescript@6.0.3)(vue-tsc@3.3.11(typescript@6.0.3))
