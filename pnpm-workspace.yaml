@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - internal/*
 
 # Versions used by more than one package.json live here only.
 catalog:

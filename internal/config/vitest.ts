@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { defineProject, mergeConfig } from 'vitest/config'
 
-import viteConfig from './vite.config.ts'
+import viteConfig from '../../vite.config.ts'
 
 /**
  * Vitest project config for one workspace package.

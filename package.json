@@ -11,7 +11,7 @@
     "test": "vitest run",
     "lint": "pnpm lint:check && pnpm format:check",
     "lint:fix": "pnpm lint:check --fix && pnpm format:fix",
-    "lint:check": "eslint --cache --cache-strategy content --cache-location ./.cache/eslint/.eslintcache packages .storybook",
+    "lint:check": "eslint --cache --cache-strategy content --cache-location ./.cache/eslint/.eslintcache packages internal .storybook",
     "format:check": "pnpm format:base --check",
     "format:fix": "pnpm format:base --write",
     "format:base": "oxfmt .",
@@ -42,7 +42,7 @@
     "vue-tsc": "catalog:"
   },
   "engines": {
-    "node": ">=22.12.0",
+    "node": ">=22.18.0",
     "pnpm": ">=10.0.0"
   }
 }

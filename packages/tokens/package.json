@@ -28,6 +28,7 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
+    "@myfunnow/hakka-config": "workspace:*",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
