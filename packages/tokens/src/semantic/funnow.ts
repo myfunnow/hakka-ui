@@ -1,4 +1,4 @@
-import { colors } from '../generated/funnow/theme.config'
+import { colors } from '@/generated/funnow/theme.config'
 
 // Interim until token-transformer emits semantic tokens. Names follow the Figma
 // paths in the comments so replacing this file with generated output stays mechanical.

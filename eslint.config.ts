@@ -5,11 +5,10 @@ export default createEslintConfig(
   // Build output of every package is compiled code, not source
   { ignores: ['packages/*/dist/**'] },
   {
-    // `@/` only resolves in tests. tsdown may emit it unresolved into published .d.ts files,
-    // and the root Storybook cannot tell which package's src/ it means.
+    // `@/` is the package's own src/ (see tsconfig paths), so a parent-relative import is never needed
     files: ['packages/*/src/**'],
     rules: {
-      'no-restricted-imports': ['error', { patterns: [{ group: ['@/*'], message: 'Use a relative import inside src/. `@/` is for tests only.' }] }],
+      'no-restricted-imports': ['error', { patterns: [{ group: ['../*', '../**'], message: 'Use `@/` instead of a parent-relative import.' }] }],
     },
   }
 )
