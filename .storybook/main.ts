@@ -11,6 +11,8 @@ const config: StorybookConfig = {
 
   async viteFinal(config) {
     config.base = process.env.BASE_PATH || config.base
+    // `@/` is each package's own src/, taken from the tsconfig nearest to the importing file
+    config.resolve = { ...config.resolve, tsconfigPaths: true }
 
     return config
   },

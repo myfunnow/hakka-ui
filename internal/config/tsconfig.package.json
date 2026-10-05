@@ -6,5 +6,6 @@
     // ${configDir} is the directory of the package tsconfig that extends this file
     "paths": { "@/*": ["${configDir}/src/*"] }
   },
-  "include": ["${configDir}/src", "${configDir}/tests"]
+  // .vue is listed on purpose: Vite applies `paths` only to files the tsconfig includes, and `src` alone skips .vue
+  "include": ["${configDir}/src", "${configDir}/src/**/*.vue", "${configDir}/tests"]
 }

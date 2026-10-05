@@ -53,7 +53,7 @@ Use the [Blueprint](https://marketplace.visualstudio.com/items?itemName=teamchil
 2. Select `New Component` and enter the name (for example `Button` creates `HkButton`)
 3. Add the test in that package's `tests/` and export the component from its `src/index.ts`
 
-Tests import source through `@/` (for example `@/components/HkButton/HkButton.vue`). `@/` is only allowed in `tests/`.
+Source and tests import through `@/` (for example `@/components/HkButton/HkButton.vue`), which is the package's own `src/`. It comes from `tsconfig.package.json`, so tsdown, Vite and Vitest all read the same rule. ESLint rejects parent-relative imports (`../`) inside `src/`.
 
 ## Release
 

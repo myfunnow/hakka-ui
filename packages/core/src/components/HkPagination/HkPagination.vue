@@ -41,7 +41,7 @@ import { computed } from 'vue'
 
 import { HkIcon } from '@myfunnow/hakka-icons'
 
-import { getPageItems } from '../../utils/getPageItems'
+import { getPageItems } from '@/utils/pagination'
 
 interface HkPaginationProps {
   totalCount: number
