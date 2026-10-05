@@ -10,16 +10,52 @@ pnpm add @myfunnow/hakka-core @myfunnow/hakka-tokens
 
 Installing from GitHub Packages needs a PAT with `read:packages`. See the repo root README.
 
-## Usage
+## Setup
 
-Load one brand's CSS variables and the component styles once, for example in a Nuxt plugin or `app.vue`:
+The components are styled with utility classes and read colors from `--hk-color-*` CSS variables. Your app provides both.
+
+### 1. Brand CSS
+
+Load one brand's CSS variables once, for example in a Nuxt plugin or `app.vue`:
 
 ```ts
 import '@myfunnow/hakka-tokens/funnow.css'
-import '@myfunnow/hakka-core/style.css'
 ```
 
-A brand CSS is required. Without it the focus ring falls back to the text color, but the current page and disabled states lose their colors.
+Without it the focus ring falls back to the text color, but the current page and disabled states lose their colors.
+
+### 2. UnoCSS generates the classes
+
+`dist/index.js` starts with `/* @unocss-include */`, so your app's UnoCSS scans it with no `content` config, as long as Vite processes the file:
+
+- **Production build:** nothing to add.
+- **`nuxt dev`:** add the package to `build.transpile`. Otherwise Vite pre-bundles it, UnoCSS never sees it, and the components render unstyled.
+
+```ts
+export default defineNuxtConfig({ build: { transpile: ['@myfunnow/hakka-core'] } })
+```
+
+Only `presetWind` utilities (Tailwind v3 names) and arbitrary values such as `min-w-[24px]` are used.
+
+### 3. Apps without UnoCSS
+
+funnow.web.nuxt uses windicss with the `wd-` prefix, whose class names do not match. Run a second UnoCSS that only serves hakka, with `@unocss/nuxt` and this `uno.config.ts`:
+
+```ts
+import { defineConfig, presetWind } from 'unocss'
+
+export default defineConfig({
+  presets: [presetWind()],
+  // A pattern that never matches. An empty `include` array means "include everything".
+  content: { pipeline: { include: [/(?!)/] } },
+})
+```
+
+Only files carrying `@unocss-include` are scanned, so the app's own classes produce nothing. A few hakka class names (`overflow-hidden`, `top-0`, `left-0`, `justify-center`) already exist in Vuetify's CSS with the same declarations plus `!important`.
+
+### Overriding classes
+
+Pass utility classes through `class`. Where a component merges them (the root of `HkImg`), tailwind-merge lets yours replace the default: `overflow-visible` replaces `overflow-hidden`. The class you pass must exist in your own CSS, so your UnoCSS has to scan the file that uses it.
 
 ### HkPagination
 
@@ -48,7 +84,7 @@ const page = ref(1)
 
 ### HkImg
 
-An image with a `<picture>` webp source, a placeholder, an error state, a gradient and overlay content. It needs `@myfunnow/hakka-core/style.css` (no brand CSS). Props, slots and events follow Vuetify's `v-img`, so a call site can swap one for the other.
+An image with a `<picture>` webp source, a placeholder, an error state, a gradient and overlay content. It needs the UnoCSS setup above and no brand CSS. Props, slots and events follow Vuetify's `v-img`, so a call site can swap one for the other.
 
 ```vue
 <script setup lang="ts">

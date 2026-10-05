@@ -18,7 +18,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -29,16 +28,17 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@myfunnow/hakka-icons": "workspace:*"
+    "@myfunnow/hakka-icons": "workspace:*",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",
-    "@tsdown/css": "^0.23.0",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
     "vue": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "vuetify": "3.7.12"
   },
   "peerDependencies": {
     "vue": "^3.5.0"

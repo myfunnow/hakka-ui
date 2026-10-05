@@ -70,8 +70,8 @@ describe('HkImg image', () => {
     const contained = mount(HkImg, { props: { src: '/a.png' } })
     const covered = mount(HkImg, { props: { src: '/a.png', cover: true } })
 
-    expect(contained.find('img').classes()).not.toContain('hk-img__image--cover')
-    expect(covered.find('img').classes()).toContain('hk-img__image--cover')
+    expect(contained.find('img').classes()).toContain('object-contain')
+    expect(covered.find('img').classes()).toContain('object-cover')
   })
 
   it('should apply the position as object-position', () => {
@@ -248,6 +248,14 @@ describe('HkImg layout', () => {
     const wrapper = mount(HkImg, { props: { src: '/a.png' }, slots: { default: '<span class="overlay">Sold out</span>' } })
 
     expect(wrapper.find('.hk-img__content .overlay').text()).toBe('Sold out')
+  })
+
+  it('should let a downstream utility class replace a default one on the root', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: 'overflow-visible max-w-none' } })
+
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['overflow-visible', 'max-w-none']))
+    expect(wrapper.classes()).not.toContain('overflow-hidden')
+    expect(wrapper.classes()).not.toContain('max-w-full')
   })
 
   it('should land class and listeners on the root element', async () => {

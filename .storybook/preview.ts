@@ -3,6 +3,8 @@
 // with a toolbar brand switcher (needs tokens CSS scoped by [data-brand] instead of :root).
 // The storybook scripts build tokens before starting, because this file lives in dist/.
 import '../packages/tokens/dist/funnow.css'
+// The components use utility classes. Storybook runs its own UnoCSS (see main.ts) to generate them.
+import 'virtual:uno.css'
 
 export const tags = ['autodocs']
 
