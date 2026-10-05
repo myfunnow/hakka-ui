@@ -45,7 +45,7 @@ export function readWebpEnvironment(): WebpEnvironment {
   const { __publicAssetsURL } = globalThis as { __publicAssetsURL?: () => string }
 
   return {
-    isDev: !isProduction(),
+    isDev: !isProduction,
     publicBase: __publicAssetsURL?.(),
   }
 }

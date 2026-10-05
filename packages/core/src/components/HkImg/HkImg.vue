@@ -31,7 +31,8 @@
 import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 
 import { getWebpSrc, readWebpEnvironment } from '@/utils/image'
-import { toCssSize, type CssSize } from '@/utils/css'
+import type { CssSize } from '@/types/css'
+import { toCssSize } from '@/utils/css'
 
 // Props, slots and events follow Vuetify's v-img so a call site can swap one for the other.
 interface Props {
