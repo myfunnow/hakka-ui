@@ -3,7 +3,7 @@ afterEach(() => {
   vi.resetModules()
 })
 
-describe('isProduction', () => {
+describe('IS_PRODUCTION', () => {
   // The constant is decided when the module loads, so each case loads a fresh copy
   it.each([
     { nodeEnv: 'production', expected: true },
@@ -12,8 +12,8 @@ describe('isProduction', () => {
   ])('should be $expected when NODE_ENV is $nodeEnv', async ({ nodeEnv, expected }) => {
     vi.stubEnv('NODE_ENV', nodeEnv)
 
-    const { isProduction } = await import('@/utils/env')
+    const { IS_PRODUCTION } = await import('@/utils/env')
 
-    expect(isProduction).toBe(expected)
+    expect(IS_PRODUCTION).toBe(expected)
   })
 })

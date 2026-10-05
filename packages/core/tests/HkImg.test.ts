@@ -3,11 +3,11 @@ import { nextTick } from 'vue'
 
 import HkImg from '@/components/HkImg/HkImg.vue'
 
-// isProduction is a constant fixed at import, so the getter lets a test turn it on
+// IS_PRODUCTION is a constant fixed at import, so the getter lets a test turn it on
 const env = vi.hoisted(() => ({ isProduction: false }))
 
 vi.mock('@/utils/env', () => ({
-  get isProduction() {
+  get IS_PRODUCTION() {
     return env.isProduction
   },
 }))

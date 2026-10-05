@@ -1,7 +1,7 @@
 // Mirrors the build-time generator in @myfunnow/web-core-optimize-images: every png/jpg/jpeg
 // under the Nuxt public output gets a sibling .webp. hakka-ui is public, so it can't depend on
 // that private package and keeps this small rule in step by hand.
-import { isProduction } from '@/utils/env'
+import { IS_PRODUCTION } from '@/utils/env'
 
 const RASTER_IMAGE_PATTERN = /\.(png|jpe?g)$/i
 const ABSOLUTE_URL_PATTERN = /^https?:\/\//i
@@ -45,7 +45,7 @@ export function readWebpEnvironment(): WebpEnvironment {
   const { __publicAssetsURL } = globalThis as { __publicAssetsURL?: () => string }
 
   return {
-    isDev: !isProduction,
+    isDev: !IS_PRODUCTION,
     publicBase: __publicAssetsURL?.(),
   }
 }
