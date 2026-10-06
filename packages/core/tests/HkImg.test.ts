@@ -268,3 +268,93 @@ describe('HkImg layout', () => {
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('HkImg current-color', () => {
+  const SVG = 'https://cdn.myfunnow.com/eatigo-web/prod/images/logo.svg'
+  const findMask = (wrapper: VueWrapper) => wrapper.find('[aria-hidden="true"]')
+
+  it('should paint the svg as a mask filled with the text color', () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, currentColor: true } })
+
+    const mask = findMask(wrapper)
+
+    expect(mask.classes()).toContain('bg-current')
+    expect(mask.attributes('style')).toContain(`--hk-img-mask: url("${SVG}")`)
+  })
+
+  it('should keep a hidden img that carries the alt text, the load events and the natural ratio', async () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, alt: 'Niceday Logo', currentColor: true } })
+
+    await finishLoading(wrapper, { width: 300, height: 100 })
+
+    const img = wrapper.find('img')
+
+    expect(img.attributes('alt')).toBe('Niceday Logo')
+    expect(img.classes()).toContain('opacity-0')
+    expect(img.attributes('crossorigin')).toBe('anonymous')
+    expect(wrapper.emitted('load')).toEqual([[SVG]])
+    expect(aspectRatioOf(wrapper)).toBe('3')
+  })
+
+  it('should hide the mask from assistive technology and leave the picture out', () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, currentColor: true } })
+
+    expect(wrapper.find('picture').exists()).toBe(false)
+    expect(findMask(wrapper).exists()).toBe(true)
+  })
+
+  it.each([
+    { name: 'contain by default, so no size is set', props: {}, hasSize: false },
+    { name: 'cover with the cover prop', props: { cover: true }, hasSize: true },
+  ])('should size the mask to $name', ({ props, hasSize }) => {
+    const wrapper = mount(HkImg, { props: { src: SVG, currentColor: true, ...props } })
+
+    const style = findMask(wrapper).attributes('style')
+
+    expect(style?.includes('--hk-img-mask-size: cover')).toBe(hasSize)
+  })
+
+  it('should use the same mask classes whatever the size', () => {
+    const contained = mount(HkImg, { props: { src: SVG, currentColor: true } })
+    const covered = mount(HkImg, { props: { src: SVG, currentColor: true, cover: true } })
+
+    expect(findMask(covered).classes()).toEqual(findMask(contained).classes())
+  })
+
+  it('should pass the position to the mask', () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, currentColor: true, position: 'top left' } })
+
+    expect(findMask(wrapper).attributes('style')).toContain('--hk-img-mask-position: top left')
+  })
+
+  it('should let the text color class on the root reach the mask', () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, currentColor: true }, attrs: { class: 'text-yellow-50' } })
+
+    expect(wrapper.classes()).toContain('text-yellow-50')
+  })
+
+  it('should never offer a webp source, even in production', () => {
+    stubProductionBuild()
+
+    const wrapper = mount(HkImg, { props: { src: '/images/logo.png', currentColor: true } })
+
+    expect(wrapper.find('source').exists()).toBe(false)
+  })
+
+  it('should replace the mask with the error slot when the svg fails to load', async () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, currentColor: true }, slots })
+
+    await wrapper.find('img').trigger('error')
+
+    expect(findMask(wrapper).exists()).toBe(false)
+    expect(wrapper.find('.the-error').exists()).toBe(true)
+    expect(wrapper.emitted('error')).toEqual([[SVG]])
+  })
+
+  it('should not add a mask layer without the current-color prop', () => {
+    const wrapper = mount(HkImg, { props: { src: SVG } })
+
+    expect(findMask(wrapper).exists()).toBe(false)
+    expect(wrapper.find('picture').exists()).toBe(true)
+  })
+})

@@ -1,6 +1,6 @@
 <template>
   <div v-bind="rootAttrs" :class="rootClass" :style="rootStyle">
-    <picture v-if="src && !isFailed" :class="LAYER_CLASS">
+    <picture v-if="src && !isFailed && !currentColor" :class="LAYER_CLASS">
       <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
       <img
         ref="img"
@@ -13,6 +13,20 @@
         @error="handleError"
       />
     </picture>
+    <template v-else-if="src && !isFailed">
+      <!-- The real <img> stays for the alt text, the load and error events and the natural ratio, but is not painted -->
+      <img
+        ref="img"
+        :class="[LAYER_CLASS, 'opacity-0']"
+        :src="src"
+        :alt="alt"
+        :loading="eager ? 'eager' : 'lazy'"
+        crossorigin="anonymous"
+        @load="handleLoad"
+        @error="handleError"
+      />
+      <div aria-hidden="true" :class="[LAYER_CLASS, 'bg-current', MASK_CLASS]" :style="maskStyle" />
+    </template>
     <div v-if="gradient" :class="[LAYER_CLASS, 'hk-img__gradient', 'bg-no-repeat']" :style="{ backgroundImage: `linear-gradient(${gradient})` }" />
     <div v-if="$slots.placeholder && !isLoaded && !isFailed" :class="LAYER_CLASS">
       <slot name="placeholder" />
@@ -30,7 +44,7 @@
 import { computed, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 import type { CssSize } from '@/types/css'
-import { cn, toCssSize } from '@/utils/css'
+import { cn, toCssSize, toCssUrl } from '@/utils/css'
 import { getWebpSrc, readWebpEnvironment } from '@/utils/image'
 
 // Props, slots and events follow Vuetify's v-img so a call site can swap one for the other.
@@ -50,6 +64,11 @@ interface Props {
   position?: string
   /** The inside of a linear-gradient(), for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` */
   gradient?: string
+  /**
+   * For a single-color svg: paint its shape with the current text color, so `class="text-yellow-50"` recolors it.
+   * An svg inside an <img> cannot read the page's color, so the shape is used as a CSS mask instead.
+   */
+  currentColor?: boolean
 }
 
 interface Emits {
@@ -69,6 +88,11 @@ const imgRef = useTemplateRef<HTMLImageElement>('img')
 // Image, gradient, placeholder and error all stack on one spot; the root is sized by aspect-ratio.
 const ROOT_CLASS = 'hk-img relative flex grow shrink-0 max-w-full max-h-full overflow-hidden'
 const LAYER_CLASS = 'absolute inset-0 w-full h-full'
+// The mask is one shorthand, with a -webkit- copy for Safari before 15.4. The address, position and size arrive as CSS
+// variables (the size falls back to contain), so cover and contain share these classes and each one stays a literal
+// string for the app's UnoCSS to find.
+const MASK_CLASS =
+  '[mask:var(--hk-img-mask)_var(--hk-img-mask-position,center)/var(--hk-img-mask-size,contain)_no-repeat] [-webkit-mask:var(--hk-img-mask)_var(--hk-img-mask-position,center)/var(--hk-img-mask-size,contain)_no-repeat]'
 
 // twMerge lets a downstream class override a default one (`overflow-visible` replaces `overflow-hidden`)
 const rootClass = computed(() => cn(ROOT_CLASS, attrs.class))
@@ -86,6 +110,12 @@ const naturalAspectRatio = ref<number>()
 // 404 on the selected <source> does not fall back to the <img>. The app's build guarantees the
 // file, so there is deliberately no runtime fallback here.
 const webpSrc = computed(() => getWebpSrc(props.src, readWebpEnvironment()))
+
+const maskStyle = computed(() => ({
+  '--hk-img-mask': toCssUrl(props.src),
+  '--hk-img-mask-position': props.position,
+  '--hk-img-mask-size': props.cover ? 'cover' : undefined,
+}))
 
 const rootStyle = computed(() => {
   const aspectRatio = props.aspectRatio ?? naturalAspectRatio.value

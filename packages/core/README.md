@@ -110,12 +110,26 @@ import { HkImg } from '@myfunnow/hakka-core'
 | `width` `height` `maxWidth` `maxHeight` `minWidth` `minHeight` | `string \| number` | A bare number gets `px`, any other string goes to CSS as is                                  |
 | `position`                                                     | `string`           | `object-position` of the image                                                               |
 | `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
+| `currentColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
 | `#placeholder`                                                 |                    | Shown until the image has loaded                                                             |
 | `#error`                                                       |                    | Replaces the image when it fails to load                                                     |
 | default slot                                                   |                    | Overlay content                                                                              |
 | `load`, `error`                                                | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
 
 `class` and listeners such as `@click` land on the root element. `rounded`, `transition`, `lazy-src`, `srcset`, `sizes`, `crossorigin`, `referrerpolicy` and `draggable` are not supported.
+
+#### Single-color svg (`current-color`)
+
+An svg inside an `<img>` cannot read the page's color, so `class="text-yellow-50"` does not recolor it. With `current-color`, `HkImg` paints the svg's shape with the text color instead, by using it as a CSS mask:
+
+```vue
+<hk-img src="/images/logo.svg" alt="Logo" current-color class="w-30 text-yellow-50" />
+```
+
+- It is for svg files whose paint is `currentColor`. The mask only keeps the svg's shape and transparency, so an svg with fixed colors becomes one flat shape in the text color (a white detail inside a colored shape disappears). Use the plain `HkImg` for those, and `HkIcon` for icons.
+- The real `<img>` stays in the DOM, hidden, for the `alt` text, the `load` and `error` events and the natural ratio. It is requested with `crossorigin="anonymous"`, and the mask is always fetched with CORS, so an svg on another origin (such as the CDN) must send `Access-Control-Allow-Origin`. Without it the image fails and the `#error` slot is shown. Checked: `cdn.myfunnow.com` sends `access-control-allow-origin: *`.
+- `cover` sizes the mask with `cover` instead of `contain`, `position` positions it. There is no webp `<source>` in this mode.
+- Safari before 15.4 needs the `-webkit-` form of `mask`, which is included.
 
 #### webp
 
