@@ -5,12 +5,15 @@ import { createGenerator, presetWind } from 'unocss'
 
 // funnow.web.nuxt loads Vuetify's full stylesheet (the same version as the devDependency), and Vuetify defines
 // utility classes of its own. A hakka class with the same name also gets Vuetify's declarations and its !important.
-// That broke `bg-transparent` (Vuetify adds color: currentColor) and `border-0` (Vuetify adds a border style and color).
+// That broke `bg-transparent` (Vuetify adds color: currentColor).
 // These names exist in both with the same value. Compare the declarations before adding one. Vuetify writes lengths in px
 // and UnoCSS in rem, which are equal because the root font size is 16px (funnow.web.nuxt sets it, the others keep the default).
+// `border-0` is allowed although Vuetify adds `border-style: solid` and a border color: a border of width 0 draws nothing
+// (checked in Chrome with Vuetify's rule and a red border color), but a hakka class that sets another border style on the same
+// element would lose to Vuetify's !important.
 // Vuetify also writes them with !important: another hakka class for the same property (a state variant such as
 // `disabled:cursor-not-allowed`) cannot override them, so such a property needs a unique name (`enabled:cursor-pointer`).
-const SAME_DECLARATIONS = ['justify-center', 'mb-0', 'mt-5', 'mx-0', 'overflow-hidden', 'px-1', 'py-0', 'rounded', 'text-center']
+const SAME_DECLARATIONS = ['border-0', 'justify-center', 'mb-0', 'mt-5', 'mx-0', 'overflow-hidden', 'px-1', 'py-0', 'rounded', 'text-center']
 
 const srcDir = new URL('../src/', import.meta.url)
 const vuetifyCss = readFileSync(new URL('../node_modules/vuetify/dist/vuetify.min.css', import.meta.url), 'utf8')
