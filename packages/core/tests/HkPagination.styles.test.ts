@@ -6,8 +6,10 @@ const source = readFileSync(new URL('../src/components/HkPagination/HkPagination
 
 describe('HkPagination styles', () => {
   it('should keep a visible focus ring when no brand CSS is loaded', () => {
-    const focusRule = source.match(/:focus-visible\s*\{([^}]*)\}/)?.[1] ?? ''
+    expect(source).toContain('focus-visible:outline-[color:var(--hk-color-primary,currentColor)]')
+  })
 
-    expect(focusRule).toMatch(/outline:[^;]*var\(--hk-color-primary,\s*currentColor\)/)
+  it('should not depend on a scoped stylesheet', () => {
+    expect(source).not.toMatch(/<style[\s>]/)
   })
 })

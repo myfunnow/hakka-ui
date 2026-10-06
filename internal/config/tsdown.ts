@@ -2,7 +2,7 @@ import { defineConfig, type UserConfig } from 'tsdown'
 import Vue from 'unplugin-vue/rolldown'
 
 type PackageTsdownOptions = UserConfig & {
-  /** Compile Vue SFCs. Scoped styles are extracted into dist/style.css when the package has @tsdown/css */
+  /** Compile Vue SFCs */
   vue?: boolean
 }
 
