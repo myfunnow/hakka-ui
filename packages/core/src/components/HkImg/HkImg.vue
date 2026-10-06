@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="rootAttrs" :class="rootClass" :style="rootStyle">
+  <div v-bind="splitAttrs.root" :class="rootClass" :style="rootStyle">
     <picture v-if="src && !isFailed && !currentColor" :class="LAYER_CLASS">
       <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
       <img
@@ -9,6 +9,7 @@
         :alt="alt"
         :loading="eager ? 'eager' : 'lazy'"
         :style="{ objectPosition: position }"
+        v-bind="splitAttrs.img"
         @load="handleLoad"
         @error="handleError"
       />
@@ -21,6 +22,7 @@
         :src="src"
         :alt="alt"
         :loading="eager ? 'eager' : 'lazy'"
+        v-bind="splitAttrs.img"
         crossorigin="anonymous"
         @load="handleLoad"
         @error="handleError"
@@ -41,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
+import { computed, normalizeClass, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 import type { CssSize } from '@/types/css'
 import { cn, toCssSize, toCssUrl } from '@/utils/css'
@@ -96,11 +98,33 @@ const MASK_CLASS =
 
 // twMerge lets a downstream class override a default one (`overflow-visible` replaces `overflow-hidden`)
 const rootClass = computed(() => cn(ROOT_CLASS, attrs.class))
-const rootAttrs = computed(() => {
-  const { class: _class, ...rest } = attrs
 
-  return rest
+// Attributes of the <img> element itself. Everything else, listeners included, belongs to the root like it does on v-img.
+// Names are compared without dashes and in lower case, so `fetchpriority`, `fetchPriority` and `fetch-priority` all match.
+const IMG_ATTRIBUTES = new Set(['crossorigin', 'decoding', 'draggable', 'fetchpriority', 'loading', 'referrerpolicy', 'sizes', 'srcset'])
+
+const splitAttrs = computed(() => {
+  const root: Record<string, unknown> = {}
+  const img: Record<string, unknown> = {}
+
+  for (const [name, value] of Object.entries(attrs)) {
+    if (name === 'class') {
+      continue
+    }
+
+    if (IMG_ATTRIBUTES.has(name.replace(/-/g, '').toLowerCase())) {
+      img[name] = value
+    } else {
+      root[name] = value
+    }
+  }
+
+  return { root, img }
 })
+
+// `aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`: a call site that sets the ratio with a class keeps it.
+// An inline ratio would beat the class, and a CSS variable fallback would tie with custom values such as `aspect-1.8`.
+const hasAspectClass = computed(() => /(^|[\s:(])aspect-/.test(normalizeClass(attrs.class)))
 
 const isLoaded = ref(false)
 const isFailed = ref(false)
@@ -109,7 +133,8 @@ const naturalAspectRatio = ref<number>()
 // <picture> only negotiates browser support, it doesn't check that the webp file exists, and a
 // 404 on the selected <source> does not fall back to the <img>. The app's build guarantees the
 // file, so there is deliberately no runtime fallback here.
-const webpSrc = computed(() => getWebpSrc(props.src, readWebpEnvironment()))
+// With a srcset the browser would pick the webp source and ignore the img's own candidates, so there is no webp then.
+const webpSrc = computed(() => (splitAttrs.value.img.srcset ? undefined : getWebpSrc(props.src, readWebpEnvironment())))
 
 const maskStyle = computed(() => ({
   '--hk-img-mask': toCssUrl(props.src),
@@ -118,7 +143,7 @@ const maskStyle = computed(() => ({
 }))
 
 const rootStyle = computed(() => {
-  const aspectRatio = props.aspectRatio ?? naturalAspectRatio.value
+  const aspectRatio = props.aspectRatio ?? (hasAspectClass.value ? undefined : naturalAspectRatio.value)
 
   return {
     width: toCssSize(props.width),

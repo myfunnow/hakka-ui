@@ -358,3 +358,116 @@ describe('HkImg current-color', () => {
     expect(wrapper.find('picture').exists()).toBe(true)
   })
 })
+
+describe('HkImg img attributes', () => {
+  it.each([
+    { name: 'fetchpriority', attrs: { fetchpriority: 'high' }, check: ['fetchpriority', 'high'] },
+    { name: 'srcset', attrs: { srcset: '/a@2x.png 2x' }, check: ['srcset', '/a@2x.png 2x'] },
+    { name: 'sizes', attrs: { sizes: '(min-width: 600px) 50vw, 100vw' }, check: ['sizes', '(min-width: 600px) 50vw, 100vw'] },
+    { name: 'decoding', attrs: { decoding: 'async' }, check: ['decoding', 'async'] },
+    { name: 'crossorigin', attrs: { crossorigin: 'use-credentials' }, check: ['crossorigin', 'use-credentials'] },
+    { name: 'referrerpolicy', attrs: { referrerpolicy: 'no-referrer' }, check: ['referrerpolicy', 'no-referrer'] },
+    { name: 'a camelCase fetchPriority', attrs: { fetchPriority: 'low' }, check: ['fetchpriority', 'low'] },
+  ])('should hand $name to the img and keep it off the root', ({ attrs, check: [name, value] }) => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs })
+
+    expect(wrapper.find('img').attributes(name)).toBe(value)
+    expect(wrapper.attributes(name)).toBeUndefined()
+  })
+
+  it('should keep other attributes and listeners on the root', async () => {
+    const onClick = vi.fn()
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { 'data-testid': 'cover', 'aria-label': 'cover', onClick } })
+
+    await wrapper.trigger('click')
+
+    expect(wrapper.attributes('data-testid')).toBe('cover')
+    expect(wrapper.find('img').attributes('data-testid')).toBeUndefined()
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
+  it.each([
+    { name: 'lazy by default', props: {}, attrs: {}, expected: 'lazy' },
+    { name: 'eager with the eager prop', props: { eager: true }, attrs: {}, expected: 'eager' },
+    { name: 'the loading attribute over the eager prop', props: { eager: true }, attrs: { loading: 'lazy' }, expected: 'lazy' },
+    { name: 'the loading attribute when it is eager', props: {}, attrs: { loading: 'eager' }, expected: 'eager' },
+  ])('should load $name', ({ props, attrs, expected }) => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', ...props }, attrs })
+
+    expect(wrapper.find('img').attributes('loading')).toBe(expected)
+  })
+
+  it('should leave the webp source out when the img has a srcset, which a webp source would override', () => {
+    stubProductionBuild()
+
+    const withSrcset = mount(HkImg, { props: { src: '/images/hero.png' }, attrs: { srcset: '/images/hero@2x.png 2x' } })
+    const withoutSrcset = mount(HkImg, { props: { src: '/images/hero.png' } })
+
+    expect(withSrcset.find('source').exists()).toBe(false)
+    expect(withoutSrcset.find('source').exists()).toBe(true)
+  })
+
+  it('should hand the attributes to the hidden img of a current-color svg but keep its CORS mode', () => {
+    const wrapper = mount(HkImg, {
+      props: { src: 'https://cdn.myfunnow.com/logo.svg', currentColor: true },
+      attrs: { fetchpriority: 'high', crossorigin: 'use-credentials' },
+    })
+
+    expect(wrapper.find('img').attributes('fetchpriority')).toBe('high')
+    expect(wrapper.find('img').attributes('crossorigin')).toBe('anonymous')
+  })
+})
+
+describe('HkImg aspect ratio classes', () => {
+  it.each([
+    { name: 'aspect-square', cls: 'aspect-square' },
+    { name: 'a custom aspect-1.8', cls: 'w-full aspect-1.8 object-cover' },
+    { name: 'a responsive md:aspect-video', cls: 'md:aspect-video' },
+    { name: 'a variant group with aspect-unset', cls: 'w-full sm:(aspect-unset h-300px)' },
+    { name: 'a class array', cls: ['w-full', 'aspect-1'] },
+    { name: 'a class object', cls: { 'aspect-square': true, hidden: false } },
+  ])('should leave the ratio to $name instead of writing the natural ratio inline', async ({ cls }) => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: cls } })
+
+    await finishLoading(wrapper, { width: 400, height: 200 })
+
+    expect(aspectRatioOf(wrapper)).toBe('')
+  })
+
+  it.each([
+    { name: 'no class', cls: undefined },
+    { name: 'classes about something else', cls: 'w-full h-auto rounded' },
+    { name: 'a class that only contains the word', cls: 'no-aspect-here' },
+  ])('should still use the natural ratio with $name', async ({ cls }) => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: cls } })
+
+    await finishLoading(wrapper, { width: 400, height: 200 })
+
+    expect(aspectRatioOf(wrapper)).toBe('2')
+  })
+
+  it('should let the aspectRatio prop win over an aspect class', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1.5 }, attrs: { class: 'aspect-square' } })
+
+    expect(aspectRatioOf(wrapper)).toBe('1.5')
+  })
+})
+
+describe('HkImg without a src', () => {
+  it('should show the placeholder slot when there is no src', () => {
+    const wrapper = mount(HkImg, { props: { src: '', aspectRatio: 1.8 }, slots })
+
+    expect(wrapper.find('.the-placeholder').exists()).toBe(true)
+    expect(wrapper.find('picture').exists()).toBe(false)
+    expect(aspectRatioOf(wrapper)).toBe('1.8')
+  })
+
+  it('should show the error slot instead of the placeholder when the image fails', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/broken.png', aspectRatio: 1.8 }, slots })
+
+    await wrapper.find('img').trigger('error')
+
+    expect(wrapper.find('.the-error').exists()).toBe(true)
+    expect(wrapper.find('.the-placeholder').exists()).toBe(false)
+  })
+})
