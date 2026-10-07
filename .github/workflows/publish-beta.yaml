@@ -1,0 +1,117 @@
+name: Publish Beta
+
+# Two ways to start it:
+#   1. "Run workflow" in the Actions tab. The branch picker chooses what gets published.
+#   2. The REST API:
+#      POST /repos/myfunnow/hakka-ui/actions/workflows/publish-beta.yaml/dispatches
+#      { "ref": "<branch>", "inputs": { "bump": "minor" }, "return_run_details": true }
+#
+# The version is written into the runner's working directory only and is never committed back, and no git tag or
+# GitHub release is made. Every package.json stays on the last stable version on every branch, and only a real
+# release changes it. The run summary prints the version; afterwards it is also in the registry:
+#   npm view @myfunnow/hakka-core dist-tags --registry https://npm.pkg.github.com
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Where to jump from the root package.json version (0.1.0 + minor = 0.2.0-beta.N)'
+        type: choice
+        options:
+          - minor
+          - patch
+          - major
+        default: minor
+
+run-name: Publish Beta (${{ inputs.bump }}) from ${{ github.ref_name }}
+
+permissions:
+  contents: read
+
+jobs:
+  publish-beta:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+        with:
+          node-auth-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # The root package.json is the one source of the version, and bumpp spreads it to every package.
+      # `npm version` and bumpp only change files: no commit, no tag.
+      - name: Compute beta version
+        id: version
+        env:
+          BUMP: ${{ inputs.bump }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          CURRENT=$(node -p "require('./package.json').version")
+
+          # A prerelease version is not supposed to stay in package.json (a beta never commits back).
+          # If one does, the bump would not mean what you expect, so stop here.
+          if [[ "$CURRENT" == *-* ]]; then
+            echo "::error::root version '$CURRENT' is a prerelease. Reset it to a stable version before publishing a beta."
+            exit 1
+          fi
+
+          npm version --no-git-tag-version "$BUMP" > /dev/null
+          NEXT=$(node -p "require('./package.json').version")
+
+          # The sequence follows the target version: the first beta of 0.2.0 is 0.2.0-beta.1, and a new target starts
+          # again at 1. The only state is the versions already in the registry, so the repo keeps no counter.
+          # One package is enough to ask: bumpp gives every package the same version.
+          # Before the first publish the package does not exist and npm view fails, which means no beta yet.
+          # If two runs pick the same number, the registry rejects the second one. Run it again.
+          PUBLISHED=$(npm view @myfunnow/hakka-core versions --json --registry https://npm.pkg.github.com 2>/dev/null || echo '[]')
+          SEQ=$(NEXT="$NEXT" node -e '
+            const parsed = JSON.parse(require("fs").readFileSync(0, "utf8").trim() || "[]")
+            const versions = Array.isArray(parsed) ? parsed : [parsed]
+            const prefix = `${process.env.NEXT}-beta.`
+            const highest = versions
+              .filter(version => version.startsWith(prefix))
+              .map(version => Number(version.slice(prefix.length)))
+              .filter(Number.isInteger)
+              .reduce((acc, current) => Math.max(acc, current), 0)
+
+            console.log(highest + 1)
+          ' <<< "$PUBLISHED")
+
+          BETA="$NEXT-beta.$SEQ"
+
+          # bumpp -r writes every manifest, the root one included, so new packages need no change here.
+          pnpm bump "$BETA" --yes --no-commit
+          echo "value=$BETA" >> "$GITHUB_OUTPUT"
+
+      # An extra flag is added after the last command of the release script, which is pnpm publish.
+      # If anything is chained after it in that script later, --tag lands on that command and the beta
+      # is published as latest without any error.
+      - name: Publish beta to GitHub Packages
+        run: pnpm release --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # A beta has no git tag, so the ref and the commit go into the summary to find it again.
+      - name: Report published version
+        env:
+          BETA: ${{ steps.version.outputs.value }}
+          REF_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          {
+            echo "### Published \`$BETA\`"
+            echo ""
+            echo "- ref: \`$REF_NAME\`"
+            echo "- commit: \`$COMMIT_SHA\`"
+            echo ""
+            echo '```bash'
+            # The list comes from the workspace, so a new package needs no change here.
+            # pnpm -r exec skips only the root, so a private package would be listed too.
+            pnpm -r exec node -p "'pnpm add ' + require('./package.json').name + '@' + process.env.BETA"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
