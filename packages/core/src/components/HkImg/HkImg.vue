@@ -153,11 +153,27 @@ const maskStyle = computed(() => ({
   '--hk-img-mask-size': props.cover ? 'cover' : undefined,
 }))
 
-const rootStyle = computed(() => {
-  const isEmpty = !props.src || isFailed.value
-  const aspectRatio =
-    props.aspectRatio ?? (hasAspectClass.value ? undefined : (naturalAspectRatio.value ?? (isEmpty ? props.fallbackAspectRatio : undefined)))
+// The prop wins, then an `aspect-*` class (left to the stylesheet), then the natural ratio, and the fallback only while
+// there is nothing to show
+const aspectRatio = computed(() => {
+  if (props.aspectRatio !== undefined) {
+    return props.aspectRatio
+  }
 
+  if (hasAspectClass.value) {
+    return undefined
+  }
+
+  if (naturalAspectRatio.value !== undefined) {
+    return naturalAspectRatio.value
+  }
+
+  const isEmpty = !props.src || isFailed.value
+
+  return isEmpty ? props.fallbackAspectRatio : undefined
+})
+
+const rootStyle = computed(() => {
   return {
     width: toCssSize(props.width),
     height: toCssSize(props.height),
@@ -165,7 +181,7 @@ const rootStyle = computed(() => {
     maxHeight: toCssSize(props.maxHeight),
     minWidth: toCssSize(props.minWidth),
     minHeight: toCssSize(props.minHeight),
-    aspectRatio: aspectRatio === undefined ? undefined : `${aspectRatio}`,
+    aspectRatio: aspectRatio.value === undefined ? undefined : `${aspectRatio.value}`,
   }
 })
 
