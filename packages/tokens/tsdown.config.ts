@@ -1,5 +1,5 @@
 import { createPackageTsdownConfig } from '@myfunnow/hakka-config/tsdown'
 
 export default createPackageTsdownConfig({
-  entry: { funnow: './src/funnow.ts', 'internal/toCssVariables': './src/toCssVariables.ts' },
+  entry: { funnow: './src/funnow.ts', theme: './src/theme.ts', 'internal/toCssVariables': './src/toCssVariables.ts' },
 })
