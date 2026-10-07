@@ -66,9 +66,14 @@ jobs:
           # The sequence follows the target version: the first beta of 0.2.0 is 0.2.0-beta.1, and a new target starts
           # again at 1. The only state is the versions already in the registry, so the repo keeps no counter.
           # One package is enough to ask: bumpp gives every package the same version.
-          # Before the first publish the package does not exist and npm view fails, which means no beta yet.
+          # Before the first publish the package does not exist: npm view then fails and prints a JSON error on stdout,
+          # which is not a version list. Any failure is read as "no beta yet" and the answer is thrown away.
+          # That is safe: if the answer was wrong, the registry rejects a duplicate version or the publish step fails.
           # If two runs pick the same number, the registry rejects the second one. Run it again.
-          PUBLISHED=$(npm view @myfunnow/hakka-core versions --json --registry https://npm.pkg.github.com 2>/dev/null || echo '[]')
+          if ! PUBLISHED=$(npm view @myfunnow/hakka-core versions --json --registry https://npm.pkg.github.com 2>/dev/null); then
+            PUBLISHED='[]'
+          fi
+
           SEQ=$(NEXT="$NEXT" node -e '
             const parsed = JSON.parse(require("fs").readFileSync(0, "utf8").trim() || "[]")
             const versions = Array.isArray(parsed) ? parsed : [parsed]
