@@ -1,0 +1,10 @@
+{
+  "name": "@myfunnow/hakka-storybook",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Helpers shared by the Storybook stories of the workspace packages. Never published.",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  }
+}

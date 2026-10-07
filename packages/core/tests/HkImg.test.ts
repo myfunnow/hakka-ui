@@ -471,3 +471,73 @@ describe('HkImg without a src', () => {
     expect(wrapper.find('.the-placeholder').exists()).toBe(false)
   })
 })
+
+describe('HkImg fallbackAspectRatio', () => {
+  it('should size the box with the fallback ratio when there is no src', () => {
+    const wrapper = mount(HkImg, { props: { src: '', fallbackAspectRatio: 1.8 } })
+
+    expect(aspectRatioOf(wrapper)).toBe('1.8')
+  })
+
+  it('should size the box with the fallback ratio once the image fails', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/broken.png', fallbackAspectRatio: 1.8 } })
+
+    expect(aspectRatioOf(wrapper)).toBe('')
+
+    await wrapper.find('img').trigger('error')
+
+    expect(aspectRatioOf(wrapper)).toBe('1.8')
+  })
+
+  it('should not use the fallback ratio for an image that is still loading or has loaded', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', fallbackAspectRatio: 1.8 } })
+
+    expect(aspectRatioOf(wrapper)).toBe('')
+
+    await finishLoading(wrapper, { width: 400, height: 200 })
+
+    expect(aspectRatioOf(wrapper)).toBe('2')
+  })
+
+  it('should let the aspectRatio prop and an aspect class win over the fallback ratio', () => {
+    const byProp = mount(HkImg, { props: { src: '', aspectRatio: 1, fallbackAspectRatio: 1.8 } })
+    const byClass = mount(HkImg, { props: { src: '', fallbackAspectRatio: 1.8 }, attrs: { class: 'aspect-square' } })
+
+    expect(aspectRatioOf(byProp)).toBe('1')
+    expect(aspectRatioOf(byClass)).toBe('')
+  })
+})
+
+describe('HkImg fadeIn', () => {
+  const SVG = 'https://cdn.myfunnow.com/eatigo-web/prod/images/logo.svg'
+
+  it('should add no fade classes by default', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
+
+    expect(wrapper.find('img').classes()).not.toContain('transition-opacity')
+    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
+  })
+
+  it('should keep the image transparent until it has loaded, then let the transition fade it in', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', fadeIn: true } })
+
+    expect(wrapper.find('img').classes()).toEqual(expect.arrayContaining(['transition-opacity', 'duration-300', 'opacity-0']))
+
+    await finishLoading(wrapper)
+
+    expect(wrapper.find('img').classes()).toEqual(expect.arrayContaining(['transition-opacity', 'duration-300']))
+    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
+  })
+
+  it('should fade the mask layer of an inherit-color svg in, not the hidden img', async () => {
+    const wrapper = mount(HkImg, { props: { src: SVG, inheritColor: true, fadeIn: true } })
+    const mask = () => wrapper.find('[aria-hidden="true"]')
+
+    expect(mask().classes()).toEqual(expect.arrayContaining(['transition-opacity', 'opacity-0']))
+
+    await finishLoading(wrapper)
+
+    expect(mask().classes()).toContain('transition-opacity')
+    expect(mask().classes()).not.toContain('opacity-0')
+  })
+})

@@ -109,6 +109,8 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
+  internal/storybook: {}
+
   packages/core:
     dependencies:
       '@myfunnow/hakka-icons':
@@ -121,6 +123,9 @@ importers:
       '@myfunnow/hakka-config':
         specifier: workspace:*
         version: link:../../internal/config
+      '@myfunnow/hakka-storybook':
+        specifier: workspace:*
+        version: link:../../internal/storybook
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
@@ -145,6 +150,9 @@ importers:
       '@myfunnow/hakka-config':
         specifier: workspace:*
         version: link:../../internal/config
+      '@myfunnow/hakka-storybook':
+        specifier: workspace:*
+        version: link:../../internal/storybook
       rimraf:
         specifier: 'catalog:'
         version: 6.1.3
@@ -173,6 +181,9 @@ importers:
       '@myfunnow/hakka-config':
         specifier: workspace:*
         version: link:../../internal/config
+      '@myfunnow/hakka-storybook':
+        specifier: workspace:*
+        version: link:../../internal/storybook
       '@tsdown/css':
         specifier: ^0.23.0
         version: 0.23.0(jiti@2.7.0)(postcss@8.5.28)(sass@1.105.1)(tsdown@0.23.0)(yaml@2.9.1)
