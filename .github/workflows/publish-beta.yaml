@@ -65,27 +65,17 @@ jobs:
 
           # The sequence follows the target version: the first beta of 0.2.0 is 0.2.0-beta.1, and a new target starts
           # again at 1. The only state is the versions already in the registry, so the repo keeps no counter.
-          # One package is enough to ask: bumpp gives every package the same version.
-          # Before the first publish the package does not exist: npm view then fails and prints a JSON error on stdout,
-          # which is not a version list. Any failure is read as "no beta yet" and the answer is thrown away.
-          # That is safe: if the answer was wrong, the registry rejects a duplicate version or the publish step fails.
+          # Ask for each exact version, starting at 1, and stop at the first one that is not there. Listing the versions
+          # does not work: `npm view <package> versions` finds nothing while the package has only prereleases,
+          # because its default range `*` does not match a prerelease.
+          # One package is enough to ask: bumpp gives every package the same version. Before the first publish the
+          # package does not exist and every answer is empty, so the first beta is -beta.1. Any failed answer is read
+          # as "not there". That is safe: if it was wrong, the registry rejects a duplicate version.
           # If two runs pick the same number, the registry rejects the second one. Run it again.
-          if ! PUBLISHED=$(npm view @myfunnow/hakka-core versions --json --registry https://npm.pkg.github.com 2>/dev/null); then
-            PUBLISHED='[]'
-          fi
-
-          SEQ=$(NEXT="$NEXT" node -e '
-            const parsed = JSON.parse(require("fs").readFileSync(0, "utf8").trim() || "[]")
-            const versions = Array.isArray(parsed) ? parsed : [parsed]
-            const prefix = `${process.env.NEXT}-beta.`
-            const highest = versions
-              .filter(version => version.startsWith(prefix))
-              .map(version => Number(version.slice(prefix.length)))
-              .filter(Number.isInteger)
-              .reduce((acc, current) => Math.max(acc, current), 0)
-
-            console.log(highest + 1)
-          ' <<< "$PUBLISHED")
+          SEQ=1
+          while [[ -n "$(npm view "@myfunnow/hakka-core@$NEXT-beta.$SEQ" version --registry https://npm.pkg.github.com 2>/dev/null || true)" ]]; do
+            SEQ=$((SEQ + 1))
+          done
 
           BETA="$NEXT-beta.$SEQ"
 
