@@ -67,6 +67,24 @@ export const Placeholder: Story = {
 </hk-img>`),
 }
 
+// Without a src there is no natural ratio, so the box would collapse; the fallback ratio keeps its height
+export const FallbackAspectRatio: Story = {
+  args: { src: '', aspectRatio: undefined, fallbackAspectRatio: 1.8 },
+  render: args => ({
+    components: { HkImg },
+    setup: () => ({ args }),
+    template: '<hk-img v-bind="args"><template #placeholder><div class="w-full h-full bg-gray-200" /></template></hk-img>',
+  }),
+  parameters: exampleCode(`<hk-img :src="product.cover" alt="A surprised corgi" :width="320" :fallback-aspect-ratio="1.8">
+  <template #placeholder>
+    <div class="w-full h-full bg-gray-200" />
+  </template>
+</hk-img>`),
+}
+
+// Reload the story to see it: the image is transparent until it has loaded, then fades in over 0.3s
+export const FadeIn: Story = { args: { fadeIn: true } }
+
 export const ErrorFallback: Story = {
   args: { src: '/this-image-does-not-exist.png' },
   render: args => ({

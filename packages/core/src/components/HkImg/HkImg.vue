@@ -4,7 +4,7 @@
       <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
       <img
         ref="img"
-        :class="[LAYER_CLASS, cover ? 'object-cover' : 'object-contain']"
+        :class="[LAYER_CLASS, cover ? 'object-cover' : 'object-contain', fadeClass]"
         :src="src"
         :alt="alt"
         :loading="eager ? 'eager' : 'lazy'"
@@ -27,7 +27,7 @@
         @load="handleLoad"
         @error="handleError"
       />
-      <div aria-hidden="true" :class="[LAYER_CLASS, 'bg-current', MASK_CLASS]" :style="maskStyle" />
+      <div aria-hidden="true" :class="[LAYER_CLASS, 'bg-current', MASK_CLASS, fadeClass]" :style="maskStyle" />
     </template>
     <div v-if="gradient" :class="[LAYER_CLASS, 'hk-img__gradient', 'bg-no-repeat']" :style="{ backgroundImage: `linear-gradient(${gradient})` }" />
     <div v-if="$slots.placeholder && !isLoaded && !isFailed" :class="LAYER_CLASS">
@@ -71,6 +71,10 @@ interface Props {
    * An svg inside an <img> cannot read the page's color, so the shape is used as a CSS mask instead.
    */
   inheritColor?: boolean
+  /** The ratio of the box while there is nothing to show (no `src`, or the image failed), so the layout does not collapse */
+  fallbackAspectRatio?: CssSize
+  /** Fade the image in once it has loaded. The parent decides, for example not while the page hydrates */
+  fadeIn?: boolean
 }
 
 interface Emits {
@@ -87,6 +91,9 @@ const LAYER_CLASS = 'absolute inset-0 w-full h-full'
 // string for the app's UnoCSS to find.
 const MASK_CLASS =
   '[mask:var(--hk-img-mask)_var(--hk-img-mask-position,center)/var(--hk-img-mask-size,contain)_no-repeat] [-webkit-mask:var(--hk-img-mask)_var(--hk-img-mask-position,center)/var(--hk-img-mask-size,contain)_no-repeat]'
+
+// Same duration and easing as the fade of Vuetify's v-img (0.3s, cubic-bezier(0.4, 0, 0.2, 1) is the default easing of transition-opacity)
+const FADE_CLASS = 'transition-opacity duration-300'
 
 // Attributes of the <img> element itself. Everything else, listeners included, belongs to the root like it does on v-img.
 // Names are compared without dashes and in lower case, so `fetchpriority`, `fetchPriority` and `fetch-priority` all match.
@@ -106,6 +113,10 @@ const naturalAspectRatio = ref<number>()
 
 // twMerge lets a downstream class override a default one (`overflow-visible` replaces `overflow-hidden`)
 const rootClass = computed(() => cn(ROOT_CLASS, attrs.class))
+
+// The image starts transparent and loses `opacity-0` once loaded, so the transition runs from 0 to 1.
+// An image that is already loaded when the prop turns on has no `opacity-0` and does not animate.
+const fadeClass = computed(() => (props.fadeIn ? [FADE_CLASS, { 'opacity-0': !isLoaded.value }] : undefined))
 
 const splitAttrs = computed(() => {
   const root: Record<string, unknown> = {}
@@ -143,7 +154,9 @@ const maskStyle = computed(() => ({
 }))
 
 const rootStyle = computed(() => {
-  const aspectRatio = props.aspectRatio ?? (hasAspectClass.value ? undefined : naturalAspectRatio.value)
+  const isEmpty = !props.src || isFailed.value
+  const aspectRatio =
+    props.aspectRatio ?? (hasAspectClass.value ? undefined : (naturalAspectRatio.value ?? (isEmpty ? props.fallbackAspectRatio : undefined)))
 
   return {
     width: toCssSize(props.width),

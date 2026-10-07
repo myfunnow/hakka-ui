@@ -110,13 +110,15 @@ import { HkImg } from '@myfunnow/hakka-core'
 | `width` `height` `maxWidth` `maxHeight` `minWidth` `minHeight` | `string \| number` | A bare number gets `px`, any other string goes to CSS as is                                  |
 | `position`                                                     | `string`           | `object-position` of the image                                                               |
 | `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
+| `fallbackAspectRatio`                                          | `string \| number` | Ratio of the box while there is no `src` or the image failed (see below)                     |
+| `fadeIn`                                                       | `boolean`          | Fade the image in once it has loaded (see below)                                             |
 | `inheritColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
 | `#placeholder`                                                 |                    | Shown until the image has loaded                                                             |
 | `#error`                                                       |                    | Replaces the image when it fails to load                                                     |
 | default slot                                                   |                    | Overlay content                                                                              |
 | `load`, `error`                                                | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
 
-`class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported.
+`class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` replaces the default fade of `v-img`).
 
 #### Attributes of the `<img>`
 
@@ -137,6 +139,7 @@ The root is sized by `aspect-ratio`, in this order:
 1. The `aspectRatio` prop.
 2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
 3. The natural ratio of the image, which is known only after it has loaded.
+4. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
 
 A box that has only a width, or no size at all, has no height until the image has loaded, and in server-rendered HTML not until the page is hydrated. Give it an `aspectRatio` or a `height`. When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
 
@@ -150,6 +153,18 @@ With no `src` the `#placeholder` slot is shown; when the image fails the `#error
   <template #error><div class="size-full bg-gray-200" /></template>
 </hk-img>
 ```
+
+`fallbackAspectRatio` keeps the layout from collapsing while there is nothing to show. A loading image does not use it: its box is empty until the natural ratio is known. A loaded image never uses it, so a ratio that suits the placeholder cannot distort the picture.
+
+#### Fade in (`fade-in`)
+
+`v-img` fades every image in by default. `HkImg` does it only when `fade-in` is set: the image stays transparent until it has loaded, then `transition-opacity duration-300` (the same 0.3s and easing as `v-img`) brings it to full opacity. The parent decides when, because `HkImg` cannot tell whether the page is hydrating:
+
+```vue
+<hk-img src="/images/hero.png" alt="Hero" :fade-in="!isHydrating" />
+```
+
+Do not turn it on during hydration: server-rendered HTML has no `opacity-0` on the image, so a prop that is true at the first client render would hide an image that is already on screen.
 
 #### Single-color svg (`inherit-color`)
 
