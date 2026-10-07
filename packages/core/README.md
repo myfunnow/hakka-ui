@@ -110,12 +110,59 @@ import { HkImg } from '@myfunnow/hakka-core'
 | `width` `height` `maxWidth` `maxHeight` `minWidth` `minHeight` | `string \| number` | A bare number gets `px`, any other string goes to CSS as is                                  |
 | `position`                                                     | `string`           | `object-position` of the image                                                               |
 | `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
+| `inheritColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
 | `#placeholder`                                                 |                    | Shown until the image has loaded                                                             |
 | `#error`                                                       |                    | Replaces the image when it fails to load                                                     |
 | default slot                                                   |                    | Overlay content                                                                              |
 | `load`, `error`                                                | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
 
-`class` and listeners such as `@click` land on the root element. `rounded`, `transition`, `lazy-src`, `srcset`, `sizes`, `crossorigin`, `referrerpolicy` and `draggable` are not supported.
+`class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported.
+
+#### Attributes of the `<img>`
+
+`fetchpriority`, `loading`, `srcset`, `sizes`, `decoding`, `crossorigin`, `referrerpolicy` and `draggable` go to the `<img>` itself, not to the root. The name can be written `fetchpriority`, `fetchPriority` or `fetch-priority`.
+
+```vue
+<hk-img src="/images/hero.png" alt="Hero" fetchpriority="high" :loading="isAboveTheFold ? 'eager' : 'lazy'" />
+```
+
+- `loading` wins over `eager` when both are set.
+- With a `srcset` there is no webp `<source>`: the browser would pick the webp source and ignore the `<img>`'s own candidates.
+- For a `inherit-color` svg the hidden `<img>` always keeps `crossorigin="anonymous"`.
+
+#### Aspect ratio
+
+The root is sized by `aspect-ratio`, in this order:
+
+1. The `aspectRatio` prop.
+2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
+3. The natural ratio of the image, which is known only after it has loaded.
+
+A box that has only a width, or no size at all, has no height until the image has loaded, and in server-rendered HTML not until the page is hydrated. Give it an `aspectRatio` or a `height`. When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
+
+#### Without a src, or when the image fails
+
+With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box, so give the box a size and style the slots:
+
+```vue
+<hk-img :src="product.cover" alt="" :aspect-ratio="1.8" class="w-full">
+  <template #placeholder><div class="size-full bg-gray-200" /></template>
+  <template #error><div class="size-full bg-gray-200" /></template>
+</hk-img>
+```
+
+#### Single-color svg (`inherit-color`)
+
+An svg inside an `<img>` cannot read the page's color, so `class="text-yellow-50"` does not recolor it. With `inherit-color`, `HkImg` paints the svg's shape with the text color instead, by using it as a CSS mask:
+
+```vue
+<hk-img src="/images/logo.svg" alt="Logo" inherit-color class="w-30 text-yellow-50" />
+```
+
+- It is for svg files whose paint is `currentColor`. The mask only keeps the svg's shape and transparency, so an svg with fixed colors becomes one flat shape in the text color (a white detail inside a colored shape disappears). Use the plain `HkImg` for those, and `HkIcon` for icons.
+- The real `<img>` stays in the DOM, hidden, for the `alt` text, the `load` and `error` events and the natural ratio. It is requested with `crossorigin="anonymous"`, and the mask is always fetched with CORS, so an svg on another origin (such as the CDN) must send `Access-Control-Allow-Origin`. Without it the image fails and the `#error` slot is shown. Checked: `cdn.myfunnow.com` sends `access-control-allow-origin: *`.
+- `cover` sizes the mask with `cover` instead of `contain`, `position` positions it. There is no webp `<source>` in this mode.
+- Safari before 15.4 needs the `-webkit-` form of `mask`, which is included.
 
 #### webp
 

@@ -15,8 +15,12 @@ const config: StorybookConfig = {
     config.base = process.env.BASE_PATH || config.base
     // `@/` is each package's own src/, taken from the tsconfig nearest to the importing file
     config.resolve = { ...config.resolve, tsconfigPaths: true }
-    // Same engine and preset the apps use; the default pipeline already scans every .vue file under packages/*/src
-    config.plugins = [...(config.plugins ?? []), UnoCSS({ presets: [presetWind()] })]
+    // Same engine and preset the apps use. The default scan covers every .vue file under packages/*/src but no plain .ts
+    // file, so the story files are added; `include` replaces the default list, which is why the default patterns come first.
+    config.plugins = [
+      ...(config.plugins ?? []),
+      UnoCSS({ presets: [presetWind()], content: { pipeline: { include: [/\.(vue|[jt]sx|html|mdx?)($|\?)/, /\.stories\.ts($|\?)/] } } }),
+    ]
 
     return config
   },

@@ -13,7 +13,19 @@ import { createGenerator, presetWind } from 'unocss'
 // element would lose to Vuetify's !important.
 // Vuetify also writes them with !important: another hakka class for the same property (a state variant such as
 // `disabled:cursor-not-allowed`) cannot override them, so such a property needs a unique name (`enabled:cursor-pointer`).
-const SAME_DECLARATIONS = ['border-0', 'justify-center', 'mb-0', 'mt-5', 'mx-0', 'overflow-hidden', 'px-1', 'py-0', 'rounded', 'text-center']
+const SAME_DECLARATIONS = [
+  'border-0',
+  'justify-center',
+  'mb-0',
+  'mt-5',
+  'mx-0',
+  'opacity-0',
+  'overflow-hidden',
+  'px-1',
+  'py-0',
+  'rounded',
+  'text-center',
+]
 
 const srcDir = new URL('../src/', import.meta.url)
 const vuetifyCss = readFileSync(new URL('../node_modules/vuetify/dist/vuetify.min.css', import.meta.url), 'utf8')
