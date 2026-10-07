@@ -120,6 +120,20 @@ import { HkImg } from '@myfunnow/hakka-core'
 
 `class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` replaces the default fade of `v-img`).
 
+#### Types
+
+The props, events and slots of each component are exported, so a wrapper can build on them:
+
+```ts
+import type { HkImgEmits, HkImgProps, HkImgSlots } from '@myfunnow/hakka-core'
+
+interface Props extends HkImgProps {
+  placeholderClass?: string
+}
+```
+
+`HkPagination` has `HkPaginationProps`, `HkPaginationEmits` and `HkPaginationSlots`. A `v-model` is both a prop and an event, so `page` is in `HkPaginationProps` and `update:page` in `HkPaginationEmits`. The length and ratio types come from `@myfunnow/hakka-shared`, which is installed with this package.
+
 Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnImg`)? Read [`MIGRATION.md`](src/components/HkImg/MIGRATION.md) first.
 
 #### Attributes of the `<img>`

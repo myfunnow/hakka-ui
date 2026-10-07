@@ -1,10 +1,10 @@
 import { twMerge } from 'tailwind-merge'
 import { normalizeClass } from 'vue'
 
-import type { CssSize } from '@/types/css'
+import type { CssLength } from '@myfunnow/hakka-shared'
 
 /** Like v-img: a bare number (or numeric string) gets px, any other string goes to CSS as is. */
-export function toCssSize(size?: CssSize): string | undefined {
+export function toCssLength(size?: CssLength): string | undefined {
   if (size === undefined || size === '') {
     return undefined
   }

@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-interface Hk{{pascalCase name}}Props {}
+import type { Hk{{pascalCase name}}Props } from './types'
 
 defineProps<Hk{{pascalCase name}}Props>()
 </script>

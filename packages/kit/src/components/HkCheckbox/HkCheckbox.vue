@@ -6,10 +6,17 @@
 
 <script lang="ts" setup>
 import { NCheckbox } from 'naive-ui'
-import { useTemplateRef } from 'vue'
+import { useModel, useTemplateRef } from 'vue'
 
-/** Whether the box is ticked. Use it as v-model:checked. */
-const checked = defineModel<boolean>('checked', { default: false })
+import type { HkCheckboxEmits, HkCheckboxProps, HkCheckboxSlots } from './types'
+
+const props = defineProps<HkCheckboxProps>()
+
+defineEmits<HkCheckboxEmits>()
+
+defineSlots<HkCheckboxSlots>()
+
+const checked = useModel(props, 'checked')
 const checkboxRef = useTemplateRef<InstanceType<typeof NCheckbox>>('checkboxRef')
 
 const focus = () => checkboxRef.value?.focus()
