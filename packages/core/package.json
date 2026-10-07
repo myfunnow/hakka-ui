@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",
+    "@myfunnow/hakka-storybook": "workspace:*",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",

@@ -1,10 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { ref } from 'vue'
+import { exampleCode } from '@myfunnow/hakka-storybook'
 
 import HkCheckbox from './HkCheckbox.vue'
-
-// The "Show code" panel is built from args and knows nothing about the `render` template, so `v-model:checked` and the label would be missing
-const exampleCode = (code: string) => ({ docs: { source: { code } } })
 
 const meta: Meta<typeof HkCheckbox> = {
   title: 'Kit/HkCheckbox',

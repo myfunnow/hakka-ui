@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { exampleCode } from '@myfunnow/hakka-storybook'
 
 import HkIcon from './HkIcon.vue'
 import { iconMap } from './iconMap'
 import type { IconName } from './iconNames'
-
-// The "Show code" panel is built from args and knows nothing about the `render` template of AllIcons
-const exampleCode = (code: string) => ({ docs: { source: { code } } })
 
 const meta: Meta<typeof HkIcon> = {
   title: 'Icons/HkIcon',

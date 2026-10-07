@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
+import { exampleCode } from '@myfunnow/hakka-storybook'
 
 import HkImg from './HkImg.vue'
 
@@ -13,10 +14,6 @@ const GRADIENT = 'to bottom, rgba(0,0,0,0) 40%, rgba(0,0,175,0.75)'
 
 // The "Show code" panel is built from the story's args, so it would print the asset address of this dev server
 const shortenAssetUrl = (code: string) => code.replace(/src="[^"]*\/corgi[^"]*\.jpg"/g, 'src="/images/corgi.jpg"')
-
-// The panel is built from args and knows nothing about the `render` template of a story, so the slot content of those
-// stories would be missing. They give their example code themselves.
-const exampleCode = (code: string) => ({ docs: { source: { code } } })
 
 const meta: Meta<typeof HkImg> = {
   title: 'Core/HkImg',
