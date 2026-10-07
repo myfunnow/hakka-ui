@@ -120,6 +120,8 @@ import { HkImg } from '@myfunnow/hakka-core'
 
 `class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` replaces the default fade of `v-img`).
 
+Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnImg`)? Read [`MIGRATION.md`](src/components/HkImg/MIGRATION.md) first.
+
 #### Attributes of the `<img>`
 
 `fetchpriority`, `loading`, `srcset`, `sizes`, `decoding`, `crossorigin`, `referrerpolicy` and `draggable` go to the `<img>` itself, not to the root. The name can be written `fetchpriority`, `fetchPriority` or `fetch-priority`.
