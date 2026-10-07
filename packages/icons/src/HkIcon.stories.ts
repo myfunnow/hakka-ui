@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { exampleCode } from '@myfunnow/hakka-storybook'
+import { storyDocs } from '@myfunnow/hakka-storybook'
 
 import HkIcon from './HkIcon.vue'
 import { iconMap } from './iconMap'
@@ -11,6 +11,18 @@ const meta: Meta<typeof HkIcon> = {
   args: { name: 'add', size: 32 },
   argTypes: {
     name: { control: 'select', options: Object.keys(iconMap) },
+    size: { control: 'text', table: { type: { summary: 'string | number' } } },
+    width: { control: 'text', table: { type: { summary: 'string | number' } } },
+    height: { control: 'text', table: { type: { summary: 'string | number' } } },
+    svgComponent: { control: false },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Small symbols in one style, such as arrows, warnings, add and delete. Pick a name in the Controls table to see the icon. In the Controls table a number such as 24 means pixels, and text such as 2rem is used as it is.',
+      },
+    },
   },
 }
 
@@ -18,10 +30,13 @@ export default meta
 
 type Story = StoryObj<typeof HkIcon>
 
-export const Default: Story = {}
+export const Default: Story = { parameters: storyDocs({ description: 'One icon. Pick another name, or change the size, in the Controls table.' }) }
 
 export const AllIcons: Story = {
-  parameters: exampleCode('<hk-icon v-for="name in names" :key="name" :name="name" :size="32" />'),
+  parameters: storyDocs({
+    description: 'Every icon with its name. Use the name as the name value of the icon.',
+    code: '<hk-icon v-for="name in names" :key="name" :name="name" :size="32" />',
+  }),
   render: () => ({
     components: { HkIcon },
     setup() {

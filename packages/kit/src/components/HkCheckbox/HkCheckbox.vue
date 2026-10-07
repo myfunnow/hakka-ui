@@ -8,6 +8,7 @@
 import { NCheckbox } from 'naive-ui'
 import { useTemplateRef } from 'vue'
 
+/** Whether the box is ticked. Use it as v-model:checked. */
 const checked = defineModel<boolean>('checked', { default: false })
 const checkboxRef = useTemplateRef<InstanceType<typeof NCheckbox>>('checkboxRef')
 
