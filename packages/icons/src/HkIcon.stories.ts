@@ -4,6 +4,9 @@ import HkIcon from './HkIcon.vue'
 import { iconMap } from './iconMap'
 import type { IconName } from './iconNames'
 
+// The "Show code" panel is built from args and knows nothing about the `render` template of AllIcons
+const exampleCode = (code: string) => ({ docs: { source: { code } } })
+
 const meta: Meta<typeof HkIcon> = {
   title: 'Icons/HkIcon',
   component: HkIcon,
@@ -20,6 +23,7 @@ type Story = StoryObj<typeof HkIcon>
 export const Default: Story = {}
 
 export const AllIcons: Story = {
+  parameters: exampleCode('<hk-icon v-for="name in names" :key="name" :name="name" :size="32" />'),
   render: () => ({
     components: { HkIcon },
     setup() {

@@ -3,6 +3,9 @@ import { ref } from 'vue'
 
 import HkPagination from './HkPagination.vue'
 
+// The "Show code" panel is built from args and knows nothing about the `render` template, so `v-model:page` would be missing
+const exampleCode = (code: string) => ({ docs: { source: { code } } })
+
 const meta: Meta<typeof HkPagination> = {
   title: 'Core/HkPagination',
   component: HkPagination,
@@ -22,8 +25,16 @@ export default meta
 
 type Story = StoryObj<typeof HkPagination>
 
-export const Default: Story = {}
+export const Default: Story = {
+  parameters: exampleCode('<hk-pagination v-model:page="page" :total-count="200" :page-size="10" :visible="7" />'),
+}
 
-export const FewPages: Story = { args: { totalCount: 35 } }
+export const FewPages: Story = {
+  args: { totalCount: 35 },
+  parameters: exampleCode('<hk-pagination v-model:page="page" :total-count="35" :page-size="10" :visible="7" />'),
+}
 
-export const NoResults: Story = { args: { totalCount: 0 } }
+export const NoResults: Story = {
+  args: { totalCount: 0 },
+  parameters: exampleCode('<hk-pagination v-model:page="page" :total-count="0" :page-size="10" :visible="7" />'),
+}
