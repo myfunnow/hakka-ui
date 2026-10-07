@@ -38,9 +38,13 @@ import { HkIcon } from '@myfunnow/hakka-icons'
 import { getPageItems } from '@/utils/pagination'
 
 interface HkPaginationProps {
+  /** How many results there are in total, over all pages. */
   totalCount: number
+  /** How many results one page shows. Default: 10. */
   pageSize?: number
+  /** How many page buttons show at once. The rest become "…". Default: 7. */
   visible?: number
+  /** Text that screen readers read for the whole bar (nav) and for the two arrow buttons (prev, next). Default is Traditional Chinese. */
   ariaLabels?: { nav?: string; prev?: string; next?: string }
 }
 
@@ -52,6 +56,7 @@ const ELLIPSIS_CLASS = 'flex items-center justify-center min-w-6 h-6 text-sm tex
 const ITEM_CLASS =
   'flex items-center justify-center min-w-6 h-6 px-1 py-0 border-0 rounded bg-[color:transparent] enabled:cursor-pointer text-sm text-[color:var(--hk-color-text-default)] transition-colors duration-200 hover:enabled:bg-[color:var(--hk-color-primary-hover)] hover:enabled:text-[color:var(--hk-color-on-color)] active:enabled:bg-[color:var(--hk-color-primary-pressed)] active:enabled:text-[color:var(--hk-color-on-color)] aria-[current=page]:bg-[color:var(--hk-color-primary)] aria-[current=page]:text-[color:var(--hk-color-on-color)] disabled:text-[color:var(--hk-color-text-disabled)] disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-[color:var(--hk-color-primary,currentColor)] focus-visible:outline-offset-2'
 
+/** The page that is shown now. The first page is 1. Use it as v-model:page so the page changes when someone clicks. */
 const page = defineModel<number>('page', { default: 1 })
 
 const props = withDefaults(defineProps<HkPaginationProps>(), { pageSize: 10, visible: 7, ariaLabels: () => ({}) })
