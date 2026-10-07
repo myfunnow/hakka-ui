@@ -15,7 +15,7 @@ const GRADIENT = 'to bottom, rgba(0,0,0,0) 40%, rgba(0,0,175,0.75)'
 // The "Show code" panel is built from the story's args, so it would print the asset address of this dev server
 const shortenAssetUrl = (code: string) => code.replace(/src="[^"]*\/corgi[^"]*\.jpg"/g, 'src="/images/corgi.jpg"')
 
-// The docs generator cannot read the `CssSize` alias (`string | number`) and falls back to an object control that starts
+// The docs generator cannot read the `CssLength` alias (`string | number`) and falls back to an object control that starts
 // as `{}`. A text control takes `320` or `50%`: a bare number or numeric string means px, any other string goes to CSS.
 const cssSizeArgType = { control: 'text', table: { type: { summary: 'string | number' } } } as const
 const CSS_SIZE_PROPS = ['aspectRatio', 'fallbackAspectRatio', 'width', 'height', 'maxWidth', 'maxHeight', 'minWidth', 'minHeight'] as const
@@ -23,7 +23,7 @@ const CSS_SIZE_PROPS = ['aspectRatio', 'fallbackAspectRatio', 'width', 'height',
 const meta: Meta<typeof HkImg> = {
   title: 'Core/HkImg',
   component: HkImg,
-  args: { src: PHOTO_SRC, alt: 'A surprised corgi', aspectRatio: 1, width: 320 },
+  args: { src: PHOTO_SRC, alt: 'A surprised corgi', aspectRatio: '1', width: '320' },
   argTypes: Object.fromEntries(CSS_SIZE_PROPS.map(name => [name, cssSizeArgType])),
   parameters: {
     docs: {
@@ -45,7 +45,7 @@ export const Default: Story = {
 }
 
 export const Cover: Story = {
-  args: { cover: true, aspectRatio: '16/9', width: 320 },
+  args: { cover: true, aspectRatio: '16/9', width: '320' },
   parameters: storyDocs({
     description: 'A wide box (16/9) that the picture fills. What does not fit is cut off. Turn cover off to see the whole picture.',
   }),
@@ -94,7 +94,7 @@ export const Placeholder: Story = {
 
 // Without a src there is no natural ratio, so the box would collapse; the fallback ratio keeps its height
 export const FallbackAspectRatio: Story = {
-  args: { src: '', aspectRatio: undefined, fallbackAspectRatio: 1.8 },
+  args: { src: '', aspectRatio: undefined, fallbackAspectRatio: '1.8' },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
@@ -136,7 +136,7 @@ export const ErrorFallback: Story = {
 
 // The shape of the icon takes the text color, here the brand color from the tokens CSS
 export const InheritColor: Story = {
-  args: { src: ICON_SRC, alt: 'Star', inheritColor: true, aspectRatio: 1, width: 96 },
+  args: { src: ICON_SRC, alt: 'Star', inheritColor: true, aspectRatio: '1', width: '96' },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
@@ -150,7 +150,7 @@ export const InheritColor: Story = {
 
 // With no color of its own, the icon takes the text color of the element around it
 export const InheritsTextColor: Story = {
-  args: { src: ICON_SRC, alt: 'Star', inheritColor: true, aspectRatio: 1, width: 96 },
+  args: { src: ICON_SRC, alt: 'Star', inheritColor: true, aspectRatio: '1', width: '96' },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),

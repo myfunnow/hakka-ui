@@ -8,7 +8,7 @@ import type { IconName } from './iconNames'
 const meta: Meta<typeof HkIcon> = {
   title: 'Icons/HkIcon',
   component: HkIcon,
-  args: { name: 'add', size: 32 },
+  args: { name: 'add', size: '32' },
   argTypes: {
     name: { control: 'select', options: Object.keys(iconMap) },
     size: { control: 'text', table: { type: { summary: 'string | number' } } },
