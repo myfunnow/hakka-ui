@@ -110,7 +110,7 @@ import { HkImg } from '@myfunnow/hakka-core'
 | `width` `height` `maxWidth` `maxHeight` `minWidth` `minHeight` | `string \| number` | A bare number gets `px`, any other string goes to CSS as is                                  |
 | `position`                                                     | `string`           | `object-position` of the image                                                               |
 | `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
-| `inheritColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
+| `currentColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
 | `#placeholder`                                                 |                    | Shown until the image has loaded                                                             |
 | `#error`                                                       |                    | Replaces the image when it fails to load                                                     |
 | default slot                                                   |                    | Overlay content                                                                              |
@@ -128,7 +128,7 @@ import { HkImg } from '@myfunnow/hakka-core'
 
 - `loading` wins over `eager` when both are set.
 - With a `srcset` there is no webp `<source>`: the browser would pick the webp source and ignore the `<img>`'s own candidates.
-- For a `inherit-color` svg the hidden `<img>` always keeps `crossorigin="anonymous"`.
+- For a `current-color` svg the hidden `<img>` always keeps `crossorigin="anonymous"`.
 
 #### Aspect ratio
 
@@ -151,12 +151,12 @@ With no `src` the `#placeholder` slot is shown; when the image fails the `#error
 </hk-img>
 ```
 
-#### Single-color svg (`inherit-color`)
+#### Single-color svg (`current-color`)
 
-An svg inside an `<img>` cannot read the page's color, so `class="text-yellow-50"` does not recolor it. With `inherit-color`, `HkImg` paints the svg's shape with the text color instead, by using it as a CSS mask:
+An svg inside an `<img>` cannot read the page's color, so `class="text-yellow-50"` does not recolor it. With `current-color`, `HkImg` paints the svg's shape with the text color instead, by using it as a CSS mask:
 
 ```vue
-<hk-img src="/images/logo.svg" alt="Logo" inherit-color class="w-30 text-yellow-50" />
+<hk-img src="/images/logo.svg" alt="Logo" current-color class="w-30 text-yellow-50" />
 ```
 
 - It is for svg files whose paint is `currentColor`. The mask only keeps the svg's shape and transparency, so an svg with fixed colors becomes one flat shape in the text color (a white detail inside a colored shape disappears). Use the plain `HkImg` for those, and `HkIcon` for icons.

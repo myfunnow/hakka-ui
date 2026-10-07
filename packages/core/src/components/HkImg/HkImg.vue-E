@@ -1,6 +1,6 @@
 <template>
   <div v-bind="splitAttrs.root" :class="rootClass" :style="rootStyle">
-    <picture v-if="src && !isFailed && !inheritColor" :class="LAYER_CLASS">
+    <picture v-if="src && !isFailed && !currentColor" :class="LAYER_CLASS">
       <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
       <img
         ref="img"
@@ -70,7 +70,7 @@ interface Props {
    * For a single-color svg: paint its shape with the current text color, so `class="text-yellow-50"` recolors it.
    * An svg inside an <img> cannot read the page's color, so the shape is used as a CSS mask instead.
    */
-  inheritColor?: boolean
+  currentColor?: boolean
 }
 
 interface Emits {

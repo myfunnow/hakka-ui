@@ -5,7 +5,7 @@ import HkImg from './HkImg.vue'
 // Vite serves these files and turns each URL into an asset address, so the stories need no network. `.href` is an
 // absolute URL on purpose: a root-relative `.jpg` would make HkImg look for a `.webp` twin that Storybook does not build.
 const PHOTO_SRC = new URL('./corgi.jpg', import.meta.url).href
-// A copy of the hakka `star` icon: one color (`currentColor`) and no fixed colors, which is what `inherit-color` is for
+// A copy of the hakka `star` icon: one color (`currentColor`) and no fixed colors, which is what `current-color` is for
 const ICON_SRC = new URL('./star.svg', import.meta.url).href
 
 // Dark enough at the bottom for white text to stay readable on the white fur of the photo
@@ -83,25 +83,25 @@ export const ErrorFallback: Story = {
 }
 
 // The shape of the icon takes the text color, here the brand color from the tokens CSS
-export const InheritColor: Story = {
-  args: { src: ICON_SRC, alt: 'Star', inheritColor: true, aspectRatio: 1, width: 96 },
+export const CurrentColor: Story = {
+  args: { src: ICON_SRC, alt: 'Star', currentColor: true, aspectRatio: 1, width: 96 },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
     template: '<hk-img v-bind="args" class="text-pink" />',
   }),
-  parameters: exampleCode(`<hk-img src="/icons/star.svg" alt="Star" inherit-color :aspect-ratio="1" :width="96" class="text-pink" />`),
+  parameters: exampleCode(`<hk-img src="/icons/star.svg" alt="Star" current-color :aspect-ratio="1" :width="96" class="text-pink" />`),
 }
 
 // With no color of its own, the icon takes the text color of the element around it
 export const InheritsTextColor: Story = {
-  args: { src: ICON_SRC, alt: 'Star', inheritColor: true, aspectRatio: 1, width: 96 },
+  args: { src: ICON_SRC, alt: 'Star', currentColor: true, aspectRatio: 1, width: 96 },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
     template: '<div class="p-6 bg-neutral-800 text-white"><hk-img v-bind="args" /></div>',
   }),
   parameters: exampleCode(`<div class="p-6 bg-neutral-800 text-white">
-  <hk-img src="/icons/star.svg" alt="Star" inherit-color :aspect-ratio="1" :width="96" />
+  <hk-img src="/icons/star.svg" alt="Star" current-color :aspect-ratio="1" :width="96" />
 </div>`),
 }
