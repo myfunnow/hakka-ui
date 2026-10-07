@@ -1,11 +1,11 @@
 {
-  "name": "@myfunnow/hakka-core",
+  "name": "@myfunnow/hakka-shared",
   "version": "0.1.0",
-  "description": "FunNow Group Vue components without a UI library dependency",
+  "description": "Types and helpers shared by the hakka-ui packages",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/myfunnow/hakka-ui.git",
-    "directory": "packages/core"
+    "directory": "packages/shared"
   },
   "files": [
     "/dist",
@@ -25,24 +25,12 @@
   },
   "scripts": {
     "build": "rimraf dist && tsdown",
-    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
-  },
-  "dependencies": {
-    "@myfunnow/hakka-icons": "workspace:*",
-    "@myfunnow/hakka-shared": "workspace:*",
-    "tailwind-merge": "^3.7.0"
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",
-    "@myfunnow/hakka-storybook": "workspace:*",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "catalog:",
-    "vue": "catalog:",
-    "vue-tsc": "catalog:",
-    "vuetify": "3.7.12"
-  },
-  "peerDependencies": {
-    "vue": "^3.5.0"
+    "typescript": "catalog:"
   }
 }

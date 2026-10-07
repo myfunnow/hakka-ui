@@ -1,0 +1,3 @@
+{
+  "extends": "@myfunnow/hakka-config/tsconfig.package.json"
+}

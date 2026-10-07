@@ -28,6 +28,9 @@
     "generate": "node scripts/generateIcons.mjs",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
+  "dependencies": {
+    "@myfunnow/hakka-shared": "workspace:*"
+  },
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",
     "@myfunnow/hakka-storybook": "workspace:*",

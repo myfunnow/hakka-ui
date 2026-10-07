@@ -1,3 +1,5 @@
 export { default as HkImg } from './components/HkImg/HkImg.vue'
 export { default as HkPagination } from './components/HkPagination/HkPagination.vue'
 export { getPageItems, type PageItem } from '@/utils/pagination'
+export type { HkImgEmits, HkImgProps, HkImgSlots } from './components/HkImg/types'
+export type { HkPaginationEmits, HkPaginationProps, HkPaginationSlots } from './components/HkPagination/types'
