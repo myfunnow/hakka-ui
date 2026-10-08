@@ -231,18 +231,52 @@ describe('HkImg layout', () => {
     expect(wrapper.find('img').classes()).toContain('min-h-0')
   })
 
-  it('should wrap its content like an inline image instead of filling the parent, with or without an img', async () => {
+  it('should wrap an img like an inline image instead of filling the parent', () => {
     const withImg = mount(HkImg, { props: { src: '/a.png' } })
     const sized = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1 } })
+
+    for (const wrapper of [withImg, sized]) {
+      expect(wrapper.classes()).toContain('inline-flex')
+      expect(wrapper.classes()).not.toContain('w-full')
+    }
+  })
+
+  it('should fill the parent with a 1.8 : 1 shape when there is no src or the image failed', async () => {
     const withoutSrc = mount(HkImg, { props: { src: '' } })
     const failed = mount(HkImg, { props: { src: '/broken.png' } })
 
+    expect(failed.classes()).not.toContain('w-full')
+    expect(failed.classes()).not.toContain('aspect-[1.8]')
+
     await failed.find('img').trigger('error')
 
-    for (const wrapper of [withImg, sized, withoutSrc, failed]) {
-      expect(wrapper.classes()).toContain('inline-flex')
-      expect(wrapper.classes()).not.toContain('grow')
+    for (const wrapper of [withoutSrc, failed]) {
+      expect(wrapper.classes()).toEqual(expect.arrayContaining(['w-full', 'aspect-[1.8]']))
     }
+  })
+
+  it('should let the call site replace the width and the shape of an empty box', () => {
+    const wrapper = mount(HkImg, { props: { src: '' }, attrs: { class: 'w-[150px] aspect-square' } })
+
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['w-[150px]', 'aspect-square']))
+    expect(wrapper.classes()).not.toContain('w-full')
+    expect(wrapper.classes()).not.toContain('aspect-[1.8]')
+  })
+
+  it.each(['aspect-1', 'aspect-1.8', 'aspect-2', 'aspect-video', 'aspect-[4/1]'])(
+    'should let the call site replace the default shape of an empty box with %s',
+    shape => {
+      const wrapper = mount(HkImg, { props: { src: '' }, attrs: { class: shape } })
+
+      expect(wrapper.classes()).toContain(shape)
+      expect(wrapper.classes()).not.toContain('aspect-[1.8]')
+    }
+  )
+
+  it('should let the aspectRatio prop win over the default shape of an empty box', () => {
+    const wrapper = mount(HkImg, { props: { src: '', aspectRatio: 1 } })
+
+    expect(aspectRatioOf(wrapper)).toBe('1')
   })
 
   it('should let a call site fill the parent with a width class', () => {
@@ -494,42 +528,6 @@ describe('HkImg without a src', () => {
 
     expect(wrapper.find('.the-error').exists()).toBe(true)
     expect(wrapper.find('.the-placeholder').exists()).toBe(false)
-  })
-})
-
-describe('HkImg fallbackAspectRatio', () => {
-  it('should size the box with the fallback ratio when there is no src', () => {
-    const wrapper = mount(HkImg, { props: { src: '', fallbackAspectRatio: 1.8 } })
-
-    expect(aspectRatioOf(wrapper)).toBe('1.8')
-  })
-
-  it('should size the box with the fallback ratio once the image fails', async () => {
-    const wrapper = mount(HkImg, { props: { src: '/broken.png', fallbackAspectRatio: 1.8 } })
-
-    expect(aspectRatioOf(wrapper)).toBe('')
-
-    await wrapper.find('img').trigger('error')
-
-    expect(aspectRatioOf(wrapper)).toBe('1.8')
-  })
-
-  it('should not use the fallback ratio for an image that is still loading or has loaded', async () => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png', fallbackAspectRatio: 1.8 } })
-
-    expect(aspectRatioOf(wrapper)).toBe('')
-
-    await finishLoading(wrapper, { width: 400, height: 200 })
-
-    expect(aspectRatioOf(wrapper)).toBe('')
-  })
-
-  it('should let the aspectRatio prop and an aspect class win over the fallback ratio', () => {
-    const byProp = mount(HkImg, { props: { src: '', aspectRatio: 1, fallbackAspectRatio: 1.8 } })
-    const byClass = mount(HkImg, { props: { src: '', fallbackAspectRatio: 1.8 }, attrs: { class: 'aspect-square' } })
-
-    expect(aspectRatioOf(byProp)).toBe('1')
-    expect(aspectRatioOf(byClass)).toBe('')
   })
 })
 

@@ -11,7 +11,7 @@ export interface HkImgProps {
   cover?: boolean
   /** Load the image right away. By default it loads when it comes close to the screen. */
   eager?: boolean
-  /** Shape of the box: width divided by height, for example 1 (square) or 1.8. Without it, the box takes the shape of the image, like a plain img does. */
+  /** Shape of the box: width divided by height, for example 1 (square) or 1.8. Without it, the box takes the shape of the image, like a plain img does. It also gives the placeholder and the error message their shape, so give it when the picture might be missing. */
   aspectRatio?: AspectRatio
   /** Which part of the image stays in view when it is cut off, for example "top" or "left center". */
   position?: string
@@ -22,8 +22,6 @@ export interface HkImgProps {
    * An svg inside an <img> cannot read the page's color, so the shape is used as a CSS mask instead.
    */
   inheritColor?: boolean
-  /** Shape of the box while there is nothing to show (no src, or the image failed), so the page does not jump. Same values as aspectRatio. */
-  fallbackAspectRatio?: AspectRatio
   /** Fade the image in after it has loaded. On by default; use :fade-in="false" to turn it off. Images already in the server-rendered page are shown at once, with no fade. */
   fadeIn?: boolean
 }

@@ -18,13 +18,12 @@ const shortenAssetUrl = (code: string) => code.replace(/src="[^"]*\/corgi[^"]*\.
 // The docs generator cannot read the `AspectRatio` alias (`string | number`) and falls back to an object control that starts
 // as `{}`. A text control takes `1`, `1.8` or `16/9`.
 const aspectRatioArgType = { control: 'text', table: { type: { summary: 'string | number' } } } as const
-const ASPECT_RATIO_PROPS = ['aspectRatio', 'fallbackAspectRatio'] as const
 
 const meta: Meta<typeof HkImg> = {
   title: 'Core/HkImg',
   component: HkImg,
   args: { src: PHOTO_SRC, alt: 'A surprised corgi', aspectRatio: '1', class: 'w-80' },
-  argTypes: Object.fromEntries(ASPECT_RATIO_PROPS.map(name => [name, aspectRatioArgType])),
+  argTypes: { aspectRatio: aspectRatioArgType },
   parameters: {
     docs: {
       description: {
@@ -78,15 +77,17 @@ export const GradientWithContent: Story = {
 
 // The story uses an empty src so the image never loads and the placeholder stays visible; the example shows a real src
 export const Placeholder: Story = {
-  args: { src: '' },
+  args: { src: '', class: '' },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
-    template: '<hk-img v-bind="args"><template #placeholder><div class="w-full h-full bg-gray-200" /></template></hk-img>',
+    template:
+      '<div class="w-96 border border-dashed border-gray-400"><hk-img v-bind="args"><template #placeholder><div class="w-full h-full bg-gray-200" /></template></hk-img></div>',
   }),
   parameters: storyDocs({
-    description: 'The picture has no address, so a gray block shows in its place. People see this block while a picture is still loading.',
-    code: `<hk-img src="/images/corgi.jpg" alt="A surprised corgi" :aspect-ratio="1" class="w-80">
+    description:
+      'The picture has no address, so a gray block shows in its place. With no picture the box fills the width of what holds it (the dashed frame, 24rem wide), and aspectRatio gives it its shape (here a square). The same shape is used by the picture, so the page does not jump when it loads.',
+    code: `<hk-img src="/images/corgi.jpg" alt="A surprised corgi" :aspect-ratio="1">
   <template #placeholder>
     <div class="w-full h-full bg-gray-200" />
   </template>
@@ -94,18 +95,19 @@ export const Placeholder: Story = {
   }),
 }
 
-// Without a src there is no picture to size the box, so it would collapse; the fallback ratio keeps its height
-export const FallbackAspectRatio: Story = {
-  args: { src: '', aspectRatio: undefined, fallbackAspectRatio: '1.8' },
+// No shape is given, so the empty box uses its own 1.8 : 1 shape and does not collapse
+export const PlaceholderWithoutShape: Story = {
+  args: { src: '', class: '', aspectRatio: undefined },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
-    template: '<hk-img v-bind="args"><template #placeholder><div class="w-full h-full bg-gray-200" /></template></hk-img>',
+    template:
+      '<div class="w-96 border border-dashed border-gray-400"><hk-img v-bind="args"><template #placeholder><div class="w-full h-full bg-gray-200" /></template></hk-img></div>',
   }),
   parameters: storyDocs({
     description:
-      'No picture and no height are given, so the box would have no height. fallbackAspectRatio keeps its shape (here 1.8 wide to 1 tall).',
-    code: `<hk-img :src="product.cover" alt="A surprised corgi" class="w-80" :fallback-aspect-ratio="1.8">
+      'No shape is given (no aspectRatio, no aspect class). A box with no picture still keeps a 1.8 wide to 1 tall shape and the width of what holds it, so a missing or broken picture never leaves a hole in the page. Give aspectRatio to use the shape of your picture instead.',
+    code: `<hk-img :src="product.cover" alt="A surprised corgi">
   <template #placeholder>
     <div class="w-full h-full bg-gray-200" />
   </template>
@@ -122,16 +124,17 @@ export const FadeIn: Story = {
 }
 
 export const ErrorFallback: Story = {
-  args: { src: '/this-image-does-not-exist.png' },
+  args: { src: '/this-image-does-not-exist.png', class: '' },
   render: args => ({
     components: { HkImg },
     setup: () => ({ args }),
     template:
-      '<hk-img v-bind="args"><template #error><div class="grid place-items-center w-full h-full bg-gray-200">Image unavailable</div></template></hk-img>',
+      '<div class="w-96 border border-dashed border-gray-400"><hk-img v-bind="args"><template #error><div class="grid place-items-center w-full h-full bg-gray-200">Image unavailable</div></template></hk-img></div>',
   }),
   parameters: storyDocs({
-    description: 'The picture address is wrong, so the picture cannot load. A message shows in its place.',
-    code: `<hk-img src="/images/missing.png" alt="A surprised corgi" :aspect-ratio="1" class="w-80">
+    description:
+      'The picture address is wrong, so the picture cannot load. A message shows in its place, and the box fills the width of what holds it (the dashed frame, 24rem wide).',
+    code: `<hk-img src="/images/missing.png" alt="A surprised corgi" :aspect-ratio="1">
   <template #error>
     <div class="grid place-items-center w-full h-full bg-gray-200">Image unavailable</div>
   </template>
