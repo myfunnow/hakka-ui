@@ -6,6 +6,7 @@ Notes for whoever (human or agent) moves a downstream app to `HkImg`. Written 20
 
 - Downstream is **not migrated yet**. hakka-ui still has unfinished work.
 - `EtgImg`, `NdImg` and `FnImg` are **not deleted**. Later their insides are swapped for `HkImg` with fixed props, so call sites do not change.
+- `HkImg` has no `width`, `height`, `max-*` or `min-*` props. The box is sized with classes on the component, and it does not fill its parent unless the call site adds `w-full`. A wrapper that receives these props from its own call sites turns them into classes (or `style`).
 - Existing `<v-img>` call sites are **not touched**. They keep using Vuetify's `v-img`, and `.v-img` CSS and specs that name `v-img` stay as they are. The section "From `v-img`" below is only for the day someone replaces a `v-img` by hand; it is not part of the current plan.
 - Icons go through `HkIcon`. An svg that is an image (illustration, logo, loading) goes through `HkImg`; a single-color one uses `inherit-color` (colored by `text-*`, no color prop, no per-color files, no app-local logo wrapper).
 - `fade-in` is on by default, like `v-img`. `HkImg` adds `opacity-0` only after it is mounted, so server HTML is never hidden and a wrapper needs no `isHydrating` check. Turn it off with `:fade-in="false"`.
@@ -16,7 +17,7 @@ Notes for whoever (human or agent) moves a downstream app to `HkImg`. Written 20
 
 Not part of the current plan: existing `<v-img>` call sites stay as they are (see the decisions above). Read this section when a `v-img` is replaced by hand later, and decide per call site.
 
-Audit of 89 `<v-img>` tags in 69 `.vue` files (multi-line tags included). Every prop and slot used exists in `HkImg`: `src`, `cover`, `max-width`, `height`, `gradient`, `aspect-ratio`, `width`, `position`, `min-*`, `alt`, `class`, `style`, `@click`, `#placeholder` (9 tags), `#error` (2 tags). `@click` and other listeners land on the root, as on `v-img`.
+Audit of 89 `<v-img>` tags in 69 `.vue` files (multi-line tags included). `HkImg` has `src`, `cover`, `gradient`, `aspect-ratio`, `position`, `alt`, `class`, `style`, `@click`, `#placeholder` (9 tags) and `#error` (2 tags). It has **no** `width`, `height`, `max-width`, `max-height`, `min-width` or `min-height` props: each becomes a class (`w-*`, `h-*`, `max-w-*`, `max-h-*`, `min-w-*`, `min-h-*`). A bare number such as `width="200"` no longer means px, so write `w-50` or `w-[200px]`. `@click` and other listeners land on the root, as on `v-img`.
 
 Things to handle before swapping:
 

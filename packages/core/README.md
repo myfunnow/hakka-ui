@@ -100,23 +100,22 @@ import { HkImg } from '@myfunnow/hakka-core'
 </template>
 ```
 
-| Prop / slot / event                                            | Type               | Description                                                                                  |
-| -------------------------------------------------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
-| `src`                                                          | `string`           | Required                                                                                     |
-| `alt`                                                          | `string`           | Goes on the `<img>` only, the root gets no `role` or `aria-label`                            |
-| `cover`                                                        | `boolean`          | `object-fit: cover`, default is `contain`                                                    |
-| `eager`                                                        | `boolean`          | `loading="eager"`, default is `lazy`                                                         |
-| `aspectRatio`                                                  | `string \| number` | CSS `aspect-ratio` of the root, otherwise the natural ratio once the image has loaded        |
-| `width` `height` `maxWidth` `maxHeight` `minWidth` `minHeight` | `string \| number` | A bare number gets `px`, any other string goes to CSS as is                                  |
-| `position`                                                     | `string`           | `object-position` of the image                                                               |
-| `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
-| `fallbackAspectRatio`                                          | `string \| number` | Ratio of the box while there is no `src` or the image failed (see below)                     |
-| `fadeIn`                                                       | `boolean`          | Fade the image in once it has loaded, default `true` (see below)                             |
-| `inheritColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
-| `#placeholder`                                                 |                    | Shown until the image has loaded                                                             |
-| `#error`                                                       |                    | Replaces the image when it fails to load                                                     |
-| default slot                                                   |                    | Overlay content                                                                              |
-| `load`, `error`                                                | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
+| Prop / slot / event   | Type               | Description                                                                                  |
+| --------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
+| `src`                 | `string`           | Required                                                                                     |
+| `alt`                 | `string`           | Goes on the `<img>` only, the root gets no `role` or `aria-label`                            |
+| `cover`               | `boolean`          | `object-fit: cover`, default is `contain`                                                    |
+| `eager`               | `boolean`          | `loading="eager"`, default is `lazy`                                                         |
+| `aspectRatio`         | `string \| number` | CSS `aspect-ratio` of the root. Without it the box takes the size of the picture (see below) |
+| `position`            | `string`           | `object-position` of the image                                                               |
+| `gradient`            | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
+| `fallbackAspectRatio` | `string \| number` | Ratio of the box while there is no `src` or the image failed (see below)                     |
+| `fadeIn`              | `boolean`          | Fade the image in once it has loaded, default `true` (see below)                             |
+| `inheritColor`        | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
+| `#placeholder`        |                    | Shown until the image has loaded                                                             |
+| `#error`              |                    | Replaces the image when it fails to load                                                     |
+| default slot          |                    | Overlay content                                                                              |
+| `load`, `error`       | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
 
 `class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` is the fade of `v-img`).
 
@@ -148,32 +147,38 @@ Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnI
 - With a `srcset` there is no webp `<source>`: the browser would pick the webp source and ignore the `<img>`'s own candidates.
 - For a `inherit-color` svg the hidden `<img>` always keeps `crossorigin="anonymous"`.
 
-#### Aspect ratio
+#### Size of the box
 
-The box is sized in one of two ways.
+There are no `width` or `height` props: size the box with classes (`w-*`, `h-*`, `max-w-*`, `max-h-*`, `aspect-*`) on the component. The picture always fills the box (`cover` crops it, otherwise the whole picture shows), and the box wraps its content like an inline image does. The box does **not** fill the parent by itself: add `w-full` for that.
 
-**The box is sized by something you gave it.** This is when there is an `aspectRatio` prop, an `aspect-*` class, or a `height`. The image fills the box as a layer, and the root takes `aspect-ratio` in this order:
+```vue
+<hk-img :src="product.cover" alt="" class="w-full max-h-80" />
+```
+
+The box gets its size from whatever you give it, and the picture decides the rest:
+
+| You give                    | Box                                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| nothing                     | The size of the picture, at most the width of the parent. A small icon stays small.    |
+| `w-*`                       | That width, with the height that follows from the picture                              |
+| `h-*`                       | That height, with the width that follows from the picture (add `w-full` to choose it)  |
+| `aspectRatio` or `aspect-*` | That shape, with the width of the picture (add `w-full` or a `w-*` to choose it)       |
+| `w-*` and `h-*`             | Exactly that. CSS ignores `aspect-ratio` when both sizes are set                       |
+| `max-w-*` or `max-h-*`      | The box never gets bigger than that, and the picture shrinks to fit (`cover` crops it) |
+
+The `<img>` is always in the normal flow, so it shows in server-rendered HTML before any script runs. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
+
+The root takes `aspect-ratio` in this order:
 
 1. The `aspectRatio` prop.
 2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
-3. With only a `height`: the natural ratio of the image, once it has loaded.
-4. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
+3. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
 
-**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` stays in the normal flow and the box wraps it like it wraps a plain `<img>`: the picture keeps its own size, and is only made smaller when it is wider than its parent. A `width` makes the picture that wide, with the height that follows from it. This works in server-rendered HTML before any script runs, so the picture shows at once. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
-
-In this mode:
-
-- The box is as wide as the picture, not the parent. To fill the parent, give the box a ratio or a height.
-- `cover` has nothing to crop. Use an `aspectRatio` or a `height` to crop the picture.
-- Overlay content (the default slot) covers the picture.
-- A `maxHeight` prop is also given to the `<img>`, so the picture shrinks with its box. A `max-h-*` class on the component is not, so use the prop.
-- A height set by a class (`class="h-300px"`) keeps the shape of the picture inside that height, and the box becomes as wide as the picture. It is not cropped. Use the `height` prop to crop.
-
-When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
+Overlay content (the default slot) covers the picture.
 
 #### Without a src, or when the image fails
 
-With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box, so give the box a size and style the slots:
+With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box. With no `src`, or after a failure, nothing in the box gives it a width, so set one (`w-full`, `w-*`) and a shape (`aspectRatio`, `fallbackAspectRatio`), then style the slots:
 
 ```vue
 <hk-img :src="product.cover" alt="" :aspect-ratio="1.8" class="w-full">
@@ -199,7 +204,7 @@ An svg inside an `<img>` cannot read the page's color, so `class="text-yellow-50
 ```
 
 - It is for svg files whose paint is `currentColor`. The mask only keeps the svg's shape and transparency, so an svg with fixed colors becomes one flat shape in the text color (a white detail inside a colored shape disappears). Use the plain `HkImg` for those, and `HkIcon` for icons.
-- The real `<img>` stays in the DOM, hidden, for the `alt` text, the `load` and `error` events and the natural ratio. It is requested with `crossorigin="anonymous"`, and the mask is always fetched with CORS, so an svg on another origin (such as the CDN) must send `Access-Control-Allow-Origin`. Without it the image fails and the `#error` slot is shown. Checked: `cdn.myfunnow.com` sends `access-control-allow-origin: *`.
+- The real `<img>` stays in the DOM, hidden, for the `alt` text, the `load` and `error` events and the size of the box. It is requested with `crossorigin="anonymous"`, and the mask is always fetched with CORS, so an svg on another origin (such as the CDN) must send `Access-Control-Allow-Origin`. Without it the image fails and the `#error` slot is shown. Checked: `cdn.myfunnow.com` sends `access-control-allow-origin: *`.
 - `cover` sizes the mask with `cover` instead of `contain`, `position` positions it. There is no webp `<source>` in this mode.
 - Safari before 15.4 needs the `-webkit-` form of `mask`, which is included.
 

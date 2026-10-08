@@ -1,4 +1,4 @@
-import type { AspectRatio, CssLength } from '@myfunnow/hakka-shared'
+import type { AspectRatio } from '@myfunnow/hakka-shared'
 
 // Props, slots and events follow Vuetify's v-img so a call site can swap one for the other.
 // The comments on the props are shown in Storybook, so they are written for people who do not code.
@@ -13,18 +13,6 @@ export interface HkImgProps {
   eager?: boolean
   /** Shape of the box: width divided by height, for example 1 (square) or 1.8. Without it, the box takes the shape of the image, like a plain img does. */
   aspectRatio?: AspectRatio
-  /** Width of the box. A number means pixels (320). Text is used as it is ("50%", "20rem"). */
-  width?: CssLength
-  /** Height of the box. A number means pixels (320). Text is used as it is ("50%", "20rem"). */
-  height?: CssLength
-  /** The box never gets wider than this. A number means pixels, text is used as it is. */
-  maxWidth?: CssLength
-  /** The box never gets taller than this. A number means pixels, text is used as it is. */
-  maxHeight?: CssLength
-  /** The box never gets narrower than this. A number means pixels, text is used as it is. */
-  minWidth?: CssLength
-  /** The box never gets shorter than this. A number means pixels, text is used as it is. */
-  minHeight?: CssLength
   /** Which part of the image stays in view when it is cut off, for example "top" or "left center". */
   position?: string
   /** A color layer on top of the image. Write what goes inside the CSS linear-gradient(), for example: to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4) */

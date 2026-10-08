@@ -194,38 +194,13 @@ describe('HkImg loading states', () => {
 })
 
 describe('HkImg layout', () => {
-  it('should turn bare numbers into px and pass other sizes through', () => {
-    const wrapper = mount(HkImg, {
-      props: { src: '/a.png', width: 200, height: '50%', minWidth: '10', maxWidth: '100%', minHeight: 20, maxHeight: 'none' },
-    })
-
-    expect(wrapper.element.style).toMatchObject({
-      width: '200px',
-      height: '50%',
-      minWidth: '10px',
-      maxWidth: '100%',
-      minHeight: '20px',
-      maxHeight: 'none',
-    })
-  })
-
   it('should size the root with the aspectRatio prop', () => {
     const wrapper = mount(HkImg, { props: { src: '/a.png', aspectRatio: '16/9' } })
 
     expect(aspectRatioOf(wrapper)).toBe('16/9')
   })
 
-  it('should size the root with the natural ratio once the image has loaded when only the height is given', async () => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png', height: 100 } })
-
-    expect(aspectRatioOf(wrapper)).toBe('')
-
-    await finishLoading(wrapper, { width: 400, height: 200 })
-
-    expect(aspectRatioOf(wrapper)).toBe('2')
-  })
-
-  it('should prefer the aspectRatio prop over the natural ratio', async () => {
+  it('should keep the aspectRatio prop after the image has loaded', async () => {
     const wrapper = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1.5 } })
 
     await finishLoading(wrapper, { width: 400, height: 200 })
@@ -234,50 +209,57 @@ describe('HkImg layout', () => {
   })
 
   it.each([
-    { name: 'no size at all', props: {}, attrs: {}, inFlow: true },
-    { name: 'only a width', props: { width: 200 }, attrs: {}, inFlow: true },
-    { name: 'a class that is not about the ratio', props: {}, attrs: { class: 'w-full h-300px' }, inFlow: true },
-    { name: 'an aspectRatio prop', props: { aspectRatio: 1.5 }, attrs: {}, inFlow: false },
-    { name: 'an aspect class', props: {}, attrs: { class: 'aspect-square' }, inFlow: false },
-    { name: 'a height prop', props: { height: 100 }, attrs: {}, inFlow: false },
-  ])('should put the img in the normal flow only when nothing sizes the box: $name', ({ props, attrs, inFlow }) => {
+    { name: 'no size at all', props: {}, attrs: {} },
+    { name: 'a class width', props: {}, attrs: { class: 'w-200px' } },
+    { name: 'a class height', props: {}, attrs: { class: 'h-300px' } },
+    { name: 'an aspectRatio prop', props: { aspectRatio: 1.5 }, attrs: {} },
+    { name: 'an aspect class', props: {}, attrs: { class: 'aspect-square' } },
+    { name: 'a class max height', props: {}, attrs: { class: 'max-h-100px' } },
+  ])('should keep the img in the normal flow and fill the box: $name', ({ props, attrs }) => {
     const wrapper = mount(HkImg, { props: { src: '/a.png', ...props }, attrs })
-    const picture = wrapper.find('picture')
+    const img = wrapper.find('img')
 
-    expect(picture.classes().includes('contents')).toBe(inFlow)
-    expect(picture.classes().includes('absolute')).toBe(!inFlow)
-    expect(wrapper.find('img').classes().includes('max-w-full')).toBe(inFlow)
-    expect(wrapper.find('img').classes().includes('inset-0')).toBe(!inFlow)
-    expect(wrapper.find('img').classes().includes('absolute')).toBe(!inFlow)
+    expect(wrapper.find('picture').classes()).toContain('contents')
+    expect(img.classes()).toEqual(expect.arrayContaining(['block', 'w-full', 'h-full']))
+    expect(img.classes()).not.toContain('absolute')
   })
 
-  it('should hand the maxHeight to the img too when the img is in the normal flow', () => {
-    const inFlow = mount(HkImg, { props: { src: '/a.png', maxHeight: 100 } })
-    const layered = mount(HkImg, { props: { src: '/a.png', maxHeight: 100, aspectRatio: 1 } })
+  it('should be a flex column with a shrinkable img, so a max-h class on the root shrinks the picture', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: 'max-h-100px' } })
 
-    expect(inFlow.find('img').element.style.maxHeight).toBe('100px')
-    expect(layered.find('img').element.style.maxHeight).toBe('')
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['inline-flex', 'flex-col', 'max-h-100px']))
+    expect(wrapper.find('img').classes()).toContain('min-h-0')
   })
 
-  it('should wrap an img in the normal flow like an inline image, and keep the full-width box without an img', async () => {
+  it('should wrap its content like an inline image instead of filling the parent, with or without an img', async () => {
     const withImg = mount(HkImg, { props: { src: '/a.png' } })
+    const sized = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1 } })
     const withoutSrc = mount(HkImg, { props: { src: '' } })
     const failed = mount(HkImg, { props: { src: '/broken.png' } })
 
     await failed.find('img').trigger('error')
 
-    expect(withImg.classes()).toContain('inline-block')
-    expect(withImg.classes()).not.toContain('grow')
-    expect(withoutSrc.classes()).toContain('grow')
-    expect(failed.classes()).toContain('grow')
+    for (const wrapper of [withImg, sized, withoutSrc, failed]) {
+      expect(wrapper.classes()).toContain('inline-flex')
+      expect(wrapper.classes()).not.toContain('grow')
+    }
   })
 
-  it('should lay overlay content over an img in the normal flow, and in the flow next to a layered img', () => {
-    const inFlow = mount(HkImg, { props: { src: '/a.png' }, slots: { default: '<span>Sold out</span>' } })
-    const layered = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1 }, slots: { default: '<span>Sold out</span>' } })
+  it('should let a call site fill the parent with a width class', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: 'w-full' } })
 
-    expect(inFlow.find('.hk-img__content').classes()).toContain('absolute')
-    expect(layered.find('.hk-img__content').classes()).not.toContain('absolute')
+    expect(wrapper.classes()).toContain('w-full')
+  })
+
+  it('should lay overlay content over the img, and keep it in the flow when there is no img', () => {
+    const slots = { default: '<span>Sold out</span>' }
+    const withImg = mount(HkImg, { props: { src: '/a.png' }, slots })
+    const sized = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1 }, slots })
+    const withoutSrc = mount(HkImg, { props: { src: '' }, slots })
+
+    expect(withImg.find('.hk-img__content').classes()).toContain('absolute')
+    expect(sized.find('.hk-img__content').classes()).toContain('absolute')
+    expect(withoutSrc.find('.hk-img__content').classes()).not.toContain('absolute')
   })
 
   it('should keep the img in the normal flow after it has loaded, with no ratio written on the root', async () => {
@@ -481,24 +463,12 @@ describe('HkImg aspect ratio classes', () => {
     { name: 'a variant group with aspect-unset', cls: 'w-full sm:(aspect-unset h-300px)' },
     { name: 'a class array', cls: ['w-full', 'aspect-1'] },
     { name: 'a class object', cls: { 'aspect-square': true, hidden: false } },
-  ])('should leave the ratio to $name instead of writing the natural ratio inline', async ({ cls }) => {
+  ])('should leave the ratio to $name', async ({ cls }) => {
     const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: cls } })
 
     await finishLoading(wrapper, { width: 400, height: 200 })
 
     expect(aspectRatioOf(wrapper)).toBe('')
-  })
-
-  it.each([
-    { name: 'no class', cls: undefined },
-    { name: 'classes about something else', cls: 'w-full h-auto rounded' },
-    { name: 'a class that only contains the word', cls: 'no-aspect-here' },
-  ])('should still use the natural ratio with $name when a height is given', async ({ cls }) => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png', height: 100 }, attrs: { class: cls } })
-
-    await finishLoading(wrapper, { width: 400, height: 200 })
-
-    expect(aspectRatioOf(wrapper)).toBe('2')
   })
 
   it('should let the aspectRatio prop win over an aspect class', () => {
