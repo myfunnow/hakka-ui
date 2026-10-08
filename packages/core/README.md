@@ -159,9 +159,15 @@ The box is sized in one of two ways.
 3. With only a `height`: the natural ratio of the image, once it has loaded.
 4. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
 
-**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` stays in the normal flow and sizes the box like a plain `<img>` does: the width of the box and the height that follows from the picture. This works in server-rendered HTML before any script runs, so the picture shows at once. Like a plain `<img>`, the height is 0 until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
+**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` stays in the normal flow and the box wraps it like it wraps a plain `<img>`: the picture keeps its own size, and is only made smaller when it is wider than its parent. A `width` makes the picture that wide, with the height that follows from it. This works in server-rendered HTML before any script runs, so the picture shows at once. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
 
-In this mode `cover` has nothing to crop. A `maxHeight` prop is also given to the `<img>`; a `max-h-*` class on the component is not, so use the prop. A `height` set by a class (`class="h-300px"`) works, and `cover` and `contain` apply to it.
+In this mode:
+
+- The box is as wide as the picture, not the parent. To fill the parent, give the box a ratio or a height.
+- `cover` has nothing to crop. Use an `aspectRatio` or a `height` to crop the picture.
+- Overlay content (the default slot) covers the picture.
+- A `maxHeight` prop is also given to the `<img>`, so the picture shrinks with its box. A `max-h-*` class on the component is not, so use the prop.
+- A height set by a class (`class="h-300px"`) keeps the shape of the picture inside that height, and the box becomes as wide as the picture. It is not cropped. Use the `height` prop to crop.
 
 When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
 

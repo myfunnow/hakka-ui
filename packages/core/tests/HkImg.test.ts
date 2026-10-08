@@ -246,7 +246,8 @@ describe('HkImg layout', () => {
 
     expect(picture.classes().includes('contents')).toBe(inFlow)
     expect(picture.classes().includes('absolute')).toBe(!inFlow)
-    expect(wrapper.find('img').classes().includes('w-full')).toBe(true)
+    expect(wrapper.find('img').classes().includes('max-w-full')).toBe(inFlow)
+    expect(wrapper.find('img').classes().includes('inset-0')).toBe(!inFlow)
     expect(wrapper.find('img').classes().includes('absolute')).toBe(!inFlow)
   })
 
@@ -256,6 +257,27 @@ describe('HkImg layout', () => {
 
     expect(inFlow.find('img').element.style.maxHeight).toBe('100px')
     expect(layered.find('img').element.style.maxHeight).toBe('')
+  })
+
+  it('should wrap an img in the normal flow like an inline image, and keep the full-width box without an img', async () => {
+    const withImg = mount(HkImg, { props: { src: '/a.png' } })
+    const withoutSrc = mount(HkImg, { props: { src: '' } })
+    const failed = mount(HkImg, { props: { src: '/broken.png' } })
+
+    await failed.find('img').trigger('error')
+
+    expect(withImg.classes()).toContain('inline-block')
+    expect(withImg.classes()).not.toContain('grow')
+    expect(withoutSrc.classes()).toContain('grow')
+    expect(failed.classes()).toContain('grow')
+  })
+
+  it('should lay overlay content over an img in the normal flow, and in the flow next to a layered img', () => {
+    const inFlow = mount(HkImg, { props: { src: '/a.png' }, slots: { default: '<span>Sold out</span>' } })
+    const layered = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1 }, slots: { default: '<span>Sold out</span>' } })
+
+    expect(inFlow.find('.hk-img__content').classes()).toContain('absolute')
+    expect(layered.find('.hk-img__content').classes()).not.toContain('absolute')
   })
 
   it('should keep the img in the normal flow after it has loaded, with no ratio written on the root', async () => {
