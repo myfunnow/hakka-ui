@@ -43,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+import { useMounted } from '@vueuse/core'
 import { computed, normalizeClass, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 import { cn, toCssLength, toCssUrl } from '@/utils/css'
@@ -77,7 +78,7 @@ defineSlots<HkImgSlots>()
 const attrs = useAttrs()
 const imgRef = useTemplateRef<HTMLImageElement>('img')
 
-const isMounted = ref(false)
+const isMounted = useMounted()
 const isLoaded = ref(false)
 const isFailed = ref(false)
 const naturalAspectRatio = ref<number>()
@@ -169,8 +170,6 @@ watch(
 // An SSR image has already loaded or failed before hydration, so its load and error events are
 // gone. Read the result from the element once mounted.
 onMounted(() => {
-  isMounted.value = true
-
   const img = imgRef.value
 
   if (!img?.complete) {
