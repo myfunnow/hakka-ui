@@ -92,7 +92,7 @@ export const Placeholder: Story = {
   }),
 }
 
-// Without a src there is no natural ratio, so the box would collapse; the fallback ratio keeps its height
+// Without a src there is no picture to size the box, so it would collapse; the fallback ratio keeps its height
 export const FallbackAspectRatio: Story = {
   args: { src: '', aspectRatio: undefined, fallbackAspectRatio: '1.8' },
   render: args => ({

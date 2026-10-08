@@ -106,7 +106,7 @@ import { HkImg } from '@myfunnow/hakka-core'
 | `alt`                                                          | `string`           | Goes on the `<img>` only, the root gets no `role` or `aria-label`                            |
 | `cover`                                                        | `boolean`          | `object-fit: cover`, default is `contain`                                                    |
 | `eager`                                                        | `boolean`          | `loading="eager"`, default is `lazy`                                                         |
-| `aspectRatio`                                                  | `string \| number` | CSS `aspect-ratio` of the root, otherwise the natural ratio once the image has loaded        |
+| `aspectRatio`                                                  | `string \| number` | CSS `aspect-ratio` of the root. Without it the box takes the size of the picture (see below) |
 | `width` `height` `maxWidth` `maxHeight` `minWidth` `minHeight` | `string \| number` | A bare number gets `px`, any other string goes to CSS as is                                  |
 | `position`                                                     | `string`           | `object-position` of the image                                                               |
 | `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
@@ -152,14 +152,13 @@ Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnI
 
 The box is sized in one of two ways.
 
-**The box is sized by something you gave it.** This is when there is an `aspectRatio` prop, an `aspect-*` class, or a `height`. The image fills the box as a layer, and the root takes `aspect-ratio` in this order:
+**The box is sized by something you gave it.** This is when there is an `aspectRatio` prop, an `aspect-*` class, or a `height`. The image fills the box (`cover` crops it, otherwise the whole picture shows), and the root takes `aspect-ratio` in this order:
 
 1. The `aspectRatio` prop.
 2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
-3. With only a `height`: the natural ratio of the image, once it has loaded.
-4. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
+3. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
 
-**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` stays in the normal flow and the box wraps it like it wraps a plain `<img>`: the picture keeps its own size, and is only made smaller when it is wider than its parent. A `width` makes the picture that wide, with the height that follows from it. This works in server-rendered HTML before any script runs, so the picture shows at once. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
+**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` is always in the normal flow, so it shows in server-rendered HTML before any script runs. Here the box wraps it like it wraps a plain `<img>`: the picture keeps its own size, and is only made smaller when it is wider than its parent. A `width` makes the picture that wide, with the height that follows from it. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
 
 In this mode:
 
@@ -199,7 +198,7 @@ An svg inside an `<img>` cannot read the page's color, so `class="text-yellow-50
 ```
 
 - It is for svg files whose paint is `currentColor`. The mask only keeps the svg's shape and transparency, so an svg with fixed colors becomes one flat shape in the text color (a white detail inside a colored shape disappears). Use the plain `HkImg` for those, and `HkIcon` for icons.
-- The real `<img>` stays in the DOM, hidden, for the `alt` text, the `load` and `error` events and the natural ratio. It is requested with `crossorigin="anonymous"`, and the mask is always fetched with CORS, so an svg on another origin (such as the CDN) must send `Access-Control-Allow-Origin`. Without it the image fails and the `#error` slot is shown. Checked: `cdn.myfunnow.com` sends `access-control-allow-origin: *`.
+- The real `<img>` stays in the DOM, hidden, for the `alt` text, the `load` and `error` events and the size of the box. It is requested with `crossorigin="anonymous"`, and the mask is always fetched with CORS, so an svg on another origin (such as the CDN) must send `Access-Control-Allow-Origin`. Without it the image fails and the `#error` slot is shown. Checked: `cdn.myfunnow.com` sends `access-control-allow-origin: *`.
 - `cover` sizes the mask with `cover` instead of `contain`, `position` positions it. There is no webp `<source>` in this mode.
 - Safari before 15.4 needs the `-webkit-` form of `mask`, which is included.
 
