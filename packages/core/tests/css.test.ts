@@ -1,28 +1,4 @@
-import { cn, toCssLength, toCssUrl } from '@/utils/css'
-
-describe('toCssLength', () => {
-  it.each([
-    [16, '16px'],
-    [0, '0px'],
-    ['16', '16px'],
-  ])('should add px to the bare number %j', (size, expected) => {
-    const result = toCssLength(size)
-
-    expect(result).toBe(expected)
-  })
-
-  it.each(['100%', 'auto', '12rem'])('should pass %s through to CSS', size => {
-    const result = toCssLength(size)
-
-    expect(result).toBe(size)
-  })
-
-  it.each([undefined, ''])('should return undefined for %j', size => {
-    const result = toCssLength(size)
-
-    expect(result).toBeUndefined()
-  })
-})
+import { cn, toCssUrl } from '@/utils/css'
 
 describe('cn', () => {
   it.each([

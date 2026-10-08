@@ -194,21 +194,6 @@ describe('HkImg loading states', () => {
 })
 
 describe('HkImg layout', () => {
-  it('should turn bare numbers into px and pass other sizes through', () => {
-    const wrapper = mount(HkImg, {
-      props: { src: '/a.png', width: 200, height: '50%', minWidth: '10', maxWidth: '100%', minHeight: 20, maxHeight: 'none' },
-    })
-
-    expect(wrapper.element.style).toMatchObject({
-      width: '200px',
-      height: '50%',
-      minWidth: '10px',
-      maxWidth: '100%',
-      minHeight: '20px',
-      maxHeight: 'none',
-    })
-  })
-
   it('should size the root with the aspectRatio prop', () => {
     const wrapper = mount(HkImg, { props: { src: '/a.png', aspectRatio: '16/9' } })
 
@@ -225,11 +210,11 @@ describe('HkImg layout', () => {
 
   it.each([
     { name: 'no size at all', props: {}, attrs: {} },
-    { name: 'only a width', props: { width: 200 }, attrs: {} },
+    { name: 'a class width', props: {}, attrs: { class: 'w-200px' } },
     { name: 'a class height', props: {}, attrs: { class: 'h-300px' } },
     { name: 'an aspectRatio prop', props: { aspectRatio: 1.5 }, attrs: {} },
     { name: 'an aspect class', props: {}, attrs: { class: 'aspect-square' } },
-    { name: 'a height prop', props: { height: 100 }, attrs: {} },
+    { name: 'a class max height', props: {}, attrs: { class: 'max-h-100px' } },
   ])('should keep the img in the normal flow and fill the box: $name', ({ props, attrs }) => {
     const wrapper = mount(HkImg, { props: { src: '/a.png', ...props }, attrs })
     const img = wrapper.find('img')
@@ -239,10 +224,11 @@ describe('HkImg layout', () => {
     expect(img.classes()).not.toContain('absolute')
   })
 
-  it('should hand the maxHeight to the img too, because a box with no height would not shrink it', () => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png', maxHeight: 100 } })
+  it('should be a flex column with a shrinkable img, so a max-h class on the root shrinks the picture', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: 'max-h-100px' } })
 
-    expect(wrapper.find('img').element.style.maxHeight).toBe('100px')
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['inline-flex', 'flex-col', 'max-h-100px']))
+    expect(wrapper.find('img').classes()).toContain('min-h-0')
   })
 
   it('should wrap its content like an inline image instead of filling the parent, with or without an img', async () => {
@@ -254,7 +240,7 @@ describe('HkImg layout', () => {
     await failed.find('img').trigger('error')
 
     for (const wrapper of [withImg, sized, withoutSrc, failed]) {
-      expect(wrapper.classes()).toContain('inline-block')
+      expect(wrapper.classes()).toContain('inline-flex')
       expect(wrapper.classes()).not.toContain('grow')
     }
   })
