@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { useMounted } from '@vueuse/core'
-import { computed, normalizeClass, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
 
 import { cn, toCssUrl } from '@/utils/css'
 import { getWebpSrc, readWebpEnvironment } from '@/utils/image'
@@ -44,6 +44,7 @@ import type { HkImgEmits, HkImgProps, HkImgSlots } from './types'
 const ROOT_CLASS = 'hk-img relative inline-flex flex-col align-top max-w-full max-h-full overflow-hidden'
 // Gradient, placeholder, error and the inherit-color mask stack over the image
 const LAYER_CLASS = 'absolute inset-0 w-full h-full'
+const EMPTY_CLASS = 'w-full aspect-[1.8]'
 // The <img> fills the box. A box with no height of its own takes the height that follows from the picture.
 const IMG_CLASS = 'block w-full h-full min-h-0'
 // The mask is one shorthand, with a -webkit- copy for Safari before 15.4. The address, position and size arrive as CSS
@@ -97,10 +98,6 @@ const splitAttrs = computed(() => {
   return { root, img }
 })
 
-// `aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`: a call site that sets the ratio with a class keeps it.
-// An inline ratio would beat the class, and a CSS variable fallback would tie with custom values such as `aspect-1.8`.
-const hasAspectClass = computed(() => /(^|[\s:(])aspect-/.test(normalizeClass(attrs.class)))
-
 // <picture> only negotiates browser support, it doesn't check that the webp file exists, and a
 // 404 on the selected <source> does not fall back to the <img>. The app's build guarantees the
 // file, so there is deliberately no runtime fallback here.
@@ -113,7 +110,10 @@ const webpSrc = computed(() => (splitAttrs.value.img.srcset || props.inheritColo
 // the picture inside the box.
 const hasImg = computed(() => Boolean(props.src) && !isFailed.value)
 
-const rootClass = computed(() => cn(ROOT_CLASS, attrs.class))
+// Without an <img> (no src, or it failed) nothing gives the box a size, and a failed picture should not leave a hole of 0
+// height. So the box fills the parent and keeps a 1.8 : 1 shape, like the default placeholder of eatigo's etg-img. Classes
+// from the call site (`w-*`, `aspect-*`) replace these two, and the `aspectRatio` prop is inline, so it wins over both.
+const rootClass = computed(() => cn(ROOT_CLASS, !hasImg.value && EMPTY_CLASS, attrs.class))
 
 // Overlay content covers the <img>. With no <img> it is part of the flow and gives the box its size.
 const contentClass = computed(() => (hasImg.value ? 'hk-img__content absolute inset-0 flex' : 'hk-img__content relative'))
@@ -137,22 +137,11 @@ const maskStyle = computed(() => ({
   '--hk-img-mask-size': props.cover ? 'cover' : undefined,
 }))
 
-// The prop wins, then an `aspect-*` class (left to the stylesheet), and the fallback only while there is nothing to show
-const aspectRatio = computed(() => {
-  if (props.aspectRatio !== undefined) {
-    return props.aspectRatio
-  }
-
-  if (hasAspectClass.value) {
-    return undefined
-  }
-
-  return hasImg.value ? undefined : props.fallbackAspectRatio
-})
-
+// Only the prop writes an inline ratio. An `aspect-*` class (`aspect-square`, `md:aspect-video`) is left to the stylesheet,
+// so a responsive ratio works. With both, the inline prop wins.
 const rootStyle = computed(() => {
   return {
-    aspectRatio: aspectRatio.value === undefined ? undefined : `${aspectRatio.value}`,
+    aspectRatio: props.aspectRatio === undefined ? undefined : `${props.aspectRatio}`,
   }
 })
 

@@ -100,22 +100,21 @@ import { HkImg } from '@myfunnow/hakka-core'
 </template>
 ```
 
-| Prop / slot / event   | Type               | Description                                                                                  |
-| --------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
-| `src`                 | `string`           | Required                                                                                     |
-| `alt`                 | `string`           | Goes on the `<img>` only, the root gets no `role` or `aria-label`                            |
-| `cover`               | `boolean`          | `object-fit: cover`, default is `contain`                                                    |
-| `eager`               | `boolean`          | `loading="eager"`, default is `lazy`                                                         |
-| `aspectRatio`         | `string \| number` | CSS `aspect-ratio` of the root. Without it the box takes the size of the picture (see below) |
-| `position`            | `string`           | `object-position` of the image                                                               |
-| `gradient`            | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
-| `fallbackAspectRatio` | `string \| number` | Ratio of the box while there is no `src` or the image failed (see below)                     |
-| `fadeIn`              | `boolean`          | Fade the image in once it has loaded, default `true` (see below)                             |
-| `inheritColor`        | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
-| `#placeholder`        |                    | Shown until the image has loaded                                                             |
-| `#error`              |                    | Replaces the image when it fails to load                                                     |
-| default slot          |                    | Overlay content                                                                              |
-| `load`, `error`       | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
+| Prop / slot / event | Type               | Description                                                                                  |
+| ------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
+| `src`               | `string`           | Required                                                                                     |
+| `alt`               | `string`           | Goes on the `<img>` only, the root gets no `role` or `aria-label`                            |
+| `cover`             | `boolean`          | `object-fit: cover`, default is `contain`                                                    |
+| `eager`             | `boolean`          | `loading="eager"`, default is `lazy`                                                         |
+| `aspectRatio`       | `string \| number` | CSS `aspect-ratio` of the root. Without it the box takes the size of the picture (see below) |
+| `position`          | `string`           | `object-position` of the image                                                               |
+| `gradient`          | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
+| `fadeIn`            | `boolean`          | Fade the image in once it has loaded, default `true` (see below)                             |
+| `inheritColor`      | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
+| `#placeholder`      |                    | Shown until the image has loaded                                                             |
+| `#error`            |                    | Replaces the image when it fails to load                                                     |
+| default slot        |                    | Overlay content                                                                              |
+| `load`, `error`     | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
 
 `class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` is the fade of `v-img`).
 
@@ -149,7 +148,7 @@ Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnI
 
 #### Size of the box
 
-There are no `width` or `height` props: size the box with classes (`w-*`, `h-*`, `max-w-*`, `max-h-*`, `aspect-*`) on the component. The picture always fills the box (`cover` crops it, otherwise the whole picture shows), and the box wraps its content like an inline image does. The box does **not** fill the parent by itself: add `w-full` for that.
+There are no `width` or `height` props: size the box with classes (`w-*`, `h-*`, `max-w-*`, `max-h-*`, `aspect-*`) on the component. The picture always fills the box (`cover` crops it, otherwise the whole picture shows), and the box wraps its content like an inline image does. With a picture the box does **not** fill the parent by itself: add `w-full` for that. (With no `src`, or after a failure, it does, see below.)
 
 ```vue
 <hk-img :src="product.cover" alt="" class="w-full max-h-80" />
@@ -168,26 +167,24 @@ The box gets its size from whatever you give it, and the picture decides the res
 
 The `<img>` is always in the normal flow, so it shows in server-rendered HTML before any script runs. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
 
-The root takes `aspect-ratio` in this order:
-
-1. The `aspectRatio` prop.
-2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
-3. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
+The shape comes from the `aspectRatio` prop or an `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`). The class is left to the stylesheet, so a responsive ratio works. With both, the prop wins.
 
 Overlay content (the default slot) covers the picture.
 
 #### Without a src, or when the image fails
 
-With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box. With no `src`, or after a failure, nothing in the box gives it a width, so set one (`w-full`, `w-*`) and a shape (`aspectRatio`, `fallbackAspectRatio`), then style the slots:
+With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box.
+
+Nobody sees this state while the picture works, so it must be safe without any setting: with no picture the box fills its parent (`w-full`) and keeps a 1.8 : 1 shape (`aspect-[1.8]`, the default placeholder shape of eatigo's `etg-img`), so a missing or broken picture does not leave a hole in the page. To keep the shape of your picture instead, give the box an `aspectRatio` or an `aspect-*` class: the picture and the empty state then share it, so the box does not change shape when the picture loads. A `w-*` or `aspect-*` class on the component replaces the default, and the `aspectRatio` prop wins over both.
 
 ```vue
-<hk-img :src="product.cover" alt="" :aspect-ratio="1.8" class="w-full">
+<hk-img :src="product.cover" alt="" :aspect-ratio="1.8">
   <template #placeholder><div class="size-full bg-gray-200" /></template>
   <template #error><div class="size-full bg-gray-200" /></template>
 </hk-img>
 ```
 
-`fallbackAspectRatio` keeps the layout from collapsing while there is nothing to show. A loading image does not use it: the `<img>` sizes the box once the browser knows the picture. A loaded image never uses it, so a ratio that suits the placeholder cannot distort the picture.
+A picture that is still loading is not an empty box: the `<img>` sizes the box once the browser knows the picture. Give the box an `aspectRatio` to hold its place until then.
 
 #### Fade in (`fade-in`)
 
