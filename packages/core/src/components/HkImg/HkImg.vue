@@ -1,33 +1,19 @@
 <template>
   <div v-bind="splitAttrs.root" :class="rootClass" :style="rootStyle">
-    <picture v-if="src && !isFailed && !inheritColor" :class="LAYER_CLASS">
-      <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
-      <img
-        ref="img"
-        :class="[LAYER_CLASS, cover ? 'object-cover' : 'object-contain', fadeClass]"
-        :src="src"
-        :alt="alt"
-        :loading="eager ? 'eager' : 'lazy'"
-        :style="{ objectPosition: position }"
-        v-bind="splitAttrs.img"
-        @load="handleLoad"
-        @error="handleError"
-      />
-    </picture>
-    <template v-else-if="src && !isFailed">
-      <!-- The real <img> stays for the alt text, the load and error events and the natural ratio, but is not painted -->
-      <img
-        ref="img"
-        :class="[LAYER_CLASS, 'opacity-0']"
-        :src="src"
-        :alt="alt"
-        :loading="eager ? 'eager' : 'lazy'"
-        v-bind="splitAttrs.img"
-        crossorigin="anonymous"
-        @load="handleLoad"
-        @error="handleError"
-      />
-      <div aria-hidden="true" :class="[LAYER_CLASS, 'bg-current', MASK_CLASS, fadeClass]" :style="maskStyle" />
+    <template v-if="src && !isFailed">
+      <picture :class="LAYER_CLASS">
+        <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
+        <img
+          ref="img"
+          :src="src"
+          :alt="alt"
+          :loading="eager ? 'eager' : 'lazy'"
+          v-bind="{ ...splitAttrs.img, ...imgAttrs }"
+          @load="handleLoad"
+          @error="handleError"
+        />
+      </picture>
+      <div v-if="inheritColor" aria-hidden="true" :class="[LAYER_CLASS, 'bg-current', MASK_CLASS, fadeClass]" :style="maskStyle" />
     </template>
     <div v-if="gradient" :class="[LAYER_CLASS, 'hk-img__gradient', 'bg-no-repeat']" :style="{ backgroundImage: `linear-gradient(${gradient})` }" />
     <div v-if="$slots.placeholder && !isLoaded && !isFailed" :class="LAYER_CLASS">
@@ -118,7 +104,20 @@ const hasAspectClass = computed(() => /(^|[\s:(])aspect-/.test(normalizeClass(at
 // 404 on the selected <source> does not fall back to the <img>. The app's build guarantees the
 // file, so there is deliberately no runtime fallback here.
 // With a srcset the browser would pick the webp source and ignore the img's own candidates, so there is no webp then.
-const webpSrc = computed(() => (splitAttrs.value.img.srcset ? undefined : getWebpSrc(props.src, readWebpEnvironment())))
+const webpSrc = computed(() => (splitAttrs.value.img.srcset || props.inheritColor ? undefined : getWebpSrc(props.src, readWebpEnvironment())))
+
+// With inherit-color the real <img> stays for the alt text, the load and error events and the natural ratio, but is not
+// painted: the mask layer is. The mask needs CORS, so the crossorigin attribute is fixed there.
+const imgAttrs = computed(() => {
+  if (props.inheritColor) {
+    return { class: [LAYER_CLASS, 'opacity-0'], crossorigin: 'anonymous' as const }
+  }
+
+  return {
+    class: [LAYER_CLASS, props.cover ? 'object-cover' : 'object-contain', fadeClass.value],
+    style: { objectPosition: props.position },
+  }
+})
 
 const maskStyle = computed(() => ({
   '--hk-img-mask': toCssUrl(props.src),
