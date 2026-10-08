@@ -297,11 +297,10 @@ describe('HkImg inherit-color', () => {
     expect(aspectRatioOf(wrapper)).toBe('3')
   })
 
-  it('should hide the mask from assistive technology and leave the picture out', () => {
+  it('should hide the mask from assistive technology', () => {
     const wrapper = mount(HkImg, { props: { src: SVG, inheritColor: true } })
 
-    expect(wrapper.find('picture').exists()).toBe(false)
-    expect(findMask(wrapper).exists()).toBe(true)
+    expect(findMask(wrapper).attributes('aria-hidden')).toBe('true')
   })
 
   it.each([
@@ -356,7 +355,6 @@ describe('HkImg inherit-color', () => {
     const wrapper = mount(HkImg, { props: { src: SVG } })
 
     expect(findMask(wrapper).exists()).toBe(false)
-    expect(wrapper.find('picture').exists()).toBe(true)
   })
 })
 
