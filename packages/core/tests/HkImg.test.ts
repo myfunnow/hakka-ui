@@ -1,5 +1,6 @@
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { createSSRApp, nextTick } from 'vue'
+import { renderToString } from 'vue/server-renderer'
 
 import HkImg from '@/components/HkImg/HkImg.vue'
 
@@ -511,15 +512,9 @@ describe('HkImg fallbackAspectRatio', () => {
 describe('HkImg fadeIn', () => {
   const SVG = 'https://cdn.myfunnow.com/eatigo-web/prod/images/logo.svg'
 
-  it('should add no fade classes by default', () => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
-
-    expect(wrapper.find('img').classes()).not.toContain('transition-opacity')
-    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
-  })
-
   it('should keep the image transparent until it has loaded, then let the transition fade it in', async () => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png', fadeIn: true } })
+    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
+    await nextTick()
 
     expect(wrapper.find('img').classes()).toEqual(expect.arrayContaining(['transition-opacity', 'duration-300', 'opacity-0']))
 
@@ -529,9 +524,42 @@ describe('HkImg fadeIn', () => {
     expect(wrapper.find('img').classes()).not.toContain('opacity-0')
   })
 
+  it('should add no fade classes when fadeIn is false', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', fadeIn: false } })
+    await nextTick()
+
+    expect(wrapper.find('img').classes()).not.toContain('transition-opacity')
+    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
+  })
+
+  it('should leave the image visible in server-rendered HTML', async () => {
+    const html = await renderToString(createSSRApp(HkImg, { src: '/a.png' }))
+
+    expect(html).not.toContain('opacity-0')
+  })
+
+  it('should not hide an image that had already loaded when it was mounted', async () => {
+    stubImageState({ complete: true, naturalWidth: 400 })
+
+    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
+    await nextTick()
+
+    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
+  })
+
+  it('should fade the next image in when the src changes', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
+    await finishLoading(wrapper)
+
+    await wrapper.setProps({ src: '/b.png' })
+
+    expect(wrapper.find('img').classes()).toContain('opacity-0')
+  })
+
   it('should fade the mask layer of an inherit-color svg in, not the hidden img', async () => {
-    const wrapper = mount(HkImg, { props: { src: SVG, inheritColor: true, fadeIn: true } })
+    const wrapper = mount(HkImg, { props: { src: SVG, inheritColor: true } })
     const mask = () => wrapper.find('[aria-hidden="true"]')
+    await nextTick()
 
     expect(mask().classes()).toEqual(expect.arrayContaining(['transition-opacity', 'opacity-0']))
 

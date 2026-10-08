@@ -36,7 +36,7 @@ export interface HkImgProps {
   inheritColor?: boolean
   /** Shape of the box while there is nothing to show (no src, or the image failed), so the page does not jump. Same values as aspectRatio. */
   fallbackAspectRatio?: AspectRatio
-  /** Fade the image in after it has loaded. The parent decides when, for example not while the page is still starting up. */
+  /** Fade the image in after it has loaded. On by default; use :fade-in="false" to turn it off. Images already in the server-rendered page are shown at once, with no fade. */
   fadeIn?: boolean
 }
 

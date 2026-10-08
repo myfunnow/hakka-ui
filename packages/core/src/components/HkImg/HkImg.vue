@@ -69,7 +69,7 @@ const IMG_ATTRIBUTES = new Set(['crossorigin', 'decoding', 'draggable', 'fetchpr
 
 defineOptions({ inheritAttrs: false })
 
-const props = defineProps<HkImgProps>()
+const props = withDefaults(defineProps<HkImgProps>(), { fadeIn: true })
 const emit = defineEmits<HkImgEmits>()
 
 defineSlots<HkImgSlots>()
@@ -77,6 +77,7 @@ defineSlots<HkImgSlots>()
 const attrs = useAttrs()
 const imgRef = useTemplateRef<HTMLImageElement>('img')
 
+const isMounted = ref(false)
 const isLoaded = ref(false)
 const isFailed = ref(false)
 const naturalAspectRatio = ref<number>()
@@ -84,9 +85,10 @@ const naturalAspectRatio = ref<number>()
 // twMerge lets a downstream class override a default one (`overflow-visible` replaces `overflow-hidden`)
 const rootClass = computed(() => cn(ROOT_CLASS, attrs.class))
 
-// The image starts transparent and loses `opacity-0` once loaded, so the transition runs from 0 to 1.
-// An image that is already loaded when the prop turns on has no `opacity-0` and does not animate.
-const fadeClass = computed(() => (props.fadeIn ? [FADE_CLASS, { 'opacity-0': !isLoaded.value }] : undefined))
+// Once mounted, the image starts transparent and loses `opacity-0` when loaded, so the transition runs from 0 to 1.
+// The server and the first client render have no `opacity-0`, so an image in server HTML is never hidden. An image that
+// is already loaded on mount never gets it, and a new src fades in again.
+const fadeClass = computed(() => (props.fadeIn ? [FADE_CLASS, { 'opacity-0': isMounted.value && !isLoaded.value }] : undefined))
 
 const splitAttrs = computed(() => {
   const root: Record<string, unknown> = {}
@@ -167,6 +169,8 @@ watch(
 // An SSR image has already loaded or failed before hydration, so its load and error events are
 // gone. Read the result from the element once mounted.
 onMounted(() => {
+  isMounted.value = true
+
   const img = imgRef.value
 
   if (!img?.complete) {
