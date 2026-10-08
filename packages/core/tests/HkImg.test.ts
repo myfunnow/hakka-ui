@@ -224,41 +224,45 @@ describe('HkImg layout', () => {
   })
 
   it.each([
-    { name: 'no size at all', props: {}, attrs: {}, isSized: false },
-    { name: 'only a width', props: { width: 200 }, attrs: {}, isSized: false },
-    { name: 'a class that is not about the ratio', props: {}, attrs: { class: 'w-full h-300px' }, isSized: false },
-    { name: 'an aspectRatio prop', props: { aspectRatio: 1.5 }, attrs: {}, isSized: true },
-    { name: 'an aspect class', props: {}, attrs: { class: 'aspect-square' }, isSized: true },
-    { name: 'a height prop', props: { height: 100 }, attrs: {}, isSized: true },
-  ])('should keep the img in the normal flow and fill the box only when something sizes it: $name', ({ props, attrs, isSized }) => {
+    { name: 'no size at all', props: {}, attrs: {} },
+    { name: 'only a width', props: { width: 200 }, attrs: {} },
+    { name: 'a class height', props: {}, attrs: { class: 'h-300px' } },
+    { name: 'an aspectRatio prop', props: { aspectRatio: 1.5 }, attrs: {} },
+    { name: 'an aspect class', props: {}, attrs: { class: 'aspect-square' } },
+    { name: 'a height prop', props: { height: 100 }, attrs: {} },
+  ])('should keep the img in the normal flow and fill the box: $name', ({ props, attrs }) => {
     const wrapper = mount(HkImg, { props: { src: '/a.png', ...props }, attrs })
     const img = wrapper.find('img')
 
     expect(wrapper.find('picture').classes()).toContain('contents')
+    expect(img.classes()).toEqual(expect.arrayContaining(['block', 'w-full', 'h-full']))
     expect(img.classes()).not.toContain('absolute')
-    expect(img.classes().includes('w-full')).toBe(isSized)
-    expect(img.classes().includes('max-w-full')).toBe(!isSized)
   })
 
-  it('should hand the maxHeight to the img too when nothing sizes the box', () => {
-    const inFlow = mount(HkImg, { props: { src: '/a.png', maxHeight: 100 } })
-    const sized = mount(HkImg, { props: { src: '/a.png', maxHeight: 100, aspectRatio: 1 } })
+  it('should hand the maxHeight to the img too, because a box with no height would not shrink it', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', maxHeight: 100 } })
 
-    expect(inFlow.find('img').element.style.maxHeight).toBe('100px')
-    expect(sized.find('img').element.style.maxHeight).toBe('')
+    expect(wrapper.find('img').element.style.maxHeight).toBe('100px')
   })
 
-  it('should wrap an img in the normal flow like an inline image, and keep the full-width box without an img', async () => {
+  it('should wrap its content like an inline image instead of filling the parent, with or without an img', async () => {
     const withImg = mount(HkImg, { props: { src: '/a.png' } })
+    const sized = mount(HkImg, { props: { src: '/a.png', aspectRatio: 1 } })
     const withoutSrc = mount(HkImg, { props: { src: '' } })
     const failed = mount(HkImg, { props: { src: '/broken.png' } })
 
     await failed.find('img').trigger('error')
 
-    expect(withImg.classes()).toContain('inline-block')
-    expect(withImg.classes()).not.toContain('grow')
-    expect(withoutSrc.classes()).toContain('grow')
-    expect(failed.classes()).toContain('grow')
+    for (const wrapper of [withImg, sized, withoutSrc, failed]) {
+      expect(wrapper.classes()).toContain('inline-block')
+      expect(wrapper.classes()).not.toContain('grow')
+    }
+  })
+
+  it('should let a call site fill the parent with a width class', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: 'w-full' } })
+
+    expect(wrapper.classes()).toContain('w-full')
   })
 
   it('should lay overlay content over the img, and keep it in the flow when there is no img', () => {

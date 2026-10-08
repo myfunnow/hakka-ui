@@ -148,31 +148,37 @@ Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnI
 - With a `srcset` there is no webp `<source>`: the browser would pick the webp source and ignore the `<img>`'s own candidates.
 - For a `inherit-color` svg the hidden `<img>` always keeps `crossorigin="anonymous"`.
 
-#### Aspect ratio
+#### Size of the box
 
-The box is sized in one of two ways.
+The picture always fills the box (`cover` crops it, otherwise the whole picture shows), and the box wraps its content like an inline image does. The box does **not** fill the parent by itself: add `w-full` for that, or give it a `width`.
 
-**The box is sized by something you gave it.** This is when there is an `aspectRatio` prop, an `aspect-*` class, or a `height`. The image fills the box (`cover` crops it, otherwise the whole picture shows), and the root takes `aspect-ratio` in this order:
+```vue
+<hk-img :src="product.cover" alt="" class="w-full" />
+```
+
+The box gets its size from whatever you give it, and the picture decides the rest:
+
+| You give                    | Box                                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| nothing                     | The size of the picture, at most the width of the parent. A small icon stays small.                |
+| `width` or `w-*`            | That width, with the height that follows from the picture                                          |
+| `height` or `h-*`           | That height, with the width that follows from the picture (add `w-full` or a `width` to choose it) |
+| `aspectRatio` or `aspect-*` | That shape, with the width of the picture (add `w-full` or a `width` to choose it)                 |
+| `width` and `height`        | Exactly that. CSS ignores `aspect-ratio` when both sizes are set                                   |
+
+A class and the matching prop do the same. The `<img>` is always in the normal flow, so it shows in server-rendered HTML before any script runs. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
+
+The root takes `aspect-ratio` in this order:
 
 1. The `aspectRatio` prop.
 2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
 3. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
 
-**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` is always in the normal flow, so it shows in server-rendered HTML before any script runs. Here the box wraps it like it wraps a plain `<img>`: the picture keeps its own size, and is only made smaller when it is wider than its parent. A `width` makes the picture that wide, with the height that follows from it. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
-
-In this mode:
-
-- The box is as wide as the picture, not the parent. To fill the parent, give the box a ratio or a height.
-- `cover` has nothing to crop. Use an `aspectRatio` or a `height` to crop the picture.
-- Overlay content (the default slot) covers the picture.
-- A `maxHeight` prop is also given to the `<img>`, so the picture shrinks with its box. A `max-h-*` class on the component is not, so use the prop.
-- A height set by a class (`class="h-300px"`) keeps the shape of the picture inside that height, and the box becomes as wide as the picture. It is not cropped. Use the `height` prop to crop.
-
-When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
+Overlay content (the default slot) covers the picture. A `maxHeight` prop is also given to the `<img>`, so the picture shrinks with its box; a `max-h-*` class on the component is not, so use the prop.
 
 #### Without a src, or when the image fails
 
-With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box, so give the box a size and style the slots:
+With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box. With no `src`, or after a failure, nothing in the box gives it a width, so set one (`w-full`, `width`) and a shape (`aspectRatio`, `fallbackAspectRatio`), then style the slots:
 
 ```vue
 <hk-img :src="product.cover" alt="" :aspect-ratio="1.8" class="w-full">
