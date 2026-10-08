@@ -215,8 +215,8 @@ describe('HkImg layout', () => {
     expect(aspectRatioOf(wrapper)).toBe('16/9')
   })
 
-  it('should size the root with the natural ratio once the image has loaded', async () => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
+  it('should size the root with the natural ratio once the image has loaded when only the height is given', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', height: 100 } })
 
     expect(aspectRatioOf(wrapper)).toBe('')
 
@@ -231,6 +231,40 @@ describe('HkImg layout', () => {
     await finishLoading(wrapper, { width: 400, height: 200 })
 
     expect(aspectRatioOf(wrapper)).toBe('1.5')
+  })
+
+  it.each([
+    { name: 'no size at all', props: {}, attrs: {}, inFlow: true },
+    { name: 'only a width', props: { width: 200 }, attrs: {}, inFlow: true },
+    { name: 'a class that is not about the ratio', props: {}, attrs: { class: 'w-full h-300px' }, inFlow: true },
+    { name: 'an aspectRatio prop', props: { aspectRatio: 1.5 }, attrs: {}, inFlow: false },
+    { name: 'an aspect class', props: {}, attrs: { class: 'aspect-square' }, inFlow: false },
+    { name: 'a height prop', props: { height: 100 }, attrs: {}, inFlow: false },
+  ])('should put the img in the normal flow only when nothing sizes the box: $name', ({ props, attrs, inFlow }) => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', ...props }, attrs })
+    const picture = wrapper.find('picture')
+
+    expect(picture.classes().includes('contents')).toBe(inFlow)
+    expect(picture.classes().includes('absolute')).toBe(!inFlow)
+    expect(wrapper.find('img').classes().includes('w-full')).toBe(true)
+    expect(wrapper.find('img').classes().includes('absolute')).toBe(!inFlow)
+  })
+
+  it('should hand the maxHeight to the img too when the img is in the normal flow', () => {
+    const inFlow = mount(HkImg, { props: { src: '/a.png', maxHeight: 100 } })
+    const layered = mount(HkImg, { props: { src: '/a.png', maxHeight: 100, aspectRatio: 1 } })
+
+    expect(inFlow.find('img').element.style.maxHeight).toBe('100px')
+    expect(layered.find('img').element.style.maxHeight).toBe('')
+  })
+
+  it('should keep the img in the normal flow after it has loaded, with no ratio written on the root', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png' } })
+
+    await finishLoading(wrapper, { width: 400, height: 200 })
+
+    expect(wrapper.find('img').classes()).not.toContain('absolute')
+    expect(aspectRatioOf(wrapper)).toBe('')
   })
 
   it('should draw the gradient layer from the inner gradient string', () => {
@@ -283,7 +317,7 @@ describe('HkImg inherit-color', () => {
     expect(mask.attributes('style')).toContain(`--hk-img-mask: url("${SVG}")`)
   })
 
-  it('should keep a hidden img that carries the alt text, the load events and the natural ratio', async () => {
+  it('should keep a hidden img that carries the alt text and the load events, and sizes the box', async () => {
     const wrapper = mount(HkImg, { props: { src: SVG, alt: 'Niceday Logo', inheritColor: true } })
 
     await finishLoading(wrapper, { width: 300, height: 100 })
@@ -293,8 +327,8 @@ describe('HkImg inherit-color', () => {
     expect(img.attributes('alt')).toBe('Niceday Logo')
     expect(img.classes()).toContain('opacity-0')
     expect(img.attributes('crossorigin')).toBe('anonymous')
+    expect(img.classes()).not.toContain('absolute')
     expect(wrapper.emitted('load')).toEqual([[SVG]])
-    expect(aspectRatioOf(wrapper)).toBe('3')
   })
 
   it('should hide the mask from assistive technology', () => {
@@ -437,8 +471,8 @@ describe('HkImg aspect ratio classes', () => {
     { name: 'no class', cls: undefined },
     { name: 'classes about something else', cls: 'w-full h-auto rounded' },
     { name: 'a class that only contains the word', cls: 'no-aspect-here' },
-  ])('should still use the natural ratio with $name', async ({ cls }) => {
-    const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: cls } })
+  ])('should still use the natural ratio with $name when a height is given', async ({ cls }) => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', height: 100 }, attrs: { class: cls } })
 
     await finishLoading(wrapper, { width: 400, height: 200 })
 
@@ -495,7 +529,7 @@ describe('HkImg fallbackAspectRatio', () => {
 
     await finishLoading(wrapper, { width: 400, height: 200 })
 
-    expect(aspectRatioOf(wrapper)).toBe('2')
+    expect(aspectRatioOf(wrapper)).toBe('')
   })
 
   it('should let the aspectRatio prop and an aspect class win over the fallback ratio', () => {

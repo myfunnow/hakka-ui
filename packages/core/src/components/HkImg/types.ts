@@ -11,7 +11,7 @@ export interface HkImgProps {
   cover?: boolean
   /** Load the image right away. By default it loads when it comes close to the screen. */
   eager?: boolean
-  /** Shape of the box: width divided by height, for example 1 (square) or 1.8. Without it, the box takes the shape of the image after it has loaded. */
+  /** Shape of the box: width divided by height, for example 1 (square) or 1.8. Without it, the box takes the shape of the image, like a plain img does. */
   aspectRatio?: AspectRatio
   /** Width of the box. A number means pixels (320). Text is used as it is ("50%", "20rem"). */
   width?: CssLength

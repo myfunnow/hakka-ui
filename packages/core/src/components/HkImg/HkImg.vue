@@ -1,7 +1,7 @@
 <template>
   <div v-bind="splitAttrs.root" :class="rootClass" :style="rootStyle">
     <template v-if="src && !isFailed">
-      <picture :class="LAYER_CLASS">
+      <picture :class="pictureClass">
         <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
         <img
           ref="img"
@@ -106,16 +106,28 @@ const hasAspectClass = computed(() => /(^|[\s:(])aspect-/.test(normalizeClass(at
 // With a srcset the browser would pick the webp source and ignore the img's own candidates, so there is no webp then.
 const webpSrc = computed(() => (splitAttrs.value.img.srcset || props.inheritColor ? undefined : getWebpSrc(props.src, readWebpEnvironment())))
 
+// With no ratio, no aspect class and no height there is nothing to size the box by, so the <img> stays in the normal flow
+// and sizes it like a plain <img> does. That also works in server HTML before any script runs. Otherwise the <img> is a
+// layer on top of a box that is sized by the other rules. In flow, `h-full` means auto while the box has no height, and
+// fills it when a class or a max-height gives it one.
+const isImgInFlow = computed(() => props.aspectRatio === undefined && !hasAspectClass.value && props.height === undefined)
+
+const pictureClass = computed(() => (isImgInFlow.value ? 'contents' : LAYER_CLASS))
+
+const imgLayerClass = computed(() => (isImgInFlow.value ? 'block w-full h-full' : LAYER_CLASS))
+
 // With inherit-color the real <img> stays for the alt text, the load and error events and the natural ratio, but is not
 // painted: the mask layer is. The mask needs CORS, so the crossorigin attribute is fixed there.
 const imgAttrs = computed(() => {
   if (props.inheritColor) {
-    return { class: [LAYER_CLASS, 'opacity-0'], crossorigin: 'anonymous' as const }
+    return { class: [imgLayerClass.value, 'opacity-0'], crossorigin: 'anonymous' as const }
   }
 
   return {
-    class: [LAYER_CLASS, props.cover ? 'object-cover' : 'object-contain', fadeClass.value],
-    style: { objectPosition: props.position },
+    class: [imgLayerClass.value, props.cover ? 'object-cover' : 'object-contain', fadeClass.value],
+    // In flow the box has no height of its own, so a max-height on the box would not shrink the img. The img takes the
+    // same limit and object-fit keeps its shape.
+    style: { objectPosition: props.position, maxHeight: isImgInFlow.value ? toCssLength(props.maxHeight) : undefined },
   }
 })
 
@@ -136,7 +148,8 @@ const aspectRatio = computed(() => {
     return undefined
   }
 
-  if (naturalAspectRatio.value !== undefined) {
+  // In flow the <img> sizes the box itself
+  if (naturalAspectRatio.value !== undefined && !isImgInFlow.value) {
     return naturalAspectRatio.value
   }
 
