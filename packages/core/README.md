@@ -111,14 +111,14 @@ import { HkImg } from '@myfunnow/hakka-core'
 | `position`                                                     | `string`           | `object-position` of the image                                                               |
 | `gradient`                                                     | `string`           | The inside of a `linear-gradient()`, for example `to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4)` |
 | `fallbackAspectRatio`                                          | `string \| number` | Ratio of the box while there is no `src` or the image failed (see below)                     |
-| `fadeIn`                                                       | `boolean`          | Fade the image in once it has loaded (see below)                                             |
+| `fadeIn`                                                       | `boolean`          | Fade the image in once it has loaded, default `true` (see below)                             |
 | `inheritColor`                                                 | `boolean`          | Single-color svg: paint its shape with the text color (see below)                            |
 | `#placeholder`                                                 |                    | Shown until the image has loaded                                                             |
 | `#error`                                                       |                    | Replaces the image when it fails to load                                                     |
 | default slot                                                   |                    | Overlay content                                                                              |
 | `load`, `error`                                                | `(src: string)`    | Image events. An image that finished before hydration is detected on mount                   |
 
-`class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` replaces the default fade of `v-img`).
+`class`, `style` and listeners such as `@click` land on the root element. `rounded`, `transition` and `lazy-src` are not supported (`fadeIn` is the fade of `v-img`).
 
 #### Types
 
@@ -174,13 +174,9 @@ With no `src` the `#placeholder` slot is shown; when the image fails the `#error
 
 #### Fade in (`fade-in`)
 
-`v-img` fades every image in by default. `HkImg` does it only when `fade-in` is set: the image stays transparent until it has loaded, then `transition-opacity duration-300` (the same 0.3s and easing as `v-img`) brings it to full opacity. The parent decides when, because `HkImg` cannot tell whether the page is hydrating:
+Like `v-img`, `HkImg` fades every image in by default: the image stays transparent until it has loaded, then `transition-opacity duration-300` (the same 0.3s and easing as `v-img`) brings it to full opacity. Turn it off with `:fade-in="false"`.
 
-```vue
-<hk-img src="/images/hero.png" alt="Hero" :fade-in="!isHydrating" />
-```
-
-Do not turn it on during hydration: server-rendered HTML has no `opacity-0` on the image, so a prop that is true at the first client render would hide an image that is already on screen.
+The fade only starts once the component is mounted in the browser. Server-rendered HTML has no `opacity-0` on the image, so a visitor never sees a hidden image while waiting for JavaScript. An image that has already loaded when the page hydrates does not animate, and a new `src` fades in again.
 
 #### Single-color svg (`inherit-color`)
 

@@ -112,8 +112,10 @@ export const FallbackAspectRatio: Story = {
 
 // Reload the story to see it: the image is transparent until it has loaded, then fades in over 0.3s
 export const FadeIn: Story = {
-  args: { fadeIn: true },
-  parameters: storyDocs({ description: 'The picture stays hidden until it has loaded, then fades in. Reload this page to see it again.' }),
+  parameters: storyDocs({
+    description:
+      'The picture fades in after it has loaded. This is on by default; set fadeIn to false to turn it off. Reload this page to see it again.',
+  }),
 }
 
 export const ErrorFallback: Story = {
