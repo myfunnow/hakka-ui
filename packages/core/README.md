@@ -150,14 +150,26 @@ Moving an app from `v-img` or from an app-level wrapper (`EtgImg`, `NdImg`, `FnI
 
 #### Aspect ratio
 
-The root is sized by `aspect-ratio`, in this order:
+The box is sized in one of two ways.
+
+**The box is sized by something you gave it.** This is when there is an `aspectRatio` prop, an `aspect-*` class, or a `height`. The image fills the box as a layer, and the root takes `aspect-ratio` in this order:
 
 1. The `aspectRatio` prop.
 2. An `aspect-*` class on the component (`aspect-square`, `md:aspect-video`, `sm:(aspect-unset h-300px)`): it is left alone, so a responsive ratio works.
-3. The natural ratio of the image, which is known only after it has loaded.
+3. With only a `height`: the natural ratio of the image, once it has loaded.
 4. The `fallbackAspectRatio` prop, only while there is no `src` or the image has failed.
 
-A box that has only a width, or no size at all, has no height until the image has loaded, and in server-rendered HTML not until the page is hydrated. Give it an `aspectRatio` or a `height`. When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
+**Nothing sizes the box** (no ratio, no `aspect-*` class, no `height`). The `<img>` stays in the normal flow and the box wraps it like it wraps a plain `<img>`: the picture keeps its own size, and is only made smaller when it is wider than its parent. A `width` makes the picture that wide, with the height that follows from it. This works in server-rendered HTML before any script runs, so the picture shows at once. Like a plain `<img>`, the box is 0 high until the browser knows the size of the picture, so the page can move when it arrives. Give the box an `aspectRatio` (for example from the width and height your API returns) to stop that.
+
+In this mode:
+
+- The box is as wide as the picture, not the parent. To fill the parent, give the box a ratio or a height.
+- `cover` has nothing to crop. Use an `aspectRatio` or a `height` to crop the picture.
+- Overlay content (the default slot) covers the picture.
+- A `maxHeight` prop is also given to the `<img>`, so the picture shrinks with its box. A `max-h-*` class on the component is not, so use the prop.
+- A height set by a class (`class="h-300px"`) keeps the shape of the picture inside that height, and the box becomes as wide as the picture. It is not cropped. Use the `height` prop to crop.
+
+When both `width` and `height` are numbers the box is already sized, so no ratio is derived from them (CSS ignores `aspect-ratio` when both sizes are set).
 
 #### Without a src, or when the image fails
 
@@ -170,7 +182,7 @@ With no `src` the `#placeholder` slot is shown; when the image fails the `#error
 </hk-img>
 ```
 
-`fallbackAspectRatio` keeps the layout from collapsing while there is nothing to show. A loading image does not use it: its box is empty until the natural ratio is known. A loaded image never uses it, so a ratio that suits the placeholder cannot distort the picture.
+`fallbackAspectRatio` keeps the layout from collapsing while there is nothing to show. A loading image does not use it: the `<img>` sizes the box once the browser knows the picture. A loaded image never uses it, so a ratio that suits the placeholder cannot distort the picture.
 
 #### Fade in (`fade-in`)
 

@@ -1,7 +1,7 @@
 <template>
   <div v-bind="splitAttrs.root" :class="rootClass" :style="rootStyle">
     <template v-if="src && !isFailed">
-      <picture :class="LAYER_CLASS">
+      <picture :class="pictureClass">
         <source v-if="webpSrc" :srcset="webpSrc" type="image/webp" />
         <img
           ref="img"
@@ -22,7 +22,7 @@
     <div v-if="$slots.error && isFailed" :class="LAYER_CLASS">
       <slot name="error" />
     </div>
-    <div class="hk-img__content relative flex-1 max-w-full">
+    <div :class="contentClass">
       <slot />
     </div>
   </div>
@@ -41,6 +41,8 @@ import type { HkImgEmits, HkImgProps, HkImgSlots } from './types'
 // Image, gradient, placeholder and error all stack on one spot; the root is sized by aspect-ratio.
 const ROOT_CLASS = 'hk-img relative flex grow shrink-0 max-w-full max-h-full overflow-hidden'
 const LAYER_CLASS = 'absolute inset-0 w-full h-full'
+// A box with no size of its own wraps the <img> like an inline image: as wide as the picture, at most as wide as the parent
+const FLOW_ROOT_CLASS = 'hk-img relative inline-block align-top max-w-full max-h-full overflow-hidden'
 // The mask is one shorthand, with a -webkit- copy for Safari before 15.4. The address, position and size arrive as CSS
 // variables (the size falls back to contain), so cover and contain share these classes and each one stays a literal
 // string for the app's UnoCSS to find.
@@ -68,9 +70,6 @@ const isMounted = useMounted()
 const isLoaded = ref(false)
 const isFailed = ref(false)
 const naturalAspectRatio = ref<number>()
-
-// twMerge lets a downstream class override a default one (`overflow-visible` replaces `overflow-hidden`)
-const rootClass = computed(() => cn(ROOT_CLASS, attrs.class))
 
 // Once mounted, the image starts transparent and loses `opacity-0` when loaded, so the transition runs from 0 to 1.
 // The server and the first client render have no `opacity-0`, so an image in server HTML is never hidden. An image that
@@ -106,16 +105,37 @@ const hasAspectClass = computed(() => /(^|[\s:(])aspect-/.test(normalizeClass(at
 // With a srcset the browser would pick the webp source and ignore the img's own candidates, so there is no webp then.
 const webpSrc = computed(() => (splitAttrs.value.img.srcset || props.inheritColor ? undefined : getWebpSrc(props.src, readWebpEnvironment())))
 
+// With no ratio, no aspect class and no height there is nothing to size the box by, so the <img> stays in the normal flow
+// and sizes the box like a plain <img> does: its own size, at most the width of the parent. That also works in server HTML
+// before any script runs. Otherwise the <img> is a layer on top of a box that is sized by the other rules.
+const isImgInFlow = computed(() => props.aspectRatio === undefined && !hasAspectClass.value && props.height === undefined)
+
+// Without an <img> (no src, or it failed) there is nothing to give the box its width, so it keeps the full-width layout
+const hasFlowImg = computed(() => isImgInFlow.value && Boolean(props.src) && !isFailed.value)
+
+// twMerge lets a downstream class override a default one (`overflow-visible` replaces `overflow-hidden`)
+const rootClass = computed(() => cn(hasFlowImg.value ? FLOW_ROOT_CLASS : ROOT_CLASS, attrs.class))
+
+// Overlay content sits on top of an <img> that is in the flow; next to a layered <img> it is part of the flow
+const contentClass = computed(() => (hasFlowImg.value ? 'hk-img__content absolute inset-0 flex' : 'hk-img__content relative flex-1 max-w-full'))
+
+const pictureClass = computed(() => (isImgInFlow.value ? 'contents' : LAYER_CLASS))
+
+// `max-h-full` keeps the shape when a class gives the box a height; `max-w-full` keeps a wide picture inside its parent
+const imgLayerClass = computed(() => (isImgInFlow.value ? 'block max-w-full max-h-full' : LAYER_CLASS))
+
 // With inherit-color the real <img> stays for the alt text, the load and error events and the natural ratio, but is not
 // painted: the mask layer is. The mask needs CORS, so the crossorigin attribute is fixed there.
 const imgAttrs = computed(() => {
   if (props.inheritColor) {
-    return { class: [LAYER_CLASS, 'opacity-0'], crossorigin: 'anonymous' as const }
+    return { class: [imgLayerClass.value, 'opacity-0'], crossorigin: 'anonymous' as const }
   }
 
   return {
-    class: [LAYER_CLASS, props.cover ? 'object-cover' : 'object-contain', fadeClass.value],
-    style: { objectPosition: props.position },
+    class: [imgLayerClass.value, props.cover ? 'object-cover' : 'object-contain', fadeClass.value],
+    // In flow the box has no height of its own, so a max-height on the box would not shrink the img. The img takes the
+    // same limit and object-fit keeps its shape.
+    style: { objectPosition: props.position, maxHeight: isImgInFlow.value ? toCssLength(props.maxHeight) : undefined },
   }
 })
 
@@ -136,7 +156,8 @@ const aspectRatio = computed(() => {
     return undefined
   }
 
-  if (naturalAspectRatio.value !== undefined) {
+  // In flow the <img> sizes the box itself
+  if (naturalAspectRatio.value !== undefined && !isImgInFlow.value) {
     return naturalAspectRatio.value
   }
 
