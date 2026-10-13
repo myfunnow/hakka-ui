@@ -22,7 +22,7 @@
     <div v-if="$slots.error && isFailed" :class="LAYER_CLASS">
       <slot name="error" />
     </div>
-    <div :class="contentClass">
+    <div v-if="$slots.default" :class="contentClass">
       <slot />
     </div>
   </div>
