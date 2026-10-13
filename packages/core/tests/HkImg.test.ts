@@ -323,6 +323,14 @@ describe('HkImg layout', () => {
     expect(wrapper.find('.hk-img__content .overlay').text()).toBe('Sold out')
   })
 
+  it('should not render the content layer without a default slot', () => {
+    const withImg = mount(HkImg, { props: { src: '/a.png' } })
+    const withoutSrc = mount(HkImg, { props: { src: '' } })
+
+    expect(withImg.find('.hk-img__content').exists()).toBe(false)
+    expect(withoutSrc.find('.hk-img__content').exists()).toBe(false)
+  })
+
   it('should let a downstream utility class replace a default one on the root', () => {
     const wrapper = mount(HkImg, { props: { src: '/a.png' }, attrs: { class: 'overflow-visible max-w-none' } })
 
