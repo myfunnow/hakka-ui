@@ -23,7 +23,17 @@ const meta: Meta<typeof HkImg> = {
   title: 'Core/HkImg',
   component: HkImg,
   args: { src: PHOTO_SRC, alt: 'A surprised corgi', aspectRatio: '1', class: 'w-80' },
-  argTypes: { aspectRatio: aspectRatioArgType },
+  // `load` is an event, and the typed argTypes only list props and slots, so the object is cast
+  argTypes: {
+    aspectRatio: aspectRatioArgType,
+    load: { description: 'The image has loaded. It gets the src of the image.' },
+    // The `error` event and the `error` slot share one row, because the Controls table is keyed by name
+    error: {
+      description: 'Event: the image failed to load, and it gets the src of the image. Slot: replaces the image when it fails to load.',
+    },
+    placeholder: { control: false, table: { type: { summary: 'content' } } },
+    default: { control: false, table: { type: { summary: 'content' } } },
+  } as Meta<typeof HkImg>['argTypes'],
   parameters: {
     docs: {
       description: {
