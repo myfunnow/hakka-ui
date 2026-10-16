@@ -4,6 +4,21 @@ import { storyDocs } from '@myfunnow/hakka-storybook'
 
 import HkPagination from './HkPagination.vue'
 
+import type { HkPaginationSlots } from './types'
+
+type TextSlotProps = Parameters<NonNullable<HkPaginationSlots['text']>>[0]
+
+// Typed from the real slot props: adding, renaming or retyping a prop makes this object fail typecheck until it is updated
+const TEXT_SLOT_PROP_TYPES: { [K in keyof TextSlotProps]-?: TextSlotProps[K] extends number ? 'number' : never } = {
+  start: 'number',
+  end: 'number',
+  total: 'number',
+}
+
+const TEXT_SLOT_TYPE = `{ ${Object.entries(TEXT_SLOT_PROP_TYPES)
+  .map(([name, type]) => `${name}: ${type}`)
+  .join('; ')} }`
+
 const meta: Meta<typeof HkPagination> = {
   title: 'Core/HkPagination',
   component: HkPagination,
@@ -20,6 +35,8 @@ const meta: Meta<typeof HkPagination> = {
     ariaLabels: { table: { defaultValue: { summary: '{ nav: "分頁", prev: "上一頁", next: "下一頁" }' } } },
     text: {
       control: false,
+      // vue-docgen-api reads the slot bindings of defineSlots by name only, so it prints every type as `unknown`
+      table: { type: { summary: TEXT_SLOT_TYPE } },
       description: 'Replaces the line "第 1 - 10，共 200 筆結果" above the buttons. It gets start, end and total to build its own text.',
     },
   },
