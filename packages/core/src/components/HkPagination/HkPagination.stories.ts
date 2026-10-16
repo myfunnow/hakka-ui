@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
-import { ref } from 'vue'
+import { useArgs } from 'storybook/preview-api'
 import { storyDocs } from '@myfunnow/hakka-storybook'
 
 import HkPagination from './HkPagination.vue'
@@ -7,13 +7,13 @@ import HkPagination from './HkPagination.vue'
 const meta: Meta<typeof HkPagination> = {
   title: 'Core/HkPagination',
   component: HkPagination,
-  args: { totalCount: 200, pageSize: 10, visible: 7, ariaLabels: { nav: '分頁', prev: '上一頁', next: '下一頁' } },
+  args: { page: 1, totalCount: 200, pageSize: 10, visible: 7, ariaLabels: { nav: '分頁', prev: '上一頁', next: '下一頁' } },
   argTypes: {
     totalCount: { control: { type: 'number', min: 0 } },
     pageSize: { control: { type: 'number', min: 1 } },
     visible: { control: { type: 'number', min: 1 } },
     page: {
-      control: false,
+      control: { type: 'number', min: 1 },
       description: 'The page that is shown now. The first page is 1. Use it as v-model:page so the page changes when someone clicks.',
       table: { type: { summary: 'number' }, defaultValue: { summary: '1' } },
     },
@@ -31,15 +31,18 @@ const meta: Meta<typeof HkPagination> = {
       },
     },
   },
-  render: args => ({
-    components: { HkPagination },
-    setup() {
-      const page = ref(1)
+  // page lives in the story args, so the Controls table follows every click
+  render: args => {
+    const [, updateArgs] = useArgs()
 
-      return { args, page }
-    },
-    template: '<hk-pagination v-model:page="page" v-bind="args" />',
-  }),
+    return {
+      components: { HkPagination },
+      setup() {
+        return { args, updateArgs }
+      },
+      template: '<hk-pagination v-bind="args" @update:page="updateArgs({ page: $event })" />',
+    }
+  },
 }
 
 export default meta
