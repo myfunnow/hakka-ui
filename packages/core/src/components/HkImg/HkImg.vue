@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { useMounted } from '@vueuse/core'
-import { computed, onMounted, ref, useAttrs, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, ref, useAttrs, useSlots, useTemplateRef, watch } from 'vue'
 
 import { cn, toCssUrl } from '@/utils/css'
 import { getWebpSrc, readWebpEnvironment } from '@/utils/image'
@@ -68,6 +68,7 @@ const emit = defineEmits<HkImgEmits>()
 defineSlots<HkImgSlots>()
 
 const attrs = useAttrs()
+const slots = useSlots()
 const imgRef = useTemplateRef<HTMLImageElement>('img')
 
 const isMounted = useMounted()
@@ -77,7 +78,14 @@ const isFailed = ref(false)
 // Once mounted, the image starts transparent and loses `opacity-0` when loaded, so the transition runs from 0 to 1.
 // The server and the first client render have no `opacity-0`, so an image in server HTML is never hidden. An image that
 // is already loaded on mount never gets it, and a new src fades in again.
-const fadeClass = computed(() => (props.fadeIn ? [FADE_CLASS, { 'opacity-0': isMounted.value && !isLoaded.value }] : undefined))
+const isFadingIn = computed(() => props.fadeIn && isMounted.value && !isLoaded.value)
+const fadeClass = computed(() => (props.fadeIn ? [FADE_CLASS, { 'opacity-0': isFadingIn.value }] : undefined))
+
+// With a placeholder, the placeholder covers the <img> until it has loaded. The <img> stays transparent meanwhile, so its
+// square corners do not show past a rounded placeholder. It is opacity-0 and not display:none, so a lazy image still loads.
+// The placeholder covers the <img> in server HTML too, so hiding it there changes nothing on screen.
+const isCoveredByPlaceholder = computed(() => !!slots.placeholder && !isLoaded.value)
+const isImgHidden = computed(() => isFadingIn.value || isCoveredByPlaceholder.value)
 
 const splitAttrs = computed(() => {
   const root: Record<string, unknown> = {}
@@ -126,7 +134,7 @@ const imgAttrs = computed(() => {
   }
 
   return {
-    class: [IMG_CLASS, props.cover ? 'object-cover' : 'object-contain', fadeClass.value],
+    class: [IMG_CLASS, props.cover ? 'object-cover' : 'object-contain', props.fadeIn ? FADE_CLASS : undefined, { 'opacity-0': isImgHidden.value }],
     style: { objectPosition: props.position },
   }
 })
