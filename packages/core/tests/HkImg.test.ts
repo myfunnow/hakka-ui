@@ -1,5 +1,5 @@
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { createSSRApp, nextTick } from 'vue'
+import { createSSRApp, h, nextTick } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 
 import HkImg from '@/components/HkImg/HkImg.vue'
@@ -130,6 +130,28 @@ describe('HkImg loading states', () => {
     await finishLoading(wrapper)
 
     expect(wrapper.find('.the-placeholder').exists()).toBe(false)
+  })
+
+  it('should keep the image transparent under the placeholder until it has loaded', async () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', fadeIn: false }, slots })
+
+    expect(wrapper.find('img').classes()).toContain('opacity-0')
+
+    await finishLoading(wrapper)
+
+    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
+  })
+
+  it('should hide the image under the placeholder in server-rendered HTML too', async () => {
+    const html = await renderToString(createSSRApp({ render: () => h(HkImg, { src: '/a.png' }, { placeholder: () => 'loading' }) }))
+
+    expect(html).toMatch(/<img[^>]*opacity-0/)
+  })
+
+  it('should not hide the image when there is no placeholder slot and fadeIn is false', () => {
+    const wrapper = mount(HkImg, { props: { src: '/a.png', fadeIn: false } })
+
+    expect(wrapper.find('img').classes()).not.toContain('opacity-0')
   })
 
   it('should emit load with the src when the image has loaded', async () => {

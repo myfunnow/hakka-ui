@@ -32,7 +32,7 @@ export interface HkImgEmits {
 }
 
 export interface HkImgSlots {
-  /** Shown until the image has loaded, and when there is no src. */
+  /** Shown until the image has loaded, and when there is no src. The image stays see-through underneath until it has loaded, so its square corners never show past a rounded placeholder. */
   placeholder?(): unknown
   /** Replaces the image when it fails to load. */
   error?(): unknown
