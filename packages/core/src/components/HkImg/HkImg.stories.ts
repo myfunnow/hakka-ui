@@ -117,7 +117,7 @@ export const PlaceholderWithoutShape: Story = {
   parameters: storyDocs({
     description:
       'No shape is given (no aspectRatio, no aspect class). A box with no picture still keeps a 1.8 wide to 1 tall shape and the width of what holds it, so a missing or broken picture never leaves a hole in the page. Give aspectRatio to use the shape of your picture instead.',
-    code: `<hk-img :src="product.cover" alt="A surprised corgi">
+    code: `<hk-img src="/images/corgi.jpg" alt="A surprised corgi">
   <template #placeholder>
     <div class="w-full h-full bg-gray-200" />
   </template>

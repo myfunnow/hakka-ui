@@ -60,7 +60,7 @@ function renderIconGrid(names: IconName[]) {
 export const StrokeIcons: Story = {
   parameters: storyDocs({
     description: 'Every stroke icon with its name. Use the name as the name value of the icon.',
-    code: '<hk-icon v-for="name in names" :key="name" :name="name" :size="32" />',
+    code: '<hk-icon name="add" :size="32" />',
   }),
   render: renderIconGrid(strokeNames),
 }
