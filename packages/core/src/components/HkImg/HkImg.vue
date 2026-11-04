@@ -29,8 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { useMounted } from '@vueuse/core'
-import { computed, onMounted, ref, useAttrs, useSlots, useTemplateRef, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, ref, useAttrs, useSlots, useTemplateRef, watch } from 'vue'
 
 import { cn, toCssUrl } from '@/utils/css'
 import { getWebpSrc, readWebpEnvironment } from '@/utils/image'
@@ -71,14 +70,15 @@ const attrs = useAttrs()
 const slots = useSlots()
 const imgRef = useTemplateRef<HTMLImageElement>('img')
 
-const isMounted = useMounted()
 const isLoaded = ref(false)
 const isFailed = ref(false)
+// While Vue hydrates, `vnode.el` already points at the element from the server HTML; a component created on the client has none.
+const isServerRendered = ref(typeof window === 'undefined' || Boolean(getCurrentInstance()?.vnode.el))
 
-// Once mounted, the image starts transparent and loses `opacity-0` when loaded, so the transition runs from 0 to 1.
-// The server and the first client render have no `opacity-0`, so an image in server HTML is never hidden. An image that
-// is already loaded on mount never gets it, and a new src fades in again.
-const isFadingIn = computed(() => props.fadeIn && isMounted.value && !isLoaded.value)
+// The image is transparent until it has loaded, then loses `opacity-0` and the transition runs from 0 to 1. An image that is in
+// the server HTML stays visible while the page hydrates (it may already be partly drawn), and one created on the client starts
+// transparent from its first render. An image that is already loaded on mount never gets it, and a new src fades in again.
+const isFadingIn = computed(() => props.fadeIn && !isServerRendered.value && !isLoaded.value)
 const fadeClass = computed(() => (props.fadeIn ? [FADE_CLASS, { 'opacity-0': isFadingIn.value }] : undefined))
 
 // With a placeholder, the placeholder covers the <img> until it has loaded. The <img> stays transparent meanwhile, so its
@@ -159,6 +159,7 @@ watch(
   () => {
     isLoaded.value = false
     isFailed.value = false
+    isServerRendered.value = false
   }
 )
 

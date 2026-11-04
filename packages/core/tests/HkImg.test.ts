@@ -25,6 +25,19 @@ const stubImageState = ({ complete, naturalWidth }: { complete: boolean; natural
   vi.spyOn(HTMLImageElement.prototype, 'naturalWidth', 'get').mockReturnValue(naturalWidth)
 }
 
+// On a real server there is no window, and the component reads that to know it is rendering for the server
+const renderOnServer = async (props: { src: string }, slotContent: Record<string, () => unknown> = {}) => {
+  const browserWindow = window
+
+  vi.stubGlobal('window', undefined)
+
+  try {
+    return await renderToString(createSSRApp({ render: () => h(HkImg, props, slotContent) }))
+  } finally {
+    vi.stubGlobal('window', browserWindow)
+  }
+}
+
 const finishLoading = async (wrapper: VueWrapper, size = { width: 400, height: 200 }) => {
   const img = wrapper.find('img')
 
@@ -591,9 +604,29 @@ describe('HkImg fadeIn', () => {
   })
 
   it('should leave the image visible in server-rendered HTML', async () => {
-    const html = await renderToString(createSSRApp(HkImg, { src: '/a.png' }))
+    const html = await renderOnServer({ src: '/a.png' })
 
     expect(html).not.toContain('opacity-0')
+  })
+
+  it('should keep an image visible while it hydrates, even when it has not loaded yet', async () => {
+    stubImageState({ complete: false, naturalWidth: 0 })
+    const container = document.createElement('div')
+    container.innerHTML = await renderOnServer({ src: '/a.png' })
+
+    createSSRApp(HkImg, { src: '/a.png' }).mount(container)
+    await nextTick()
+
+    expect(container.querySelector('img')?.classList.contains('opacity-0')).toBe(false)
+  })
+
+  it('should hide an image created on the client from its first render', () => {
+    stubImageState({ complete: false, naturalWidth: 0 })
+    const container = document.createElement('div')
+
+    createSSRApp(HkImg, { src: '/a.png' }).mount(container)
+
+    expect(container.querySelector('img')?.classList.contains('opacity-0')).toBe(true)
   })
 
   it('should not hide an image that had already loaded when it was mounted', async () => {
