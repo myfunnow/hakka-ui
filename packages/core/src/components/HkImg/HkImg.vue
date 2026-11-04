@@ -123,8 +123,9 @@ const hasImg = computed(() => Boolean(props.src) && !isFailed.value)
 // from the call site (`w-*`, `aspect-*`) replace these two, and the `aspectRatio` prop is inline, so it wins over both.
 const rootClass = computed(() => cn(ROOT_CLASS, !hasImg.value && EMPTY_CLASS, attrs.class))
 
-// Overlay content covers the <img>. With no <img> it is part of the flow and gives the box its size.
-const contentClass = computed(() => (hasImg.value ? 'hk-img__content absolute inset-0 flex' : 'hk-img__content relative'))
+// Overlay content covers the <img>. With no <img> it is part of the flow and fills the box (flex-1 in the flex column root), so
+// what the slot centers or stretches follows the box in both cases.
+const contentClass = computed(() => (hasImg.value ? 'hk-img__content absolute inset-0 flex' : 'hk-img__content relative flex flex-1'))
 
 // With inherit-color the real <img> stays for the alt text, the load and error events and the size of the box, but is not
 // painted: the mask layer is. The mask needs CORS, so the crossorigin attribute is fixed there.

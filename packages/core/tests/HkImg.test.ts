@@ -318,6 +318,12 @@ describe('HkImg layout', () => {
     expect(withoutSrc.find('.hk-img__content').classes()).not.toContain('absolute')
   })
 
+  it('should let the content layer fill the box when there is no img', () => {
+    const wrapper = mount(HkImg, { props: { src: '' }, slots: { default: '<span>Sold out</span>' } })
+
+    expect(wrapper.find('.hk-img__content').classes()).toEqual(expect.arrayContaining(['relative', 'flex', 'flex-1']))
+  })
+
   it('should keep the img in the normal flow after it has loaded, with no ratio written on the root', async () => {
     const wrapper = mount(HkImg, { props: { src: '/a.png' } })
 
