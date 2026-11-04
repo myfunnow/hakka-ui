@@ -1,8 +1,13 @@
 import type { AspectRatio } from '@myfunnow/hakka-shared'
+import type { ImgHTMLAttributes } from 'vue'
 
 // Props, slots and events follow Vuetify's v-img so a call site can swap one for the other.
 // The comments on the props are shown in Storybook, so they are written for people who do not code.
-export interface HkImgProps {
+// The native <img> attributes are only there for autocomplete and type checks in the parent. @vue-ignore keeps them out of the
+// runtime props, so they stay in $attrs and the component sorts them onto the <img> or the root. src and alt are declared below;
+// width and height are not supported (size comes from classes); onLoad and onError would land on the root, where the native
+// load event does not bubble, so use the load and error events of the component.
+export interface HkImgProps extends /* @vue-ignore */ Omit<ImgHTMLAttributes, 'src' | 'alt' | 'width' | 'height' | 'onLoad' | 'onError'> {
   /** Address of the image. Leave it empty to show the placeholder instead. */
   src: string
   /** Short text that describes the image. Screen readers read it, and it shows when the image cannot load. */

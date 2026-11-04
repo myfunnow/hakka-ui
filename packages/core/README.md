@@ -171,6 +171,15 @@ The shape comes from the `aspectRatio` prop or an `aspect-*` class on the compon
 
 Overlay content (the default slot) covers the picture.
 
+#### The box is inline-level
+
+The root is `inline-flex`, like a plain `<img>`, which is what lets it wrap the picture. Two things follow for the call site:
+
+- `mx-auto` does not center it, because auto margins do nothing on an inline-level box. Center it from the parent instead (`text-center` on a `block` parent, or `flex justify-center`).
+- Adding `flex` to the component does not make it block-level: `flex` and `inline-flex` have the same specificity and the generated CSS puts `inline-flex` last (checked with UnoCSS `presetWind3`). Use a parent as above, or an important modifier (`!flex`).
+
+Vuetify's `v-img` is block-level (its root is `display: flex`), so a call site that used `mx-auto` on a `v-img` needs this change when it moves to `HkImg`. With no `src`, or after a failure, the box is block-level in effect because it fills the parent (see below).
+
 #### Without a src, or when the image fails
 
 With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box.
@@ -190,7 +199,9 @@ A picture that is still loading is not an empty box: the `<img>` sizes the box o
 
 Like `v-img`, `HkImg` fades every image in by default: the image stays transparent until it has loaded, then `transition-opacity duration-300` (the same 0.3s and easing as `v-img`) brings it to full opacity. Turn it off with `:fade-in="false"`.
 
-The fade only starts once the component is mounted in the browser. Server-rendered HTML has no `opacity-0` on the image, so a visitor never sees a hidden image while waiting for JavaScript. An image that has already loaded when the page hydrates does not animate, and a new `src` fades in again.
+An image that is in the server-rendered HTML stays visible while the page hydrates, so a visitor never sees it hidden while waiting for JavaScript. An image created in the browser starts transparent from its first render. A new `src` fades in again.
+
+With a `placeholder` slot the rule is different: the image is transparent in every render, server HTML included, until it has loaded, because the placeholder covers it anyway and a rounded placeholder would otherwise show the square corners of the image around it. This also applies with `:fade-in="false"`, where the image then appears at once when it has loaded. When the placeholder goes away, the image fades in over 0.3s, and the background behind it shows through during that time.
 
 #### Single-color svg (`inherit-color`)
 
