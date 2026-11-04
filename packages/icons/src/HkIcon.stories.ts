@@ -39,10 +39,10 @@ const strokeNames = allNames.filter(name => !name.endsWith(FILLED_SUFFIX))
 const filledNames = allNames.filter(name => name.endsWith(FILLED_SUFFIX))
 
 const iconGridTemplate = `
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:16px">
-    <div v-for="name in names" :key="name" style="display:flex;flex-direction:column;align-items:center;gap:4px">
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-4">
+    <div v-for="name in names" :key="name" class="flex flex-col items-center gap-1">
       <HkIcon :name="name" size="32" />
-      <code style="font-size:12px">{{ name }}</code>
+      <code class="text-xs">{{ name }}</code>
     </div>
   </div>
 `
