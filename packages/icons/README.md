@@ -41,3 +41,5 @@ pnpm --filter @myfunnow/hakka-icons generate
 ```
 
 `iconMap.test.ts` fails if you forget.
+
+A filled icon uses the name of its stroke icon plus the `-filled` suffix, such as `feeds` and `feeds-filled`.
