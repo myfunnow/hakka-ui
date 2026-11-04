@@ -171,6 +171,15 @@ The shape comes from the `aspectRatio` prop or an `aspect-*` class on the compon
 
 Overlay content (the default slot) covers the picture.
 
+#### The box is inline-level
+
+The root is `inline-flex`, like a plain `<img>`, which is what lets it wrap the picture. Two things follow for the call site:
+
+- `mx-auto` does not center it, because auto margins do nothing on an inline-level box. Center it from the parent instead (`text-center` on a `block` parent, or `flex justify-center`).
+- Adding `flex` to the component does not make it block-level: `flex` and `inline-flex` have the same specificity and the generated CSS puts `inline-flex` last (checked with UnoCSS `presetWind3`). Use a parent as above, or an important modifier (`!flex`).
+
+Vuetify's `v-img` is block-level (its root is `display: flex`), so a call site that used `mx-auto` on a `v-img` needs this change when it moves to `HkImg`. With no `src`, or after a failure, the box is block-level in effect because it fills the parent (see below).
+
 #### Without a src, or when the image fails
 
 With no `src` the `#placeholder` slot is shown; when the image fails the `#error` slot replaces it. Both fill the box.
