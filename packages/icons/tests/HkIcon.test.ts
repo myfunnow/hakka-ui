@@ -5,16 +5,16 @@ import HkIcon from '@/HkIcon.vue'
 
 describe('HkIcon', () => {
   it('should render the svg for the given name', async () => {
-    const wrapper = mount(HkIcon, { props: { name: 'arrow-left' } })
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_arrow_left' } })
 
     await vi.waitFor(() => expect(wrapper.find('svg').exists()).toBe(true))
 
     expect(wrapper.attributes('role')).toBe('img')
-    expect(wrapper.classes()).toContain('icon-arrow-left')
+    expect(wrapper.classes()).toContain('icon-stroke_arrow_left')
   })
 
   it('should fill its container when no size is given', async () => {
-    const wrapper = mount(HkIcon, { props: { name: 'add' } })
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' } })
 
     await vi.waitFor(() => expect(wrapper.find('svg').exists()).toBe(true))
 
@@ -22,7 +22,7 @@ describe('HkIcon', () => {
   })
 
   it('should use a numeric size for both width and height', async () => {
-    const wrapper = mount(HkIcon, { props: { name: 'add', size: 24 } })
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add', size: 24 } })
 
     await vi.waitFor(() => expect(wrapper.find('svg').exists()).toBe(true))
 
@@ -32,7 +32,7 @@ describe('HkIcon', () => {
   it('should render a custom svg component instead of the named icon', () => {
     const custom = () => h('svg', { 'data-test': 'custom' })
 
-    const wrapper = mount(HkIcon, { props: { name: 'add', svgComponent: custom } })
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add', svgComponent: custom } })
 
     expect(wrapper.find('[data-test="custom"]').exists()).toBe(true)
     expect(wrapper.classes()).not.toContain('icon-add')

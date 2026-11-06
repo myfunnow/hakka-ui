@@ -18,7 +18,7 @@ import { HkIcon } from '@myfunnow/hakka-icons'
 </script>
 
 <template>
-  <HkIcon name="arrow-left" size="24" />
+  <HkIcon name="stroke_arrow_left" size="24" />
 </template>
 ```
 
@@ -42,4 +42,13 @@ pnpm --filter @myfunnow/hakka-icons generate
 
 `iconMap.test.ts` fails if you forget.
 
-A filled icon uses the name of its stroke icon plus the `-filled` suffix, such as `feeds` and `feeds-filled`.
+## Naming
+
+A name is the Figma icon name with its component group as a prefix, so it stays unique across groups. Names use lowercase letters, digits and underscores only.
+
+| Figma                     | `name`              |
+| ------------------------- | ------------------- |
+| `stroke icon／arrow_down` | `stroke_arrow_down` |
+| `filled icon／feeds`      | `filled_feeds`      |
+
+See the "Icon naming" page in the Figma design system for the full rules.

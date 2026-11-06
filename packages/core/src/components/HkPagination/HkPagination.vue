@@ -6,7 +6,7 @@
     <ul :class="LIST_CLASS">
       <li>
         <button type="button" :class="ITEM_CLASS" :aria-label="labels.prev" :disabled="currentPage <= 1" @click="goTo(currentPage - 1)">
-          <hk-icon name="arrow-left" size="16" />
+          <hk-icon name="stroke_arrow_left" size="16" />
         </button>
       </li>
       <li v-for="item in items" :key="item.type === 'page' ? item.page : item.key">
@@ -23,7 +23,7 @@
       </li>
       <li>
         <button type="button" :class="ITEM_CLASS" :aria-label="labels.next" :disabled="currentPage >= pageCount" @click="goTo(currentPage + 1)">
-          <hk-icon name="arrow-right" size="16" />
+          <hk-icon name="stroke_arrow_right" size="16" />
         </button>
       </li>
     </ul>
