@@ -19,7 +19,7 @@ export function createPackageTsdownConfig({ vue = false, plugins = [], ...overri
     platform: 'neutral',
     // Without this, output becomes .mjs/.d.mts and no longer matches package.json exports
     fixedExtension: false,
-    dts: vue ? { vue: true } : true,
+    dts: vue ? { tsc: { vue: true } } : true,
     ...overrides,
     plugins: vue ? [Vue({ isProduction: true }), plugins] : plugins,
   })
