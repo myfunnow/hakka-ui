@@ -29,9 +29,10 @@
 </template>
 
 <script setup lang="ts">
+import { cn } from '@myfunnow/hakka-shared'
 import { computed, getCurrentInstance, onMounted, ref, useAttrs, useSlots, useTemplateRef, watch } from 'vue'
 
-import { cn, toCssUrl } from '@/utils/css'
+import { toCssUrl } from '@/utils/css'
 import { getWebpSrc, readWebpEnvironment } from '@/utils/image'
 
 import type { HkImgEmits, HkImgProps, HkImgSlots } from './types'
