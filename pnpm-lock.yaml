@@ -122,12 +122,6 @@ importers:
       '@myfunnow/hakka-shared':
         specifier: workspace:*
         version: link:../shared
-      '@myfunnow/web-core':
-        specifier: 3.2.0
-        version: 3.2.0(e7c8e930b0be9ae6ba70778e3a971ef9)
-      tailwind-merge:
-        specifier: ^3.7.0
-        version: 3.7.0
     devDependencies:
       '@myfunnow/hakka-config':
         specifier: workspace:*
@@ -223,6 +217,13 @@ importers:
         version: 3.3.14(typescript@6.0.3)
 
   packages/shared:
+    dependencies:
+      '@myfunnow/web-core':
+        specifier: 3.2.0
+        version: 3.2.0(e7c8e930b0be9ae6ba70778e3a971ef9)
+      tailwind-merge:
+        specifier: ^3.7.0
+        version: 3.7.0
     devDependencies:
       '@myfunnow/hakka-config':
         specifier: workspace:*
@@ -236,6 +237,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.45(typescript@6.0.3)
 
   packages/tokens:
     devDependencies:

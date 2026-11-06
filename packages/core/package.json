@@ -29,9 +29,7 @@
   },
   "dependencies": {
     "@myfunnow/hakka-icons": "workspace:*",
-    "@myfunnow/hakka-shared": "workspace:*",
-    "@myfunnow/web-core": "3.2.0",
-    "tailwind-merge": "^3.7.0"
+    "@myfunnow/hakka-shared": "workspace:*"
   },
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",

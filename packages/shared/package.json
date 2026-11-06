@@ -27,10 +27,18 @@
     "build": "rimraf dist && tsdown",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
+  "dependencies": {
+    "@myfunnow/web-core": "3.2.0",
+    "tailwind-merge": "^3.7.0"
+  },
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vue": "catalog:"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
   }
 }
