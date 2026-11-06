@@ -15,7 +15,20 @@ if (names.length === 0) {
   throw new Error('No SVG files found in src/svg')
 }
 
-const iconNamesSource = `${header}export type IconName =\n${names.map(name => `  | '${name}'`).join('\n')}\n`
+const STROKE_PREFIX = 'stroke_'
+const FILLED_PREFIX = 'filled_'
+
+const strokeNames = names.filter(name => name.startsWith(STROKE_PREFIX))
+const filledNames = names.filter(name => name.startsWith(FILLED_PREFIX))
+
+// Every icon must belong to a Figma component group, otherwise it would be missing from IconName.
+if (strokeNames.length + filledNames.length !== names.length) {
+  throw new Error(`Icon file names must start with ${STROKE_PREFIX} or ${FILLED_PREFIX}`)
+}
+
+const toUnionSource = (typeName, list) => `export type ${typeName} =\n${list.map(name => `  | '${name}'`).join('\n')}\n`
+
+const iconNamesSource = `${header}${toUnionSource('StrokeIconName', strokeNames)}\n${toUnionSource('FilledIconName', filledNames)}\nexport type IconName = StrokeIconName | FilledIconName\n`
 
 // The reference lets packages that type-check icons from src/ (via hakka-source) see the *.svg declaration.
 // svg.d.ts only holds an ambient module declaration, so it cannot be pulled in with an import.
