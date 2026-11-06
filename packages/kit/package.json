@@ -33,8 +33,8 @@
   "devDependencies": {
     "@myfunnow/hakka-config": "workspace:*",
     "@myfunnow/hakka-storybook": "workspace:*",
-    "@tsdown/css": "^0.23.0",
-    "naive-ui": "2.43.2",
+    "@tsdown/css": "^0.23.7",
+    "naive-ui": "2.45.3",
     "rimraf": "catalog:",
     "tsdown": "catalog:",
     "typescript": "catalog:",
