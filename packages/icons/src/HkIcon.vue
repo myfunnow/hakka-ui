@@ -12,7 +12,7 @@ import { iconMap } from './iconMap'
 import type { HkIconProps } from './types'
 
 // `svg-icon` and `icon-${name}` are hooks for the parent's styles and for finding the icon name in DevTools.
-const ROOT_CLASS = 'svg-icon flex items-center justify-center'
+const ROOT_CLASS = 'svg-icon flex-none flex items-center justify-center'
 
 // The caller's class is merged in, so a conflicting utility replaces the default (`inline-block` replaces `flex`).
 // That does not depend on the order of rules in the generated CSS.

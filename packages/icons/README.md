@@ -34,7 +34,7 @@ Icons use `currentColor`, so set `color` on a parent to change it.
 
 ## Layout and overriding classes
 
-The root `div` has `flex items-center justify-center` by default. Pass utility classes through `class`. A conflicting utility replaces the default (`inline-block` replaces `flex`), whatever the order of rules in your CSS. Classes that do not conflict are added (`flex-none`, `text-yellow-50`).
+The root `div` has `flex-none flex items-center justify-center` by default, so a flex parent does not squeeze the icon. Pass utility classes through `class`. A conflicting utility replaces the default (`inline-block` replaces `flex`, `flex-1` replaces `flex-none`), whatever the order of rules in your CSS. Classes that do not conflict are added (`size-3`, `text-yellow-50`).
 
 The default classes need CSS from your app's UnoCSS. `dist/index.js` starts with `/* @unocss-include */`, so UnoCSS scans it when Vite processes the file. In `nuxt dev`, add the package to `build.transpile`, otherwise Vite pre-bundles it and the default classes get no CSS:
 
