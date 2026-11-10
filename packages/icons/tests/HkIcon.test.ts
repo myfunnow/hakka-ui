@@ -9,8 +9,29 @@ describe('HkIcon', () => {
 
     await vi.waitFor(() => expect(wrapper.find('svg').exists()).toBe(true))
 
-    expect(wrapper.attributes('role')).toBe('img')
     expect(wrapper.classes()).toContain('icon-stroke_arrow_left')
+  })
+
+  it('should hide a decorative icon from screen readers', () => {
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' } })
+
+    expect(wrapper.attributes('aria-hidden')).toBe('true')
+    expect(wrapper.attributes('role')).toBeUndefined()
+  })
+
+  it('should expose a labelled icon as an image', () => {
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' }, attrs: { 'aria-label': 'Add' } })
+
+    expect(wrapper.attributes('role')).toBe('img')
+    expect(wrapper.attributes('aria-label')).toBe('Add')
+    expect(wrapper.attributes('aria-hidden')).toBeUndefined()
+  })
+
+  it('should expose an icon named by aria-labelledby as an image', () => {
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' }, attrs: { 'aria-labelledby': 'label-id' } })
+
+    expect(wrapper.attributes('role')).toBe('img')
+    expect(wrapper.attributes('aria-hidden')).toBeUndefined()
   })
 
   it('should fill its container when no size is given', async () => {
