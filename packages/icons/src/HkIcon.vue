@@ -1,5 +1,5 @@
 <template>
-  <div v-bind="restAttrs" :class="rootClass" role="img">
+  <div v-bind="restAttrs" :class="rootClass" :role="isLabelled ? 'img' : undefined" :aria-hidden="isLabelled ? undefined : 'true'">
     <component :is="svgComponent" :width="size ?? width" :height="size ?? height" />
   </div>
 </template>
@@ -26,6 +26,9 @@ const svgComponent = computed(() => props.svgComponent ?? iconMap[props.name])
 
 // A custom svgComponent is not the named icon, so the name class would point DevTools at the wrong icon.
 const nameClass = computed(() => (props.svgComponent ? '' : `icon-${props.name}`))
+
+// An icon with an accessible name is meaningful (role="img"). Without one it is decorative, so hide it from screen readers.
+const isLabelled = computed(() => !!(attrs['aria-label'] || attrs['aria-labelledby']))
 
 const rootClass = computed(() => cn(ROOT_CLASS, nameClass.value, attrs.class))
 
