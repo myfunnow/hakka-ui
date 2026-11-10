@@ -50,10 +50,17 @@ describe('HkIcon', () => {
     expect(wrapper.find('svg').attributes()).toMatchObject({ width: '24', height: '24' })
   })
 
-  it('should center its icon in a flex box by default', () => {
+  it('should center its icon in a flex box that is not squeezed by a flex parent by default', () => {
     const wrapper = mount(HkIcon, { props: { name: 'stroke_add' } })
 
-    expect(wrapper.classes()).toEqual(expect.arrayContaining(['flex', 'items-center', 'justify-center']))
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['flex', 'flex-none', 'items-center', 'justify-center']))
+  })
+
+  it('should let a flex class from the caller replace the default flex-none', () => {
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' }, attrs: { class: 'flex-1' } })
+
+    expect(wrapper.classes()).toContain('flex-1')
+    expect(wrapper.classes()).not.toContain('flex-none')
   })
 
   it('should let a display class from the caller replace the default flex', () => {
@@ -64,9 +71,9 @@ describe('HkIcon', () => {
   })
 
   it('should keep the caller class and the default centering classes it does not conflict with', () => {
-    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' }, attrs: { class: 'flex-none text-yellow-50' } })
+    const wrapper = mount(HkIcon, { props: { name: 'stroke_add' }, attrs: { class: 'size-3 text-yellow-50' } })
 
-    expect(wrapper.classes()).toEqual(expect.arrayContaining(['flex', 'flex-none', 'items-center', 'justify-center', 'text-yellow-50']))
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['flex', 'flex-none', 'items-center', 'justify-center', 'size-3', 'text-yellow-50']))
   })
 
   it('should pass other attributes to the root element', () => {
